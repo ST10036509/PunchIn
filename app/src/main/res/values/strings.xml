@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">PunchIn</string>
-    <string name="login_username_input">\tUSERNAME</string>
+    <string name="login_username_input">USERNAME</string>
     <string name="login_username_hint">Enter your username</string>
-    <string name="login_password_input">\tPASSWORD</string>
+    <string name="login_password_input">PASSWORD</string>
     <string name="login_password_hint">Enter your password</string>
     <string name="register_prompt">Not Registered Yet?\nSign-Up Here</string>
     <string name="register_hint">Click here to register a new account</string>

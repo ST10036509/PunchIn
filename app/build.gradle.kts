@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = "za.co.varsitycollege.st10036509.punchin"
     compileSdk = 34
+    viewBinding.enable = true
 
     defaultConfig {
         applicationId = "za.co.varsitycollege.st10036509.punchin"

@@ -19,7 +19,7 @@ object FirestoreConnection {
      * Method to fetch the firestore instance
      * @return FirebaseFirestore instance
      */
-    fun getFirestoreInstance(): FirebaseFirestore {
+    fun getDatabaseInstance(): FirebaseFirestore {
         return firestoreInstance
     }
 }
