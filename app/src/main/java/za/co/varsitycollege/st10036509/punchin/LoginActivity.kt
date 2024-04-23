@@ -18,9 +18,10 @@ import za.co.varsitycollege.st10036509.punchin.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding//bind the LoginActivity KT and XML files
-    var count = 1
+
 
 //__________________________________________________________________________________________________onCreate
+
 
     /**
      * onCreate Method for Login Activity Page (entry point)
@@ -36,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
 
 
 //__________________________________________________________________________________________________setupPasswordVisibilityToggle
-
 
 
     /**

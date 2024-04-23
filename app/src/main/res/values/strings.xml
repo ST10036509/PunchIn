@@ -7,4 +7,5 @@
     <string name="register_prompt">Not Registered Yet?\nSign-Up Here</string>
     <string name="register_hint">Click here to register a new account</string>
     <string name="signin__button_text">Sign In</string>
+    <string name="title_activity_goals">GoalsActivity</string>
 </resources>
