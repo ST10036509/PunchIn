@@ -137,7 +137,7 @@ LAST MODIFIED: 23/04/2024
             <!-- Password Input -->
             <EditText
                 android:id="@+id/et_Password"
-                android:layout_width="match_parent"
+                android:layout_width="210dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
@@ -151,7 +151,18 @@ LAST MODIFIED: 23/04/2024
                 android:inputType="textPassword"
                 android:hint="@string/login_password_input" />
 
+            <ImageView
+                android:id="@+id/img_TogglePassword"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/eye_closed"
+                android:background="?attr/selectableItemBackground"/>
+
         </LinearLayout>
+
+
 
         <!-- Sign-In Button -->
         <LinearLayout
