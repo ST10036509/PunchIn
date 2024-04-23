@@ -148,6 +148,7 @@ LAST MODIFIED: 23/04/2024
                 android:pointerIcon="text"
                 android:textSize="18sp"
                 android:textColor="@color/blue_gray_50"
+                android:inputType="textPassword"
                 android:hint="@string/login_password_input" />
 
         </LinearLayout>
