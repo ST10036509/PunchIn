@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "189755922552",
+    "project_id": "punchin-995b9",
+    "storage_bucket": "punchin-995b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189755922552:android:af4ed9d186ec370740b58d",
+        "android_client_info": {
+          "package_name": "za.co.varsitycollege.st10036509.punchin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaHR_TEtkd6Gb-7J0Q4VTYqgLOU-ihqOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
