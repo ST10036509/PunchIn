@@ -1,10 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Leonard Bester
+CREATED: 23/04/2024
+LAST MODIFIED: 23/04/2024
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProjectCreationActivity"
-    >
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".ProjectCreationActivity">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Project Creation"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/indigo_900"/>
+
+    <!-- EditTexts -->
+
+    <!-- Project Name Entry -->
+    <EditText
+        android:id="@+id/et_ProjectName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ENTER PROJECT NAME..."
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>
+
+    <!-- Organization Name Entry -->
+    <EditText
+        android:id="@+id/et_OrganizationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ENTER ORGANIZATION NAME..."
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>
+
+
+    <!-- Start Date Entry -->
+    <EditText
+        android:id="@+id/et_StartDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="SELECT START DATE..."
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Colour Entry -->
+    <EditText
+        android:id="@+id/et_SetColour"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="SELECT COLOUR..."
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Hourly Rate Entry -->
+    <EditText
+        android:id="@+id/et_HourlyRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ENTER HOURLY RATE..."
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+        android:elevation="4dp"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Description Entry -->
+    <EditText
+        android:id="@+id/et_Description"
+        android:layout_width="match_parent"
+        android:layout_height="176dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+        android:elevation="4dp"
+        android:fontFamily="@font/reglo_bold"
+        android:textColorHint="@color/blue_gray_50"
+        android:hint="ENTER DESCRIPTION..."
+        android:padding="12dp" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/btn_Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/reglo_bold"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:textColor="@color/white_A700"/>
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/btn_Add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:fontFamily="@font/reglo_bold"
+            android:background="@drawable/rectangle_wrapper_light_green"
+            android:textColor="@color/white_A700"/>
+
+    </LinearLayout>
 
 </LinearLayout>

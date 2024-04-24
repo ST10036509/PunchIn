@@ -58,7 +58,7 @@ LAST MODIFIED: 23/04/2024
         app:layout_constraintTop_toTopOf="@id/guideline_Bottom"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@drawable/rectangle_wrapper_white">
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
 
         <!-- Login Title -->
         <TextView
