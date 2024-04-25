@@ -8,4 +8,6 @@
     <color name="green_200">#9cf994</color>
     <color name="indigo_300">#6984be</color>
     <color name="indigo_900">#14306a</color>
+    <color name="gold">#FDC537</color>
+    <color name="opacity_blue_gray_50">#C7C9D0</color>
 </resources>
