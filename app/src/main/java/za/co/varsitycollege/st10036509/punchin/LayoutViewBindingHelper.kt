@@ -6,7 +6,7 @@ import androidx.viewbinding.ViewBinding
 /**
  * Class to handle Hold Header View Binds
  */
-class HeaderViewBindings (private val viewBinding: ViewBinding){
+class LayoutViewBindingHelper (private val viewBinding: ViewBinding){
 
 //__________________________________________________________________________________________________headerSettings
 

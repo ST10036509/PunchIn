@@ -8,6 +8,7 @@ package za.co.varsitycollege.st10036509.punchin
 
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityLoginBinding
 
@@ -31,8 +32,15 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)//inflate UI
         setContentView(binding.root)
 
-        //call password toggle click listener
+        //password toggle onClick listener
         setupPasswordVisibilityToggle()
+
+        //sign-in button onClick listener
+        setupSignInButtonControl()
+
+        //register button onClick listener
+        setupRegisterButtonControl()
+
     }
 
 
@@ -67,9 +75,40 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+//__________________________________________________________________________________________________setupSignInButtonControl
 
-//__________________________________________________________________________________________________
 
+    /**
+     * On Click Event for the Sign-In Button
+     */
+    private fun setupSignInButtonControl() {
+
+        //Event Handler for Settings On Click Event
+        binding.llSignInButton.setOnClickListener() {
+            Toast.makeText(this@LoginActivity,
+                "Signing You In...",
+                Toast.LENGTH_SHORT).show()//show message
+        }
+
+    }
+
+
+//__________________________________________________________________________________________________setupRegisterButtonControl
+
+
+    /**
+     * On Click Event for the Register Button
+     */
+    private fun setupRegisterButtonControl() {
+
+        //Event Handler for Settings On Click Event
+        binding.tvRegisterPrompt.setOnClickListener() {
+            Toast.makeText(this@LoginActivity,
+                "Taking you to Register...",
+                Toast.LENGTH_SHORT).show()//show message
+        }
+
+    }
 
 
 }
