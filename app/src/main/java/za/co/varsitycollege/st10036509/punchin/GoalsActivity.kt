@@ -1,7 +1,7 @@
 /*
 AUTHOR: Ethan Schoonbee
 CREATED: 23/04/2024
-LAST MODIFIED: 24/04/2024
+LAST MODIFIED: 25/04/2024
  */
 
 package za.co.varsitycollege.st10036509.punchin
@@ -18,20 +18,16 @@ import za.co.varsitycollege.st10036509.punchin.databinding.ActivityGoalsBinding
 class GoalsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGoalsBinding//bind the GoalsActivity KT and XML files
-    private lateinit var navbarViewBindingHelper: NavbarViewBindingHelper//initialize NavBarViewBindingsHelper class
+    private lateinit var navbarViewBindingHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
 
-    //HEADER COMPONENTS:
-    //initialize a reference to the settings button bind only once its accessed (lazy)
-    private val headerSettingsButton: ImageButton by lazy { navbarViewBindingHelper.headerSettings }
-    //FOOTER COMPONENTS:
-    //initialize a reference to the home button bind only once its accessed (lazy)
-    private val footerHomeButton: ImageButton by lazy { navbarViewBindingHelper.footerHome }
-    //initialize a reference to the projects button bind only once its accessed (lazy)
-    private val footerProjectsButton: ImageButton by lazy { navbarViewBindingHelper.footerProjects }
-    //initialize a reference to the settings goals bind only once its accessed (lazy)
-    private val footerGoalsButton: ImageButton by lazy { navbarViewBindingHelper.footerGoals }
-    //initialize a reference to the analytics button bind only once its accessed (lazy)
-    private val footerAnalyticsButton: ImageButton by lazy { navbarViewBindingHelper.footerAnalytics }
+    //constant strings for toast messages
+    private companion object {
+        const val MSG_INC_MIN_GOAL = "Increased Minimum Goal"
+        const val MSG_DEC_MIN_GOAL = "Decreased Minimum Goal"
+        const val MSG_INC_MAX_GOAL = "Increased Maximum Goal"
+        const val MSG_DEC_MAX_GOAL = "Decreased Maximum Goal"
+        const val MSG_UPDATE_GOAL = "Updated Goal"
+    }
 
 
 //__________________________________________________________________________________________________onCreate
@@ -47,204 +43,49 @@ class GoalsActivity : AppCompatActivity() {
 
         //initialize an instance of the header binds, and pass the binding class (ActivityGoalsBinding)
         navbarViewBindingHelper = NavbarViewBindingHelper(this.binding)
+        //onClick event handler for all header and footer navbar controls
+        navbarViewBindingHelper.setupNavBarAccessControls(this@GoalsActivity)
 
-        //HEADER AND FOOTER NAVBAR CONTROLS:
-        //call settings button onClick listener
-        setupSettingsAccessControl()//Header
-        //call home button onClick listener
-        setupHomeAccessControl()//Footer
-        //call projects button onClick listener
-        setupProjectsAccessControl()//Footer
-        //call goals button onClick listener
-        setupGoalsAccessControl()//Footer
-        //call analytics button onClick listener
-        setupAnalyticsAccessControl()//Footer
-        //----------------------------------
-
-        //minimum increment button onClick listener
-        setupMinimumIncrementControl()
-        //minimum decrement button onClick listener
-        setupMinimumDecrementControl()
-        //maximum increment button onClick listener
-        setupMaximumIncrementControl()
-        //maximum decrement button onClick listener
-        setupMaximumDecrementControl()
-
-        //update button onClick listener
-        setupGoalUpdaterControl()
+        //setup listeners for ui controls
+        setupListeners()
 
     }
 
 
-//__________________________________________________________________________________________________setupSettingsAccess
+//__________________________________________________________________________________________________setupClickListeners
 
 
     /**
-     * On Click Event for the Header NavBar Settings Button
+     * Method to setup listeners for UI controls
      */
-    private fun setupSettingsAccessControl() {
+    private fun setupListeners() {
 
-        //Event Handler for Settings On Click Event
-        headerSettingsButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Settings Coming Soon!",
-                Toast.LENGTH_SHORT).show()//show message
+        //apply binding to the following lines
+        binding.apply {
+
+            //pass appropriate message to toast
+            imgbMinDecrement.setOnClickListener { showToast(MSG_INC_MIN_GOAL) }
+            imgbMinIncrement.setOnClickListener { showToast(MSG_DEC_MIN_GOAL) }
+            imgbMaxDecrement.setOnClickListener { showToast(MSG_INC_MAX_GOAL) }
+            imgbMaxIncrement.setOnClickListener { showToast(MSG_DEC_MAX_GOAL) }
+            llUpdateButton.setOnClickListener { showToast(MSG_UPDATE_GOAL) }
+
         }
 
     }
 
 
-//__________________________________________________________________________________________________setupMinimumIncrementControl
+//__________________________________________________________________________________________________showToast
 
 
     /**
-     * On Click Event for the Minimum Goal Increment Button
+     * Method to show the passed String message via Toast
+     * @param String The message to show
      */
-    private fun setupMinimumIncrementControl() {
+    private fun showToast(message: String) {
 
-        //Event Handler for Minimum Goal Increment On Click Event
-        binding.imgbMinIncrement.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Increased Minimum Goal",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupMinimumDecrementControl
-
-
-    /**
-     * On Click Event for the Minimum Goal Decrement Button
-     */
-    private fun setupMinimumDecrementControl() {
-
-        //Event Handler for Minimum Goal Decrement On Click Event
-        binding.imgbMinDecrement.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Decreased Minimum Goal",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupMaximumIncrementControl
-
-
-    /**
-     * On Click Event for the Maximum Goal Increment Button
-     */
-    private fun setupMaximumIncrementControl() {
-
-        //Event Handler for Maximum Goal Increment On Click Event
-        binding.imgbMaxIncrement.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Increased Maximum Goal",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupMaximumDecrementControl
-
-
-    /**
-     * On Click Event for the Maximum Goal Decrement Button
-     */
-    private fun setupMaximumDecrementControl() {
-
-        //Event Handler for Maximum Goal Decrement On Click Event
-        binding.imgbMaxDecrement.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Decreased Maximum Goal",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-    private fun setupGoalUpdaterControl() {
-
-        //Event Handler for Update Button On Click Event
-        binding.llUpdateButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Updated Goal",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupHomeAccessControl
-
-
-    /**
-     * On Click Event for the Footer NavBar Home Button
-     */
-    private fun setupHomeAccessControl() {
-
-        //Event Handler for Home Button On Click Event
-        footerHomeButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Home Page Opening...",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupProjectsAccessControl
-
-
-    /**
-     * On Click Event for the Footer NavBar Projects Button
-     */
-    private fun setupProjectsAccessControl() {
-
-        //Event Handler for Analytics Button On Click Event
-        footerProjectsButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Projects Page Opening...",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupGoalsAccessControl
-
-
-    /**
-     * On Click Event for the Footer NavBar Goals Button
-     */
-    private fun setupGoalsAccessControl() {
-
-        //Event Handler for Goals Button On Click Event
-        footerGoalsButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Goals Page Opening...",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupAnalyticsAccessControl
-
-
-    /**
-     * On Click Event for the Footer NavBar Analytics Button
-     */
-    private fun setupAnalyticsAccessControl() {
-
-        //Event Handler for Analytics Button On Click Event
-        footerAnalyticsButton.setOnClickListener() {
-            Toast.makeText(this@GoalsActivity,
-                "Analytics Page Opening...",
-                Toast.LENGTH_SHORT).show()//show message
-        }
+        Toast.makeText(this, message,
+            Toast.LENGTH_SHORT).show()
 
     }
 

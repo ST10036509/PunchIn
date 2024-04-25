@@ -20,6 +20,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding//bind the LoginActivity KT and XML files
 
+    //constant strings for toast messages
+    private companion object {
+        const val MSG_SIGN_IN = "Signing You In..."
+        const val MSG_REGISTER = "Taking you to Register..."
+    }
+
 
 //__________________________________________________________________________________________________onCreate
 
@@ -32,80 +38,73 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)//inflate UI
         setContentView(binding.root)
 
-        //password toggle onClick listener
-        setupPasswordVisibilityToggle()
-
-        //sign-in button onClick listener
-        setupSignInButtonControl()
-
-        //register button onClick listener
-        setupRegisterButtonControl()
+        //setup listeners for ui controls
+        setupListeners()
 
     }
 
 
-//__________________________________________________________________________________________________setupPasswordVisibilityToggle
+//__________________________________________________________________________________________________setupListeners
+
+
+    /**
+     * Method to setup listeners for UI controls
+     */
+    private fun setupListeners() {
+
+        //apply binding to the following lines
+        binding.apply {
+
+            //pass appropriate message to toast
+            llSignInButton.setOnClickListener { showToast(MSG_SIGN_IN) }
+            tvRegisterPrompt.setOnClickListener { showToast(MSG_REGISTER) }
+
+            //password toggle onClick listener
+            imgTogglePassword.setOnClickListener { togglePasswordVisibility() }
+
+        }
+
+    }
+
+
+//__________________________________________________________________________________________________showToast
+
+
+    /**
+     * Method to show the passed String message via Toast
+     * @param String The message to show
+     */
+    private fun showToast(message: String) {
+
+        Toast.makeText(this, message,
+            Toast.LENGTH_SHORT).show()
+
+    }
+
+//__________________________________________________________________________________________________togglePasswordVisibility
 
 
     /**
      * On Click Event for the Password Visibility Toggle
      */
-    private fun setupPasswordVisibilityToggle() {
+    private fun togglePasswordVisibility() {
 
-        //event listener for imTogglePassword click
-        binding.imgTogglePassword.setOnClickListener() {
+        //apply binding to the following lines
+        binding.apply{
 
-            //check if the etPassword is visible
-            val isPasswordVisible = binding.etPassword.transformationMethod != PasswordTransformationMethod.getInstance()
+                //check if the etPassword is visible
+                val isPasswordVisible = etPassword.transformationMethod != PasswordTransformationMethod.getInstance()
 
-            if (isPasswordVisible) {
-                // if the Password is visible, show eye open toggle image
-                binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                binding.imgTogglePassword.setImageResource(R.drawable.eye_open)
-            } else {
-                // if the Password is not visible, show eye closed toggle image
-                binding.etPassword.transformationMethod = null
-                binding.imgTogglePassword.setImageResource(R.drawable.eye_closed)
-            }
+                etPassword.transformationMethod =
+                    // if the password is visible, show eye open toggle image
+                    if (isPasswordVisible) PasswordTransformationMethod.getInstance() else null
+                imgTogglePassword.setImageResource(
+                    // if the password is visible, show eye open image else show a eye closed image
+                    if (isPasswordVisible) R.drawable.eye_closed else R.drawable.eye_open
+                )
+                // reset cursor position to the end of the string
+                etPassword.setSelection(etPassword.text.length)
 
-            // reset cursor position to the end of the string
-            binding.etPassword.setSelection(binding.etPassword.text.length)
-
-        }
-    }
-
-
-//__________________________________________________________________________________________________setupSignInButtonControl
-
-
-    /**
-     * On Click Event for the Sign-In Button
-     */
-    private fun setupSignInButtonControl() {
-
-        //Event Handler for Settings On Click Event
-        binding.llSignInButton.setOnClickListener() {
-            Toast.makeText(this@LoginActivity,
-                "Signing You In...",
-                Toast.LENGTH_SHORT).show()//show message
-        }
-
-    }
-
-
-//__________________________________________________________________________________________________setupRegisterButtonControl
-
-
-    /**
-     * On Click Event for the Register Button
-     */
-    private fun setupRegisterButtonControl() {
-
-        //Event Handler for Settings On Click Event
-        binding.tvRegisterPrompt.setOnClickListener() {
-            Toast.makeText(this@LoginActivity,
-                "Taking you to Register...",
-                Toast.LENGTH_SHORT).show()//show message
         }
 
     }
