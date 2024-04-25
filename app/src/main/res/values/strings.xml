@@ -17,4 +17,15 @@
     <string name="points">POINTS</string>
     <string name="min_goals_input_title">MINIMUM HOURS GOAL:</string>
     <string name="max_goals_input_title">MAXIMUM HOURS GOAL:</string>
+
+    <!-- Analytics Page -->
+    <string name="title_analytics">ANALYTICS</string>
+    <string name="title_hours">HOURS RECORD</string>
+    <string name="filter_date_text">Date</string>
+    <string name="filter_projects_text">Projects</string>
+    <string name="filter_clients_text">Clients</string>
+    <string name="total_hours">TOTAL</string>
+    <string name="billable_hours">BILLABLE</string>
+    <string name="amount">AMOUNT</string>
+    
 </resources>
