@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Ethan Schoonbee
+CREATED: 23/04/2024
+LAST MODIFIED: 24/04/2024
+-->
+
+<!-- Header Wave NavBar -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="8dp"
+    android:background="@drawable/header_navbar_wave">
+
+    <!-- Header Logo -->
+    <ImageView
+        android:id="@+id/img_HeaderLogo"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/punchin_logo_name_white"
+        android:scaleType="fitCenter"
+        android:rotation="-90"/>
+
+    <!-- Settings Button -->
+    <ImageButton
+        android:id="@+id/imgb_HeaderSettingsButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="235dp"
+        android:layout_gravity="end|center_vertical"
+        android:background="@null"
+        android:src="@drawable/settings_icon"
+        android:scaleType="fitCenter" />
+
+</LinearLayout>
+
+<!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Ethan Schoonbee
+CREATED: 24/04/2024
+LAST MODIFIED: 24/04/2024
+-->
+
+<!-- Bottom Navigation Bar -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/footer_nav_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/footer_navbar_wave"
+    android:layout_gravity="bottom"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:paddingTop="50dp">
+
+    <!-- Home Button -->
+    <ImageButton
+        android:id="@+id/imgb_FooterHomeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/house_icon"
+        android:background="@android:color/transparent"
+        android:padding="16dp" />
+
+    <!-- Project Button -->
+    <ImageButton
+        android:id="@+id/imgb_FooterProjectsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/projects_icon"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="2dp"
+        android:padding="16dp" />
+
+    <!-- Goals Button -->
+    <ImageButton
+        android:id="@+id/imgb_FooterGoalsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/goals_icon"
+        android:background="@android:color/transparent"
+        android:padding="16dp" />
+
+    <!-- Analytics Button -->
+    <ImageButton
+        android:id="@+id/imgb_FooterAnalyticsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/analytics_icon"
+        android:background="@android:color/transparent"
+        android:padding="16dp" />
+
+</LinearLayout>
+<!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->
