@@ -17,4 +17,16 @@
     <string name="points">POINTS</string>
     <string name="min_goals_input_title">MINIMUM HOURS GOAL:</string>
     <string name="max_goals_input_title">MAXIMUM HOURS GOAL:</string>
+
+    <!-- Timesheet Creation Page -->
+    <string name="title_activity_timesheet_creation">Timesheet Entry</string>
+    <string name="toggle_button_off">Timer</string>
+    <string name="toggle_button_on">Stopwatch</string>
+    <string name="hint_timesheet_name">Enter timesheet name…</string>
+    <string name="hint_timesheet_project_name">Enter project name…</string>
+    <string name="hint_timesheet_start_date">Select start date…</string>
+    <string name="hint_timesheet_description">Enter timesheet description…</string>
+    <string name="hint_timesheet_photo">Add timesheet photo…</string>
+    <string name="button_timesheet_return">Return</string>
+    <string name="button_timesheet_add">Add</string>
 </resources>
