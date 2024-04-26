@@ -19,6 +19,11 @@
     <string name="max_goals_input_title">MAXIMUM HOURS GOAL:</string>
 
     <!-- Timesheet Creation Page -->
+    <string name="weekly_selection_text">7 – 14, March 2024</string>
+    <string name="date_most_recent_text">Today, 14 March</string>
+    <string name="fab_add_timesheet">FAB to add timesheets</string>
+
+    <!-- Timesheet Creation Page -->
     <string name="title_activity_timesheet_creation">Timesheet Entry</string>
     <string name="toggle_button_off">Timer</string>
     <string name="toggle_button_on">Stopwatch</string>
