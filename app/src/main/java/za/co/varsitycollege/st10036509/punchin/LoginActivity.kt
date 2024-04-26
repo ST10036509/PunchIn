@@ -19,6 +19,7 @@ import za.co.varsitycollege.st10036509.punchin.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding//bind the LoginActivity KT and XML files
+    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
 
     //constant strings for toast messages
     private companion object {
@@ -37,6 +38,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)//inflate UI
         setContentView(binding.root)
+
+        intentHandler = IntentHandler(this@LoginActivity)
 
         //setup listeners for ui controls
         setupListeners()
@@ -57,12 +60,26 @@ class LoginActivity : AppCompatActivity() {
 
             //pass appropriate message to toast
             llSignInButton.setOnClickListener { showToast(MSG_SIGN_IN) }
-            tvRegisterPrompt.setOnClickListener { showToast(MSG_REGISTER) }
+            tvRegisterPrompt.setOnClickListener { openRegisterPage() }
 
             //password toggle onClick listener
             imgTogglePassword.setOnClickListener { togglePasswordVisibility() }
 
         }
+
+    }
+
+
+//__________________________________________________________________________________________________openRegisterPage
+
+
+    /**
+     * Method to open the Register page
+     */
+    private fun openRegisterPage() {
+
+        //launch the register page
+        intentHandler.openActivityIntent(RegisterActivity::class.java)
 
     }
 
