@@ -24,11 +24,12 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding//bind the RegisterActivities KT and XML files
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+    private lateinit var authModel: AuthenticationViewModel
 
     //constant strings for toast messages
     private companion object {
-        const val MSG_REGISTER = "Signing You Up..."
-        const val MSG_RETURN = "Return to Login Page..."
+        const val MSG_REGISTER_SUCCESS = "ACCOUNT REGISTERED SUCCESSFULLY"
+        const val MSG_REGISTER_FAILIURE = "<FAILED TO REGISTER USER>"
     }
 
 //__________________________________________________________________________________________________onCreate
@@ -43,6 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         intentHandler = IntentHandler(this@RegisterActivity)
+        authModel = AuthenticationViewModel(this@RegisterActivity)
 
         //setup listeners for ui controls
         setupListeners()
@@ -62,7 +64,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.apply {
 
             //pass appropriate message to toast
-            llRegisterButton.setOnClickListener { showToast(RegisterActivity.MSG_REGISTER) }
+            llRegisterButton.setOnClickListener { registerUser() }
             llReturnButton.setOnClickListener { openLoginPage() }
 
             //password toggle onClick listener
@@ -71,6 +73,45 @@ class RegisterActivity : AppCompatActivity() {
             imgTogglePasswordConfirmation.setOnClickListener { togglePasswordVisibility(etPasswordConfirmation, imgTogglePasswordConfirmation) }
 
         }
+    }
+
+
+//__________________________________________________________________________________________________openLoginPage
+
+
+    /**
+     * Register the User.
+     * If successful launch the TimesheetsView page.
+     * If unsuccessful show Error Message
+     */
+    private fun registerUser() {
+
+        binding.apply {
+
+            var username = etUsername.text.toString()
+            var email = etEmail.text.toString()
+            var password = etPassword.text.toString()
+
+            //validateUsername()
+            //validateEmail()
+            //validatePassword()
+
+
+            authModel.signUp(email, password, username) {success ->
+
+                if (success) {
+
+                    showToast(MSG_REGISTER_SUCCESS)
+
+                } else {
+
+                    showToast(MSG_REGISTER_FAILIURE)
+
+                }
+            }
+
+        }
+
 
     }
 
@@ -114,7 +155,6 @@ class RegisterActivity : AppCompatActivity() {
             inputBox.setSelection(inputBox.text.length)
 
         }
-
     }
 
 

@@ -24,7 +24,6 @@ class LoginActivity : AppCompatActivity() {
     //constant strings for toast messages
     private companion object {
         const val MSG_SIGN_IN = "Signing You In..."
-        const val MSG_REGISTER = "Taking you to Register..."
     }
 
 
@@ -66,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
             imgTogglePassword.setOnClickListener { togglePasswordVisibility() }
 
         }
-
     }
 
 
@@ -123,7 +121,6 @@ class LoginActivity : AppCompatActivity() {
                 etPassword.setSelection(etPassword.text.length)
 
         }
-
     }
 
 
