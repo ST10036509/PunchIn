@@ -2,7 +2,7 @@
 <!--
 AUTHOR: Ross Harper
 CREATED: 25/04/2024
-LAST MODIFIED: 25/04/2024
+LAST MODIFIED: 27/04/2024
 -->
 
 <!-- Page Layout -->
@@ -65,13 +65,147 @@ LAST MODIFIED: 25/04/2024
         android:elevation="2dp"
         android:background="@drawable/rectangle_wrapper_white_round_corners" >
 
-    <LinearLayout
-        android:id="@+id/ll_graph_layout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical"
-        android:layout_marginBottom="20dp"
-        />
+        <!-- Stats Layout -->
+        <LinearLayout
+            android:id="@+id/ll_Stats_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/tl_Stats_Container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_TotalLabel"
+                        android:text="@string/total_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/staatliches"
+                        android:textColor="@color/indigo_900"
+                        android:textSize="19sp" />
+
+                    <TextView
+                        android:id="@+id/tv_BillableHoursLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="110dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/staatliches"
+                        android:text="@string/billable_hours"
+                        android:textColor="@color/indigo_900"
+                        android:textSize="19sp" />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_DisplayedHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/staatliches"
+                        android:text="@string/hoursValue"
+                        android:textColor="@color/black"
+                        android:textSize="32sp" />
+
+                    <TextView
+                        android:id="@+id/tv_BillableHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="110dp"
+                        android:fontFamily="@font/staatliches"
+                        android:text="@string/billableHoursValue"
+                        android:textColor="@color/black"
+                        android:textSize="32sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#CD0C0C"
+                        app:srcCompat="@android:drawable/divider_horizontal_dim_dark"
+                        tools:srcCompat="?attr/dividerHorizontal" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_AmountLabel"
+                        android:text="@string/amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/staatliches"
+                        android:textColor="@color/indigo_900"
+                        android:textSize="19sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/tv_DisplayedAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/currencyValue"
+                        android:fontFamily="@font/staatliches"
+                        android:textSize="19sp"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/tv_Currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/currency" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+
+        <!-- Graph Layout -->
+        <LinearLayout
+            android:id="@+id/ll_graph_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:elevation="2dp"
+        >
+
+        </LinearLayout>
 
     </LinearLayout>
 
