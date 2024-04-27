@@ -4,7 +4,7 @@ CREATED: 23/04/2024
 LAST MODIFIED: 23/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.utils
 
 import android.app.Activity
 import android.content.Context
@@ -23,5 +23,7 @@ class IntentHandler(private val context: Context) {
         val intent = Intent(context, activity)//create intent object
         context.startActivity(intent)//open activity
     }
+
+
 }
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\

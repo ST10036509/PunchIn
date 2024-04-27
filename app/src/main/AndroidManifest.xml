@@ -13,19 +13,19 @@
         android:theme="@style/Theme.PunchIn"
         tools:targetApi="31">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.RegisterActivity"
             android:exported="true"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
-            android:name=".GoalsActivity"
+            android:name=".activities.GoalsActivity"
             android:exported="true"
             android:label="@string/title_activity_goals"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

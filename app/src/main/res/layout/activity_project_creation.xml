@@ -11,7 +11,7 @@ LAST MODIFIED: 23/04/2024
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".ProjectCreationActivity">
+    tools:context=".activities.ProjectCreationActivity">
 
     <!-- Title -->
     <TextView

@@ -4,7 +4,7 @@ CREATED: 27/04/2024
 LAST MODIFIED: 27/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.models
 
 
 /**
@@ -14,7 +14,7 @@ package za.co.varsitycollege.st10036509.punchin
  * @param Int minGoal
  * @param Int maxGoal
  */
-class User(
+class UserModel(
 
     var username: String,
     var points: Int,

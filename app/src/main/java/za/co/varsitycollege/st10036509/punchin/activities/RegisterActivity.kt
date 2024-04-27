@@ -4,22 +4,25 @@ CREATED: 26/04/2024
 LAST MODIFIED: 26/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.activities
 
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityRegisterBinding
+import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.PasswordVisibilityToggler
+import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
 
 /**
@@ -29,8 +32,12 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding//bind the RegisterActivities KT and XML files
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
-    private lateinit var authModel: AuthenticationViewModel//setup an instance of the authentication context
-    private  var progressDialog: ProgressDialog? = null
+    private lateinit var authModel: AuthenticationModel//setup an instance of the authentication context
+    private lateinit var validationHandler: ValidationHandler//setup an instance of the validation handler
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an instance of the loading dialog handler
+    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private lateinit var passwordVisibilityToggler: PasswordVisibilityToggler//setup an instance of the password visibility handler
 
     //constant strings for toast messages
     private companion object {
@@ -51,7 +58,10 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         intentHandler = IntentHandler(this@RegisterActivity)//initialise the intentHandler
-        authModel = AuthenticationViewModel()//initialise the authentication context
+        authModel = AuthenticationModel()//initialise the authentication context
+        validationHandler = ValidationHandler()//initialise the validation handler
+        loadingDialogHandler = LoadDialogHandler(this@RegisterActivity, progressDialog)//initialise the loading dialog
+        passwordVisibilityToggler = PasswordVisibilityToggler()//initialise the password visibility toggler
 
         //setup listeners for ui controls
         setupListeners()
@@ -75,9 +85,9 @@ class RegisterActivity : AppCompatActivity() {
             llReturnButton.setOnClickListener { openLoginPage() }
 
             //password toggle onClick listener
-            imgTogglePassword.setOnClickListener { togglePasswordVisibility(etPassword, imgTogglePassword) }
+            imgTogglePassword.setOnClickListener { passwordVisibilityToggler.togglePasswordVisibility(binding, etPassword, imgTogglePassword) }
             //password toggle onClick listener
-            imgTogglePasswordConfirmation.setOnClickListener { togglePasswordVisibility(etPasswordConfirmation, imgTogglePasswordConfirmation) }
+            imgTogglePasswordConfirmation.setOnClickListener { passwordVisibilityToggler.togglePasswordVisibility(binding, etPasswordConfirmation, imgTogglePasswordConfirmation) }
 
         }
     }
@@ -91,11 +101,10 @@ class RegisterActivity : AppCompatActivity() {
      * If successful launch the TimesheetView page.
      * If unsuccessful show Error Message
      */
-    @OptIn(DelicateCoroutinesApi::class)
     private fun registerUser() {
 
         //check if the username is already taken
-        GlobalScope.launch {
+        coroutineScope.launch {
             binding.apply {
 
                 //capture user inputs
@@ -106,21 +115,22 @@ class RegisterActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
 
-                    showLoadingDialog(MSG_CHECKING_INPUTS)//display a loading dialog
+                    loadingDialogHandler.showLoadingDialog(MSG_CHECKING_INPUTS)//display input checks loading dialog
 
-                    val (inputsValid, inputValidationErrorMessage) = authModel.runValidationChecks(
-                        username,
-                        email,
-                        password,
-                        passwordConfirmation
+                    val (inputsValid, inputValidationErrorMessage) =  validationHandler.runValidationChecks(
+                            username,
+                            email,
+                            password,
+                            passwordConfirmation
                     )
 
-                    dismissLoadingDialog()
+                    loadingDialogHandler.dismissLoadingDialog()//close loading dialog
 
                     //check if inputs are all valid
                     if (inputsValid) {
 
-                        showLoadingDialog(MSG_REGISTERING_USER)//display a loading dialog
+                        loadingDialogHandler.showLoadingDialog(MSG_REGISTERING_USER)//display register loading dialog
+
                         //attempt to sign the user up
                         authModel.signUp(
                             email,
@@ -128,13 +138,11 @@ class RegisterActivity : AppCompatActivity() {
                             username,
                             ::handleSignUpCallBack
                         )
-
                     } else {
-
-                        showToast(inputValidationErrorMessage)
-
+                        showToast(inputValidationErrorMessage)//display error message
                     }
                 }
+
             }
         }
     }
@@ -156,7 +164,6 @@ class RegisterActivity : AppCompatActivity() {
             etPasswordConfirmation.text.clear()
 
         }
-
     }
 
 
@@ -173,35 +180,6 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-//__________________________________________________________________________________________________togglePasswordVisibility
-
-
-    /**
-     * On Click Event for the Password Visibility Toggle
-     */
-    private fun togglePasswordVisibility(inputBox: EditText, toggleButton: ImageView) {
-
-        //apply binding to the following lines
-        binding.apply {
-
-            //check if the text is visible
-            val isPasswordVisible = inputBox.transformationMethod != PasswordTransformationMethod.getInstance()
-
-            //update visibility and eye icon
-            inputBox.transformationMethod =
-                    // if the password is visible, show eye open toggle image
-                if (isPasswordVisible) PasswordTransformationMethod.getInstance() else null
-            toggleButton.setImageResource(
-                // if the password is visible, show eye open image else show a eye closed image
-                if (isPasswordVisible) R.drawable.eye_closed else R.drawable.eye_open
-
-            )
-            // reset cursor position to the end of the string
-            inputBox.setSelection(inputBox.text.length)
-
-        }
-    }
-
 
 //__________________________________________________________________________________________________handleSignUpCallBack
 
@@ -216,53 +194,19 @@ class RegisterActivity : AppCompatActivity() {
         //if there were no errors
         if (result.first) {
 
-            dismissLoadingDialog()//close loading icon
-            showToast(RegisterActivity.MSG_REGISTER_SUCCESS)//show success message
+            loadingDialogHandler.dismissLoadingDialog()//close loading icon
+            showToast(MSG_REGISTER_SUCCESS)//show success message
             clearInputs()//clear input boxes
 
             //if if there were no errors
         } else {
 
-            dismissLoadingDialog()//close loading icon
+            loadingDialogHandler.dismissLoadingDialog()//close loading icon
             showToast(result.second)//show given error message
 
         }
     }
 
-
-//__________________________________________________________________________________________________showLoadingDialog
-
-
-    /**
-     * Method to show loading dialog
-     */
-    private fun showLoadingDialog(message: String) {
-
-        progressDialog?.dismiss()
-
-        progressDialog = ProgressDialog(this@RegisterActivity).apply {
-
-            setTitle(message)
-            setCancelable(false)
-            show()
-
-        }
-    }
-
-
-//__________________________________________________________________________________________________dismissLoadingDialog
-
-
-    /**
-     * Method to discard loading dialog
-     */
-    private fun dismissLoadingDialog() {
-
-        progressDialog?.dismiss()
-
-        progressDialog = null
-
-    }
 
 
 //__________________________________________________________________________________________________showToast
@@ -278,5 +222,23 @@ class RegisterActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT).show()
 
     }
+
+
+//__________________________________________________________________________________________________onDestroy
+
+
+    /**
+     * Method to cancel coroutine when activity is destroyed
+     */
+    override fun onDestroy() {
+
+        super.onDestroy()
+
+        //cancel coroutine
+        coroutineScope.cancel()
+
+    }
+
+
 }
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\

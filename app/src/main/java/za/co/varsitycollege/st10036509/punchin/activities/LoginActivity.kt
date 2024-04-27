@@ -4,13 +4,19 @@ CREATED: 23/04/2024
 LAST MODIFIED: 23/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
+import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityLoginBinding
+import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.utils.PasswordVisibilityToggler
 
 
 /**
@@ -20,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding//bind the LoginActivity KT and XML files
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+    private lateinit var passwordVisibilityToggler: PasswordVisibilityToggler//setup an instance of the password visibility handler
+    private lateinit var authModel: AuthenticationModel
 
     //constant strings for toast messages
     private companion object {
@@ -38,13 +46,40 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)//inflate UI
         setContentView(binding.root)
 
-        intentHandler = IntentHandler(this@LoginActivity)
+        intentHandler = IntentHandler(this@LoginActivity)//setup an intent handler for navigating pages
+        passwordVisibilityToggler = PasswordVisibilityToggler()//initialise the password visibility toggler
 
         //setup listeners for ui controls
         setupListeners()
 
     }
 
+
+
+//__________________________________________________________________________________________________onStart
+
+
+    /**
+     * Method to sign a user out when the page first starts if their token is expired
+     */
+    override fun onStart() {
+
+        super.onStart()
+
+        authModel = AuthenticationModel()
+        val currentUser = authModel.getCurrentUser()
+
+        currentUser?.reload()?.addOnCompleteListener() { task ->
+
+            if (task.isSuccessful) {
+                //intentHandler.openActivityIntent(HomePage)
+                Toast.makeText(this@LoginActivity, currentUser.uid.toString(), Toast.LENGTH_SHORT).show()
+
+            } else {
+                authModel.signOut()
+            }
+        }
+    }
 
 //__________________________________________________________________________________________________setupListeners
 
@@ -62,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
             tvRegisterPrompt.setOnClickListener { openRegisterPage() }
 
             //password toggle onClick listener
-            imgTogglePassword.setOnClickListener { togglePasswordVisibility() }
+            imgTogglePassword.setOnClickListener { passwordVisibilityToggler.togglePasswordVisibility(binding, etPassword, imgTogglePassword) }
 
         }
     }

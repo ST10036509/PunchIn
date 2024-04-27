@@ -12,7 +12,7 @@ LAST MODIFIED: 25/04/2024
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GoalsActivity">
+    tools:context=".activities.GoalsActivity">
 
     <!-- Header NavBar -->
     <include layout="@layout/header_navbar_with_settings_layout" />

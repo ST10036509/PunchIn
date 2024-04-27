@@ -4,7 +4,7 @@ CREATED: 23/04/2024
 LAST MODIFIED: 23/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.utils
 
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,5 +22,7 @@ object FirestoreConnection {
     fun getDatabaseInstance(): FirebaseFirestore {
         return firestoreInstance
     }
+
+
 }
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\
