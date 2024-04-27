@@ -4,12 +4,12 @@ CREATED: 23/04/2024
 LAST MODIFIED: 25/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.activities
 
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityGoalsBinding
 
 /**
