@@ -29,7 +29,7 @@
     <string name="amount">AMOUNT</string>
     <string name="hoursValue">32:02:43</string>
     <string name="billableHoursValue">10:49:49</string>
-    <string name="currencyValue">4534</string>
+    <string name="currencyValue">4534.32</string>
     <string name="currency">zar</string>
     
 </resources>
