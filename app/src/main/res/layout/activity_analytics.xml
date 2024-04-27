@@ -48,7 +48,54 @@ LAST MODIFIED: 27/04/2024
         android:orientation="horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        />
+        >
+        <ImageView
+            android:id="@+id/iv_Filter"
+            android:layout_width="35dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginStart="5dp"
+            app:srcCompat="@drawable/filter_icon_clear"/>
+
+        <Button
+            android:id="@+id/btn_Date_Filter"
+            android:layout_width="90dp"
+            android:layout_marginStart="10dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="2sp"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/filter_date_text"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_Project_Filter"
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="2sp"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/filter_projects_text"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_Client_Filter"
+            android:layout_width="90sp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="2sp"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/filter_clients_text"
+            android:textSize="20sp" />
+    </LinearLayout>
 
     <!-- Analytics Wrapper -->
     <LinearLayout
