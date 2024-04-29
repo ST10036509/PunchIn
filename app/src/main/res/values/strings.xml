@@ -55,6 +55,7 @@
     <string name="hint_enter_description">ENTER DESCRIPTION...</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
+    <string name="title_activity_projectcreation">Project Creation</string>
 
     <!-- Projects Details Page -->
     <string name="title_activity_project_details">PROJECT DETAILS</string>
@@ -73,6 +74,7 @@
     <string name="activity_project_view_title">PROJECTS</string>
     <string name="activity_project_view_button_alphabet">A-Z</string>
     <string name="activity_project_view_button_date">Date</string>
+    <string name="title_activity_project_view">Project view</string>
   
     <!-- Analytics Page -->
     <string name="title_analytics">ANALYTICS</string>
