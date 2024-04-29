@@ -19,6 +19,7 @@ LAST MODIFIED: 25/04/2024
         android:id="@+id/img_HeaderLogo"
         android:layout_width="110dp"
         android:layout_height="110dp"
+        android:layout_weight="0"
         android:layout_marginBottom="18dp"
         android:layout_marginLeft="15dp"
         android:layout_gravity="center_vertical"
@@ -29,14 +30,15 @@ LAST MODIFIED: 25/04/2024
     <!-- Settings Button -->
     <ImageButton
         android:id="@+id/imgb_HeaderSettingsButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_marginBottom="18dp"
-        android:layout_marginLeft="235dp"
-        android:layout_gravity="end|center_vertical"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="start|center_vertical"
         android:background="@null"
         android:src="@drawable/settings_icon"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitEnd" />
 
 </LinearLayout>
 

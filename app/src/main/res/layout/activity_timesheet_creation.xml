@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Cameron Brooks
+CREATED: 25/04/2024
+LAST MODIFIED: 25/04/2024
+-->
+
+<!-- Page Layout -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Timesheet Entry Title -->
+
+    <TextView
+        android:id="@+id/tv_TimesheetCreationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/staatliches"
+        android:text="@string/title_activity_timesheet_creation"
+        android:textAlignment="center"
+        android:textColor="@color/indigo_900"
+        android:textSize="45sp"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/tb_stopwatch_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="70dp"
+        android:textAlignment="center"
+        android:checked="false"
+        android:fontFamily="@font/staatliches"
+        android:textOff="@string/toggle_button_off"
+        android:textOn="@string/toggle_button_on" />
+
+    <LinearLayout
+        android:id="@+id/ll_Timesheet_Entry_Group"
+        android:layout_width="370dp"
+        android:layout_height="520dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tb_stopwatch_timer">
+
+        <EditText
+            android:id="@+id/et_Timesheet_Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_name"
+            android:padding="12dp"
+            android:textColorHint="@color/blue_gray_50" />
+
+        <EditText
+            android:id="@+id/et_Timesheet_ProjectName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_project_name"
+            android:padding="12dp"
+            android:textColorHint="@color/blue_gray_50" />
+
+        <EditText
+            android:id="@+id/et_Timesheet_StartDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_start_date"
+            android:padding="12dp"
+            android:textColorHint="@color/blue_gray_50" />
+
+        <ProgressBar
+            android:id="@+id/pb_Timer"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="200dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:indeterminateOnly="true"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/et_Timesheet_Description"
+            android:layout_width="match_parent"
+            android:layout_height="126dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_description"
+            android:padding="12dp"
+            android:singleLine="false"
+            android:textAlignment="textStart"
+            android:textColorHint="@color/blue_gray_50" />
+
+        <EditText
+            android:id="@+id/et_Timesheet_Photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_photo"
+            android:padding="12dp"
+            android:textColorHint="@color/blue_gray_50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_Timesheet_Button_Group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_Timesheet_Entry_Group">        >
+
+        <!-- Cancel Button -->
+        <Button
+            android:id="@+id/btn_Return"
+            android:layout_width="133dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_return"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/btn_Add"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_light_green"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_add"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

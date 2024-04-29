@@ -4,136 +4,182 @@ AUTHOR: Leonard Bester
 CREATED: 23/04/2024
 LAST MODIFIED: 23/04/2024
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".ProjectCreationActivity">
+    android:layout_height="match_parent">
 
-    <!-- Title -->
+    <!-- Header NavBar -->
+    <include
+        android:id="@+id/include"
+        layout="@layout/header_navbar_with_settings_layout"
+        tools:layout_editor_absoluteX="7dp"
+        tools:layout_editor_absoluteY="187dp" />
+
+<!-- Title -->
     <TextView
-        android:id="@+id/tv_Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Project Creation"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:textColor="@color/indigo_900"/>
-
-    <!-- EditTexts -->
-
-    <!-- Project Name Entry -->
-    <EditText
-        android:id="@+id/et_ProjectName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ENTER PROJECT NAME..."
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>
-
-    <!-- Organization Name Entry -->
-    <EditText
-        android:id="@+id/et_OrganizationName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ENTER ORGANIZATION NAME..."
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/staatliches"
+        android:text="@string/title_activity_project_creation"
+        android:textAlignment="center"
+        android:textColor="@color/indigo_900"
+        android:textSize="45sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
 
-    <!-- Start Date Entry -->
-    <EditText
-        android:id="@+id/et_StartDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="SELECT START DATE..."
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"/>
-
-    <!-- Colour Entry -->
-    <EditText
-        android:id="@+id/et_SetColour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="SELECT COLOUR..."
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"/>
-
-    <!-- Hourly Rate Entry -->
-    <EditText
-        android:id="@+id/et_HourlyRate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="ENTER HOURLY RATE..."
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp"/>
-
-    <!-- Description Entry -->
-    <EditText
-        android:id="@+id/et_Description"
-        android:layout_width="match_parent"
-        android:layout_height="176dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-        android:elevation="4dp"
-        android:fontFamily="@font/reglo_bold"
-        android:textColorHint="@color/blue_gray_50"
-        android:hint="ENTER DESCRIPTION..."
-        android:padding="12dp" />
-
-    <!-- Buttons -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:id="@+id/linearLayout4"
+        android:layout_width="393dp"
+        android:layout_height="379dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
-        <!-- Cancel Button -->
-        <Button
-            android:id="@+id/btn_Cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/reglo_bold"
-            android:background="@drawable/rectangle_wrapper_medium_blue"
-            android:textColor="@color/white_A700"/>
+        <!-- Project Name -->
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners">
 
-        <!-- Add Button -->
-        <Button
-            android:id="@+id/btn_Add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add"
-            android:fontFamily="@font/reglo_bold"
-            android:background="@drawable/rectangle_wrapper_light_green"
-            android:textColor="@color/white_A700"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_project_name"
+                android:textColorHint="@color/blue_gray_50" />
+        </LinearLayout>
 
+        <!-- Organization Name -->
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_organization_name"
+                android:textColorHint="@color/blue_gray_50" />
+        </LinearLayout>
+
+        <!-- Start Date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_start_date"
+                android:textColorHint="@color/blue_gray_50" />
+
+        </LinearLayout>
+        <!--Set Colour -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_set_colour"
+                android:textColorHint="@color/blue_gray_50" />
+        </LinearLayout>
+
+        <!-- Hourly Rate -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_enter_hourly_rate"
+                android:textColorHint="@color/blue_gray_50" />
+        </LinearLayout>
+
+        <!-- Description -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="76dp"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_enter_description"
+                android:textColorHint="@color/blue_gray_50" />
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="233dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+        <Button
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="15dp"
+            android:fontFamily="@font/reglo_bold"
+            android:textColor="@color/white_A700"
+            android:text="@string/button_project_add"
+            android:textSize="25dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"/>
+
+        <Button
+            android:layout_width="105dp"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/reglo_bold"
+            android:textColor="@color/white_A700"
+            android:text="@string/button_project_return"
+            android:textSize="25dp"
+            android:background="@drawable/rectangle_wrapper_light_green"/>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/include2"
+        layout="@layout/footer_navbar_layout"
+        tools:layout_editor_absoluteY="619dp" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
