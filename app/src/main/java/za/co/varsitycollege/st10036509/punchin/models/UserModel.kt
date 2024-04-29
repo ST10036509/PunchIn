@@ -17,6 +17,7 @@ package za.co.varsitycollege.st10036509.punchin.models
 class UserModel(
 
     var username: String,
+    var email: String,
     var points: Int,
     var minGoal: Int,
     var maxGoal: Int
