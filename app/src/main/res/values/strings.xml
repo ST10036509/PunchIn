@@ -68,6 +68,11 @@
     <string name="project_details_timeseheet_title">TIME SHEETS</string>
     <string name="project_details_descrption">DESCRIPTION</string>
     <string name="project_details_return">RETURN</string>
+
+    <!-- Projects View Page -->
+    <string name="activity_project_view_title">PROJECTS</string>
+    <string name="activity_project_view_button_alphabet">A-Z</string>
+    <string name="activity_project_view_button_date">Date</string>
   
     <!-- Analytics Page -->
     <string name="title_analytics">ANALYTICS</string>
