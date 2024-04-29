@@ -28,7 +28,7 @@
     <string name="min_goals_input_title">MINIMUM HOURS GOAL:</string>
     <string name="max_goals_input_title">MAXIMUM HOURS GOAL:</string>
 
-    <!-- Timesheet Creation Page -->
+  <!-- Timesheet Creation Page -->
     <string name="weekly_selection_text">7 – 14, March 2024</string>
     <string name="date_most_recent_text">Today, 14 March</string>
     <string name="fab_add_timesheet">FAB to add timesheets</string>
@@ -55,4 +55,19 @@
     <string name="hint_enter_description">ENTER DESCRIPTION...</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
+  
+    <!-- Analytics Page -->
+    <string name="title_analytics">ANALYTICS</string>
+    <string name="title_hours">HOURS RECORD</string>
+    <string name="filter_date_text">Date</string>
+    <string name="filter_projects_text">Projects</string>
+    <string name="filter_clients_text">Clients</string>
+    <string name="total_hours">TOTAL</string>
+    <string name="billable_hours">BILLABLE</string>
+    <string name="amount">AMOUNT</string>
+    <string name="hoursValue">32:02:43</string>
+    <string name="billableHoursValue">10:49:49</string>
+    <string name="currencyValue">4534.32</string>
+    <string name="currency">zar</string>
+  
 </resources>
