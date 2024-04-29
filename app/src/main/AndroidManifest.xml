@@ -25,6 +25,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
+            android:name=".activities.ProjectViewActivity"
+            android:exported="true"
+            android:label="@string/title_activity_project_view"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.ProjectDetailsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_project_details"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.ProjectCreationActivity"
+            android:exported="true"
+            android:label="@string/title_activity_projectcreation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
