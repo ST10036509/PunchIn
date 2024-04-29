@@ -108,14 +108,14 @@ LAST MODIFIED: 25/04/2024
             android:id="@+id/et_Timesheet_Description"
             android:layout_width="match_parent"
             android:layout_height="126dp"
+            android:gravity="top|start"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
             android:elevation="4dp"
             android:fontFamily="@font/reglo_bold"
             android:hint="@string/hint_timesheet_description"
-            android:padding="12dp"
             android:singleLine="false"
-            android:textAlignment="textStart"
+            android:padding="12dp"
             android:textColorHint="@color/blue_gray_50" />
 
         <EditText
