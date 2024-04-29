@@ -103,7 +103,6 @@ class RegisterActivity : AppCompatActivity() {
      */
     private fun registerUser() {
 
-        //check if the username is already taken
         coroutineScope.launch {
             binding.apply {
 

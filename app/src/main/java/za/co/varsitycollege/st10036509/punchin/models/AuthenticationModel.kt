@@ -6,12 +6,15 @@ LAST MODIFIED: 27/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.models
 
-import androidx.lifecycle.ViewModel
+
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestoreException
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
+import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
+import kotlin.collections.Collection as Collection1
 
 
 /**
@@ -20,8 +23,18 @@ import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 class AuthenticationModel() {
 
     private val authInstance: FirebaseAuth by lazy { FirebaseAuth.getInstance() }//link an instance of the firebase authentication sdk
+    private var validationsHandler = ValidationHandler()//initialise an instance of the validations handler
+    private val firestoreInstance = FirestoreConnection.getDatabaseInstance()
 
 
+    //strings to use
+    private companion object {
+        const val MSG_NULL = ""
+        const val MSG_DATABASE_ADD_ERROR = "Failed to add user data to database"
+        const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
+        const val MSG_INVALID_CREDENTIALS = "No account found matches these credentials"
+
+    }
 //__________________________________________________________________________________________________getCurrentUser
 
     /**
@@ -60,7 +73,7 @@ class AuthenticationModel() {
                     user?.let {
 
                         //create user context and assign default values
-                        val userModelData = UserModel(username, 0,0,24)
+                        val userModelData = UserModel(username, email, 0,0,24)
 
                         //save the user data to the database
                         saveAdditionalUserDataToFirestore(user.uid, userModelData) { success ->
@@ -69,13 +82,13 @@ class AuthenticationModel() {
                             if (success) {
 
                                 //return callback with no message
-                                callback(Pair(true, ""))
+                                callback(Pair(true, AuthenticationModel.MSG_NULL))
 
                                 //if the data is added to the database successfully
                             } else {
 
                                 //return callback with no message
-                                callback(Pair(false, "Failed to add user data to database"))
+                                callback(Pair(false, AuthenticationModel.MSG_DATABASE_ADD_ERROR))
 
                             }
                         }
@@ -95,7 +108,7 @@ class AuthenticationModel() {
                     }
 
                     //return callback with the unhandled error message
-                    callback(Pair(false, errorMessage ?: "Unknown Error Occurred"))
+                    callback(Pair(false, errorMessage ?: AuthenticationModel.MSG_UNEXPECTED_ERROR))
                 }
             }
     }
@@ -113,7 +126,7 @@ class AuthenticationModel() {
     private fun saveAdditionalUserDataToFirestore(uid: String, userModelData: UserModel, callback: (Boolean) -> Unit) {
 
         //open the database connection and find/create the users collection
-        FirestoreConnection.getDatabaseInstance().collection("users")
+        firestoreInstance.collection("users")
             .document(uid)//create a new document with user uid
             .set(userModelData)//write the user data
             .addOnSuccessListener { callback(true) }//if the data is successfully added
@@ -130,16 +143,101 @@ class AuthenticationModel() {
      * @param String password
      * @return Pair<Boolean, String> callback
      */
-    fun signIn(email: String, password: String, username: String, callback: (Boolean) -> Unit) {
+    fun signIn(emailOrUsername: String, password: String, callback: (Pair<Boolean, String>) -> Unit) {
 
-        //run the firebase authentication method to sign an user in
+        val signInMethod = if (validationsHandler.validateEmail(emailOrUsername)) {
+
+            signInWithEmail(emailOrUsername, password, callback)
+
+        } else {
+
+            signInWithUsername(emailOrUsername, password, callback)
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________signInWithEmail
+
+
+    private fun signInWithEmail(email: String, password: String, callback: (Pair<Boolean, String>) -> Unit) {
+
+        //run the firebase authentication method to sign a user in
         authInstance.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {task -> //listen for success or failure
 
-                callback(task.isSuccessful)
+                if (task.isSuccessful) {
+
+                    callback(Pair(true, AuthenticationModel.MSG_NULL))
+
+                } else {
+
+                    //fetch the task exception and get the error message
+                    /*val errorMessage = task.exception?.message?.let { message ->
+                        val parts = message.split(":")
+                        if (parts.size > 1) {
+                            parts[1].trim()
+                        } else {
+                            message.trim()
+                        }
+                    }*/
+
+
+                    //return callback with the unhandled error message
+                    callback(Pair(false, MSG_INVALID_CREDENTIALS ?: AuthenticationModel.MSG_UNEXPECTED_ERROR))
+                }
+            }
+    }
+
+
+//__________________________________________________________________________________________________signInWithUsername
+
+
+    private fun signInWithUsername(username: String, password: String, callback: (Pair<Boolean, String>) -> Unit) {
+
+        getEmailByUsername(username) { email ->
+
+            if (email != null) {
+
+                signInWithEmail(email, password, callback)
+
+            } else {
+
+                callback(Pair(false, AuthenticationModel.MSG_INVALID_CREDENTIALS))
 
             }
+        }
+    }
 
+
+//__________________________________________________________________________________________________getEmailByUsername
+
+
+    private fun getEmailByUsername(username: String, callback: (String?) -> Unit) {
+
+        val usersCollection = firestoreInstance.collection("users")
+
+        usersCollection.whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+
+                if(!querySnapshot.isEmpty) {
+
+                    val document = querySnapshot.documents.first()
+
+                    val userEmail = document.getString("email")
+
+                    callback(userEmail)
+                } else {
+
+                    callback(null)
+
+                }
+            }
+            .addOnFailureListener {exception ->
+                Log.e("Login", "Error getting documents:", exception )
+                callback(null)
+            }
     }
 
 

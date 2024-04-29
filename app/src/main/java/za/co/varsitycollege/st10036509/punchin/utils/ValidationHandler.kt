@@ -52,7 +52,7 @@ class ValidationHandler() : ViewModel() {
 
         }
 
-        if (!validateUsername(username)) {
+        if (usernameExists(username)) {
 
             return Pair(false, ValidationHandler.MSG_USERNAME_TAKEN_ERROR)
 
@@ -96,9 +96,21 @@ class ValidationHandler() : ViewModel() {
      * @param String PasswordConfirmation
      * @return Boolean {true} there are no null values/ {false} there are null values present
      */
-    private fun checkForNullInputs(username: String, email: String, password: String, passwordConfirmation: String): Boolean {
+    fun checkForNullInputs(username: String, email: String, password: String, passwordConfirmation: String): Boolean {
 
         return (username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirmation.isEmpty())
+
+    }
+
+    /**
+     * Overloaded version of checkForNullInputs method
+     * @param String email or username
+     * @param String password
+     * @return Boolean
+     */
+    fun checkForNullInputs(emailOrUsername: String, password: String): Boolean {
+
+        return (emailOrUsername.isEmpty() || password.isEmpty())
 
     }
 
@@ -109,9 +121,9 @@ class ValidationHandler() : ViewModel() {
     /**
      * Method to check for null inputs
      * @param String Username
-     * @return Boolean {true} username is unique/ {false} username already exists
+     * @return Boolean {false} username is unique/ {true} username already exists
      */
-    private suspend fun validateUsername(username: String): Boolean {
+    suspend fun usernameExists(username: String): Boolean {
 
         val usersCollection = FirestoreConnection.getDatabaseInstance().collection("users")
 
@@ -119,11 +131,11 @@ class ValidationHandler() : ViewModel() {
 
             val querySnapshot = usersCollection.whereEqualTo("username", username).get().await()
             querySnapshot.isEmpty
-
+            false
 
         } catch (e: FirebaseFirestoreException) {
 
-            false
+            true
 
         }
 
@@ -138,7 +150,7 @@ class ValidationHandler() : ViewModel() {
      * @param String Email
      * @return Boolean {true} email is valid/ {false} email is not valid
      */
-    private fun validateEmail(email: String): Boolean {
+    fun validateEmail(email: String): Boolean {
 
         //format for emails
         val emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\$"
@@ -156,7 +168,7 @@ class ValidationHandler() : ViewModel() {
      * @param String PasswordConfirmation
      * @return Boolean {true} passwords match/ {false} passwords don't match
      */
-    private fun validatePasswordsMatch(password: String, passwordConfirmation: String): Boolean {
+    fun validatePasswordsMatch(password: String, passwordConfirmation: String): Boolean {
 
         return(password == passwordConfirmation)
 
@@ -171,7 +183,7 @@ class ValidationHandler() : ViewModel() {
      * @param String Password
      * @return Boolean {true} passwords is in the correct format/ {false} passwords is not in the correct format
      */
-    private fun validatePasswordFormat(password: String): Pair<Boolean, String> {
+    fun validatePasswordFormat(password: String): Pair<Boolean, String> {
 
         // Check if password meets Firebase Authentication requirements
         val minLength = 6
