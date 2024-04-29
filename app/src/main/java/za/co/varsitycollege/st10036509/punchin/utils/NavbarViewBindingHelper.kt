@@ -4,12 +4,13 @@ CREATED: 24/04/2024
 LAST MODIFIED: 25/04/2024
  */
 
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.utils
 
 import android.content.Context
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.viewbinding.ViewBinding
+import za.co.varsitycollege.st10036509.punchin.R
 
 /**
  * Class to handle Hold Header View Binds

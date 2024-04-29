@@ -12,7 +12,7 @@ LAST MODIFIED: 26/04/2024
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".activities.RegisterActivity">
 
     <!-- Background Wave Vector -->
     <ImageView
@@ -130,9 +130,9 @@ LAST MODIFIED: 26/04/2024
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="6dp"
-                android:src="@drawable/user_icon"/>
+                android:layout_marginStart="11dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/envelope"/>
 
             <!-- Username Input -->
             <EditText

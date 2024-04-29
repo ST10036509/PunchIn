@@ -3,7 +3,7 @@ AUTHOR: Leonard Bester
 CREATED: 23/04/2024
 LAST MODIFIED: 23/04/2024
  */
-package za.co.varsitycollege.st10036509.punchin
+package za.co.varsitycollege.st10036509.punchin.activities
 
 
 import android.os.Bundle

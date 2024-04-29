@@ -12,7 +12,7 @@ LAST MODIFIED: 24/04/2024
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".activities.LoginActivity">
 
     <!-- Background Wave Vector -->
     <ImageView
@@ -95,7 +95,7 @@ LAST MODIFIED: 24/04/2024
 
             <!-- Username Input -->
             <EditText
-                android:id="@+id/et_Username"
+                android:id="@+id/et_EmailOrUsername"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"

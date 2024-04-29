@@ -19,8 +19,6 @@ LAST MODIFIED: 23/04/2024
         tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="187dp" />
 
-
-
 <!-- Title -->
     <TextView
         android:id="@+id/textView"
