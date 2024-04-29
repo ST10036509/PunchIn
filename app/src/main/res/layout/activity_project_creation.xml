@@ -12,18 +12,13 @@ LAST MODIFIED: 23/04/2024
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Header NavBar -->
-    <include
-        android:id="@+id/include"
-        layout="@layout/header_navbar_with_settings_layout"
-        tools:layout_editor_absoluteX="7dp"
-        tools:layout_editor_absoluteY="187dp" />
 
 <!-- Title -->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_Title"
         android:layout_width="0dp"
         android:layout_height="60dp"
+        android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:fontFamily="@font/staatliches"
         android:text="@string/title_activity_project_creation"
@@ -31,33 +26,35 @@ LAST MODIFIED: 23/04/2024
         android:textColor="@color/indigo_900"
         android:textSize="45sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/ll_TextEditContainer"
         android:layout_width="393dp"
         android:layout_height="379dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/tv_Title">
 
         <!-- Project Name -->
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/ll_Project_Name"
             android:layout_width="match_parent"
             android:layout_height="37dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners">
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Project_Name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:fontFamily="@font/reglo_bold"
                 android:hint="@string/hint_project_name"
                 android:textColorHint="@color/blue_gray_50" />
@@ -65,16 +62,19 @@ LAST MODIFIED: 23/04/2024
 
         <!-- Organization Name -->
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/ll_Organization_Name"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Organization_Name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:fontFamily="@font/reglo_bold"
                 android:hint="@string/hint_organization_name"
                 android:textColorHint="@color/blue_gray_50" />
@@ -82,12 +82,16 @@ LAST MODIFIED: 23/04/2024
 
         <!-- Start Date -->
         <LinearLayout
+            android:id="@+id/ll_Start_Date"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Start_Date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -97,13 +101,18 @@ LAST MODIFIED: 23/04/2024
                 android:textColorHint="@color/blue_gray_50" />
 
         </LinearLayout>
+
         <!--Set Colour -->
         <LinearLayout
+            android:id="@+id/ll_Colour"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Set_Colour"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -115,11 +124,15 @@ LAST MODIFIED: 23/04/2024
 
         <!-- Hourly Rate -->
         <LinearLayout
+            android:id="@+id/ll_Hourly_Rate"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Hourly_Rate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -131,11 +144,15 @@ LAST MODIFIED: 23/04/2024
 
         <!-- Description -->
         <LinearLayout
+            android:id="@+id/ll_Description"
             android:layout_width="match_parent"
             android:layout_height="76dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
 
             <EditText
+                android:id="@+id/ed_Description"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -149,37 +166,33 @@ LAST MODIFIED: 23/04/2024
     <LinearLayout
         android:layout_width="233dp"
         android:layout_height="44dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="68dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+        app:layout_constraintTop_toBottomOf="@+id/ll_TextEditContainer">
 
         <Button
             android:layout_width="105dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="15dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
             android:fontFamily="@font/reglo_bold"
-            android:textColor="@color/white_A700"
             android:text="@string/button_project_add"
+            android:textColor="@color/white_A700"
             android:textSize="25dp"
-            android:background="@drawable/rectangle_wrapper_medium_blue"/>
+            android:elevation="2dp"/>
 
         <Button
             android:layout_width="105dp"
             android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_light_green"
             android:fontFamily="@font/reglo_bold"
-            android:textColor="@color/white_A700"
             android:text="@string/button_project_return"
+            android:textColor="@color/white_A700"
             android:textSize="25dp"
-            android:background="@drawable/rectangle_wrapper_light_green"/>
+            android:elevation="2dp"/>
     </LinearLayout>
-
-    <include
-        android:id="@+id/include2"
-        layout="@layout/footer_navbar_layout"
-        tools:layout_editor_absoluteY="619dp" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
