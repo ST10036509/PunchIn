@@ -23,6 +23,7 @@ import za.co.varsitycollege.st10036509.punchin.utils.PasswordVisibilityToggler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
+//test comment
 
 /**
  * Class to handle Login Activity Functionality
