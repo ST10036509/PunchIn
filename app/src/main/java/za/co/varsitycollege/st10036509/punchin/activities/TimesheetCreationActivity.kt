@@ -1,10 +1,13 @@
 package za.co.varsitycollege.st10036509.punchin.activities
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.type.DateTime
+import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetCreationBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.TimesheetModel
@@ -90,68 +93,68 @@ class TimesheetCreationActivity : AppCompatActivity() {
      */
     private fun createTimesheet() {
 
-        binding.apply {
-            val timesheetUser = authModel.getCurrentUser().toString()
-            val timesheetName = etTimesheetName.text.toString().trim()
-            val timesheetProjectName = etTimesheetProjectName.text.toString().trim()
-            val timesheetStartDate = etTimesheetStartDate.text.toString().trim()
-            val timesheetStartTime = etTimesheetStartTime.text.toString().trim()
-            val timesheetEndTime = etTimesheetEndTime.text.toString().trim()
-            val timesheetDescription = etTimesheetDescription.text.toString().trim()
-            //val timesheetPhoto = ivTimesheetImage
+        val timesheetNameET = findViewById<EditText>(R.id.et_Timesheet_Name)
+        val timesheetProjectNameET = findViewById<EditText>(R.id.et_Timesheet_ProjectName)
+        val timesheetStartDateET = findViewById<EditText>(R.id.et_Timesheet_StartDate)
+        val timesheetStartTimeET = findViewById<EditText>(R.id.et_Timesheet_Start_Time)
+        val timesheetEndTimeET = findViewById<EditText>(R.id.et_Timesheet_End_Time)
+        val timesheetDescriptionET = findViewById<EditText>(R.id.et_Timesheet_Description)
+        //photo
 
-            addTimesheet(
-                timesheetUser,
-                timesheetName,
-                timesheetProjectName,
-                timesheetStartDate,
-                timesheetStartTime,
-                timesheetEndTime,
-                timesheetDescription,
-                //timesheetPhoto
-            )
-        }
+        val timesheetUser = authModel.getCurrentUser().toString()
+        val timesheetName = timesheetNameET.text.toString().trim()
+        val timesheetProjectName = timesheetProjectNameET.text.toString().trim()
+        val timesheetStartDate = timesheetStartDateET.text.toString().trim()
+        val timesheetStartTime = timesheetStartTimeET.text.toString().trim()
+        val timesheetEndTime = timesheetEndTimeET.text.toString().trim()
+        val timesheetDescription = timesheetDescriptionET.text.toString().trim()
+        //val timesheetPhoto = ivTimesheetImage
 
+        // Define the Firestore collection
+        val collection = firestoreInstance.collection("timesheets")
 
-    }
+        //store data in database
+        val timesheetData = hashMapOf(
+            "timesheetUser" to timesheetUser,
+            "timesheetName" to timesheetName,
+            "timesheetProjectName" to timesheetProjectName,
+            "timesheetStartDate" to timesheetStartDate,
+            "timesheetStartTime" to timesheetStartTime,
+            "timesheetEndTime" to timesheetEndTime,
+            "timesheetDescription" to timesheetDescription
+            //"timesheetPhoto" to timesheetPhoto
+        )
 
-
-    fun addTimesheet(
-        timesheetUser: String,
-        timesheetName: String,
-        timesheetProjectName: String,
-        timesheetStartDate: String,
-        timesheetStartTime: String,
-        timesheetEndTime: String,
-        timesheetDescription: String,
-        //timesheetPhoto: String
-        ) {
-
-        //get current user
-        val user = authInstance.currentUser
-        //if the user exists
-        user?.let {
-
-            //create timesheet context and assign default values
-            val timesheetModelData = TimesheetModel(timesheetUser, timesheetName, timesheetProjectName, timesheetStartDate, timesheetStartTime, timesheetEndTime, timesheetDescription)
-            //save the timesheet data to the database
-            saveTimesheetDataToFirestore(user.uid, timesheetModelData) { success ->
-
-                if (success) { }
-                else { }
-
+        //add timesheet data to database
+        collection.add(timesheetData)
+            .addOnSuccessListener { documentReference ->
+                //data successfully stored
+                Log.d("ProjectCreationActivity", "Timesheet data stored successfully. Document ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                // Error storing data in Firestore
+                Log.e("ProjectCreationActivity", "Error storing timesheet data: $e")
             }
 
-        }
+        retrieveDataFromFirestore()
     }
 
-    private fun saveTimesheetDataToFirestore(tid: String, timesheetModelData: TimesheetModel, callback: (Boolean) -> Unit) {
+    private fun retrieveDataFromFirestore() {
+        //Define the firestore collection
+        val collection = firestoreInstance.collection("timesheets")
 
-        //open the database connection and find/create the timesheet collection
-        firestoreInstance.collection("timesheets")
-            .document(tid) //create a new document with timesheet tid
-            .set(timesheetModelData) //write the timesheet data
-            .addOnSuccessListener { callback(true) } //if the data is successfully added
-            .addOnFailureListener { callback(false) } //if an error occurs while adding the extra user data
+        //retrieve data from firestore
+        collection.get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    //log each documents data
+                    Log.d("TimesheetCreationActivity", "${document.id} => ${document.data}")
+                }
+            }
+            .addOnFailureListener { e ->
+                //Error retrieving data
+                Log.e("TimesheetCreationActivity", "Error retrieving project data: $e")
+            }
     }
+
 }

@@ -25,6 +25,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
+            android:name=".activities.TimesheetCreationActivity"
+            android:exported="true"
+            android:label="@string/title_activity_timesheet_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.TimesheetViewActivity"
+            android:exported="true"
+            android:label="@string/title_activity_timesheet_view"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
             android:name=".activities.ProjectViewActivity"
             android:exported="true"
             android:label="@string/title_activity_project_view"
