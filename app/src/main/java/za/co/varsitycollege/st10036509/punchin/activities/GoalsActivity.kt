@@ -6,11 +6,18 @@ LAST MODIFIED: 25/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.activities
 
+import android.app.ProgressDialog
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseUser
+import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityGoalsBinding
+import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.models.UserModel
+import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
+import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 
 /**
  * Class to handle Goals Activity Functionality
@@ -19,14 +26,23 @@ class GoalsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGoalsBinding//bind the GoalsActivity KT and XML files
     private lateinit var navbarViewBindingHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
+    private var authModel= AuthenticationModel()
+    private var firestoreInstance = FirestoreConnection.getDatabaseInstance()
+    private lateinit var toaster: ToastHandler
+    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
+
+    private var currentUser: FirebaseUser? = null
+    private var displayedMinimumGoal = UserModel._minGoal
+    private var displayedMaximumGoal = UserModel._maxGoal
 
     //constant strings for toast messages
     private companion object {
-        const val MSG_INC_MIN_GOAL = "Increased Minimum Goal"
-        const val MSG_DEC_MIN_GOAL = "Decreased Minimum Goal"
-        const val MSG_INC_MAX_GOAL = "Increased Maximum Goal"
-        const val MSG_DEC_MAX_GOAL = "Decreased Maximum Goal"
-        const val MSG_UPDATE_GOAL = "Updated Goal"
+        const val MSG_UPDATE_GOALS_SUCCESS = "Updated Goals Successfully!"
+        const val MSG_MAX_HOURS_IN_A_DAY = "Love your enthusiasm! However, there are no more hours in the day!"
+        const val MSG_PREPARING_PAGE = "Preparing the page..."
+        const val MSG_UPDATING_GOALS = "Updating your goals..."
+        const val MSG_UPDATE_GOALS_ERROR = "Failed to update your goals. Please Try again..."
     }
 
 
@@ -45,6 +61,15 @@ class GoalsActivity : AppCompatActivity() {
         navbarViewBindingHelper = NavbarViewBindingHelper(this.binding)
         //onClick event handler for all header and footer navbar controls
         navbarViewBindingHelper.setupNavBarAccessControls(this@GoalsActivity)
+        toaster = ToastHandler(this@GoalsActivity)
+        currentUser = authModel.getCurrentUser()
+        loadingDialogHandler = LoadDialogHandler(this@GoalsActivity, progressDialog)//initialise the loading dialog
+
+        loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_PREPARING_PAGE)
+
+        decoratePageWithUserData()
+
+        loadingDialogHandler.dismissLoadingDialog()
 
         //setup listeners for ui controls
         setupListeners()
@@ -63,30 +88,215 @@ class GoalsActivity : AppCompatActivity() {
         //apply binding to the following lines
         binding.apply {
 
-            //pass appropriate message to toast
-            imgbMinDecrement.setOnClickListener { showToast(MSG_INC_MIN_GOAL) }
-            imgbMinIncrement.setOnClickListener { showToast(MSG_DEC_MIN_GOAL) }
-            imgbMaxDecrement.setOnClickListener { showToast(MSG_INC_MAX_GOAL) }
-            imgbMaxIncrement.setOnClickListener { showToast(MSG_DEC_MAX_GOAL) }
-            llUpdateButton.setOnClickListener { showToast(MSG_UPDATE_GOAL) }
+            //pass appropriate function when onClick occurs
+            imgbMinIncrement.setOnClickListener { increaseMinimumGoal() }
+            imgbMinDecrement.setOnClickListener { decreaseMinimumGoal() }
+            imgbMaxIncrement.setOnClickListener { increaseMaximumGoal() }
+            imgbMaxDecrement.setOnClickListener { decreaseMaximumGoal() }
+            llUpdateButton.setOnClickListener {
 
+                loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_UPDATING_GOALS)
+
+                updateUserGoals() { success ->
+
+                    if (success) {
+
+                        decoratePageWithUserData()
+
+                        loadingDialogHandler.dismissLoadingDialog()
+
+                        toaster.showToast(GoalsActivity.MSG_UPDATE_GOALS_SUCCESS)
+
+                    } else {
+
+                        loadingDialogHandler.dismissLoadingDialog()
+                        toaster.showToast(GoalsActivity.MSG_UPDATE_GOALS_ERROR)
+
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel._minGoal}/-${UserModel._maxGoal}")
+
+    }
+
+
+//__________________________________________________________________________________________________decoratePageWithUserData
+
+
+    private fun decoratePageWithUserData() {
+
+        binding.apply {
+
+            tvMinimumGoalHours.text = UserModel._minGoal.toString()
+            tvMaximumGoalHours.text = UserModel._maxGoal.toString()
+            tvRightGoalDisplay.text = UserModel._minGoal.toString()
+            tvLeftGoalDisplay.text = UserModel._maxGoal.toString()
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________updateMinimumGoalsText
+
+
+    private fun updateMinimumGoalsText() {
+
+        binding.apply {
+
+            tvMinimumGoalHours.text = displayedMinimumGoal.toString()
+            updateTextColor()
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________updateMaximumGoalsText
+
+
+    private fun updateMaximumGoalsText() {
+
+        binding.apply {
+
+            tvMaximumGoalHours.text = displayedMaximumGoal.toString()
+            updateTextColor()
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________updateTextColor
+
+
+    private fun updateTextColor() {
+
+        val totalHours = displayedMinimumGoal + displayedMaximumGoal
+        val context = this@GoalsActivity
+        val textColor: Int
+
+        if (totalHours == 24) {
+
+            textColor = context.getColor(R.color.red_300)
+            toaster.showToast(GoalsActivity.MSG_MAX_HOURS_IN_A_DAY)
+
+
+        } else {
+
+            textColor = context.getColor(R.color.indigo_300)
+
+        }
+
+        binding.apply {
+
+            tvMinimumGoalHours.setTextColor(textColor)
+            tvMaximumGoalHours.setTextColor(textColor)
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________increaseMinimumGoal
+
+
+    private fun increaseMinimumGoal() {
+
+        binding.apply {
+
+            if ((displayedMinimumGoal + displayedMaximumGoal) < 24) {
+                displayedMinimumGoal++
+                updateMinimumGoalsText()
+            }
+        }
+    }
+
+
+//__________________________________________________________________________________________________decreaseMinimumGoal
+
+
+    private fun decreaseMinimumGoal() {
+
+        binding.apply {
+
+            if (displayedMinimumGoal > 0) {
+                displayedMinimumGoal--
+                updateMinimumGoalsText()
+            }
+        }
+    }
+
+
+//__________________________________________________________________________________________________increaseMaximumGoal
+
+
+    private fun increaseMaximumGoal() {
+
+        binding.apply {
+
+            if ((displayedMaximumGoal + displayedMinimumGoal) < 24) {
+                displayedMaximumGoal++
+                updateMaximumGoalsText()
+            }
         }
 
     }
 
 
-//__________________________________________________________________________________________________showToast
+//__________________________________________________________________________________________________decreaseMaximumGoal
 
 
-    /**
-     * Method to show the passed String message via Toast
-     * @param String The message to show
-     */
-    private fun showToast(message: String) {
+    private fun decreaseMaximumGoal() {
 
-        Toast.makeText(this, message,
-            Toast.LENGTH_SHORT).show()
+        binding.apply {
 
+            if (displayedMaximumGoal > 0) {
+                displayedMaximumGoal--
+                updateMaximumGoalsText()
+            }
+        }
+    }
+
+
+//__________________________________________________________________________________________________updateUserGoals
+
+
+    private fun updateUserGoals(callback:  (Boolean) -> Unit) {
+
+        val uid = currentUser?.uid
+
+        if (uid != null) {
+
+            val userReference = firestoreInstance.collection("users").document(uid)
+
+            userReference
+                .update(
+
+                    mapOf(
+
+                        "minGoal" to displayedMinimumGoal,
+                        "maxGoal" to displayedMaximumGoal
+
+                    )
+
+                )
+                .addOnSuccessListener {
+
+                    UserModel._minGoal = displayedMinimumGoal
+                    UserModel._maxGoal = displayedMaximumGoal
+
+                    callback(true)
+
+                }
+                .addOnFailureListener {
+
+                    callback(false)
+
+                }
+        }
     }
 
 

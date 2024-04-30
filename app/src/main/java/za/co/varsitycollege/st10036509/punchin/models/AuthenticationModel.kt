@@ -10,11 +10,8 @@ package za.co.varsitycollege.st10036509.punchin.models
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
-import kotlin.collections.Collection as Collection1
 
 
 /**
@@ -33,7 +30,7 @@ class AuthenticationModel() {
         const val MSG_DATABASE_ADD_ERROR = "Failed to add user data to database"
         const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
         const val MSG_INVALID_CREDENTIALS = "No account found matches these credentials"
-
+        const val MSG_USER_DATA_ERROR = "Could not find user data for these credentials. Please create a new account!"
     }
 //__________________________________________________________________________________________________getCurrentUser
 
@@ -73,10 +70,10 @@ class AuthenticationModel() {
                     user?.let {
 
                         //create user context and assign default values
-                        val userModelData = UserModel(username, email, 0,0,24)
+                        UserModel.populateUserModel(username, email, 0, 6, 8)
 
                         //save the user data to the database
-                        saveAdditionalUserDataToFirestore(user.uid, userModelData) { success ->
+                        saveAdditionalUserDataToFirestore(user.uid) { success ->
 
                             //if the data is added to the database successfully
                             if (success) {
@@ -123,7 +120,9 @@ class AuthenticationModel() {
      * @param HashMap additional user data
      * @return Boolean callback
      */
-    private fun saveAdditionalUserDataToFirestore(uid: String, userModelData: UserModel, callback: (Boolean) -> Unit) {
+    private fun saveAdditionalUserDataToFirestore(uid: String, callback: (Boolean) -> Unit) {
+
+        val userModelData = UserModel
 
         //open the database connection and find/create the users collection
         firestoreInstance.collection("users")
@@ -145,13 +144,62 @@ class AuthenticationModel() {
      */
     fun signIn(emailOrUsername: String, password: String, callback: (Pair<Boolean, String>) -> Unit) {
 
-        val signInMethod = if (validationsHandler.validateEmail(emailOrUsername)) {
+        if (validationsHandler.validateEmail(emailOrUsername)) {
 
-            signInWithEmail(emailOrUsername, password, callback)
+            signInWithEmail(emailOrUsername, password) { task ->
+
+                if (task.first) {
+
+                    fetchUserDataAndCallback(callback)
+
+                } else {
+
+                    callback(Pair(false, task.second))
+
+                }
+            }
 
         } else {
 
-            signInWithUsername(emailOrUsername, password, callback)
+            signInWithUsername(emailOrUsername, password) { task ->
+
+                if (task.first) {
+
+                    fetchUserDataAndCallback(callback)
+
+                } else {
+
+                    callback(Pair(false, task.second))
+
+                }
+            }
+        }
+    }
+
+
+    private fun fetchUserDataAndCallback(callback: (Pair<Boolean, String>) -> Unit) {
+
+        val currentUser = authInstance.currentUser
+
+        if (currentUser != null) {
+
+            UserModel.fetchUserDataFromFireStore(currentUser.uid) { success ->
+
+                if (success) {
+
+                    callback(Pair(true, AuthenticationModel.MSG_NULL))
+
+                } else {
+
+                    callback(Pair(false, AuthenticationModel.MSG_NULL))
+
+                }
+            }
+
+        } else {
+
+            // Current user is null, handle the error
+            callback(Pair(false, AuthenticationModel.MSG_UNEXPECTED_ERROR))
 
         }
     }
@@ -172,19 +220,9 @@ class AuthenticationModel() {
 
                 } else {
 
-                    //fetch the task exception and get the error message
-                    /*val errorMessage = task.exception?.message?.let { message ->
-                        val parts = message.split(":")
-                        if (parts.size > 1) {
-                            parts[1].trim()
-                        } else {
-                            message.trim()
-                        }
-                    }*/
-
-
                     //return callback with the unhandled error message
                     callback(Pair(false, MSG_INVALID_CREDENTIALS ?: AuthenticationModel.MSG_UNEXPECTED_ERROR))
+
                 }
             }
     }

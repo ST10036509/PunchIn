@@ -6,7 +6,6 @@ LAST MODIFIED: 23/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.utils
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 

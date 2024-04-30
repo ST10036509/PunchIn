@@ -7,23 +7,20 @@ LAST MODIFIED: 23/04/2024
 package za.co.varsitycollege.st10036509.punchin.activities
 
 import android.app.ProgressDialog
-import android.content.Intent
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
-import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityLoginBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.models.UserModel
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.PasswordVisibilityToggler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
 
@@ -37,17 +34,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordVisibilityToggler: PasswordVisibilityToggler//setup an instance of the password visibility handler
     private lateinit var authModel: AuthenticationModel
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
-    private lateinit var loadingDialogHandler: LoadDialogHandler
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var validationHandler: ValidationHandler
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private lateinit var toaster: ToastHandler
 
     //constant strings for toast messages
     private companion object {
         const val MSG_LOGIN_SUCCESS = "Account Logged In Successfully!"
-        const val MSG_LOGIN_FAILED = "Log In Failed Unexpectedly!"
         const val MSG_CHECKING_INPUTS = "Validating inputs..."
         const val MSG_LOGIN_IN_USER = "Logging you in..."
         const val MSG_NULL_INPUTS_ERROR = "Please fill out all inputs!"
+        const val MSG_CORRUPT_ACCOUNT_DATA = "Your account data is corrupted. Please make a new account!"
     }
 
 
@@ -66,7 +64,8 @@ class LoginActivity : AppCompatActivity() {
         passwordVisibilityToggler = PasswordVisibilityToggler()//initialise the password visibility toggler
         validationHandler = ValidationHandler()//initialise the validation handler
         loadingDialogHandler = LoadDialogHandler(this@LoginActivity, progressDialog)//initialise the loading dialog
-
+        toaster = ToastHandler(this@LoginActivity)
+        authModel = AuthenticationModel()
 
         //setup listeners for ui controls
         setupListeners()
@@ -85,15 +84,25 @@ class LoginActivity : AppCompatActivity() {
 
         super.onStart()
 
-        authModel = AuthenticationModel()
         val currentUser = authModel.getCurrentUser()
 
         currentUser?.reload()?.addOnCompleteListener() { task ->
 
             if (task.isSuccessful) {
-                //intentHandler.openActivityIntent(HomePage)
-                Toast.makeText(this@LoginActivity, currentUser.uid.toString(), Toast.LENGTH_SHORT).show()
 
+                UserModel.fetchUserDataFromFireStore(currentUser.uid.toString()) { success ->
+
+                    if(success) {
+
+                        intentHandler.openActivityIntent(GoalsActivity::class.java)
+
+                    } else {
+
+                        toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
+                        authModel.signOut()
+
+                    }
+                }
             } else {
                 authModel.signOut()
             }
@@ -160,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
                         )
 
                     } else {
-                        showToast(LoginActivity.MSG_NULL_INPUTS_ERROR)//display error message
+                        toaster.showToast(LoginActivity.MSG_NULL_INPUTS_ERROR)//display error message
                     }
                 }
 
@@ -184,14 +193,14 @@ class LoginActivity : AppCompatActivity() {
         if (result.first) {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
-            showToast(LoginActivity.MSG_LOGIN_SUCCESS)//show success message
+            toaster.showToast(LoginActivity.MSG_LOGIN_SUCCESS)//show success message
             clearInputs()//clear input boxes
 
         //if if there were no errors
         } else {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
-            showToast(result.second)//show given error message
+            toaster.showToast(result.second)//show given error message
 
         }
     }
@@ -207,21 +216,6 @@ class LoginActivity : AppCompatActivity() {
 
         //launch the register page
         intentHandler.openActivityIntent(RegisterActivity::class.java)
-
-    }
-
-
-//__________________________________________________________________________________________________showToast
-
-
-    /**
-     * Method to show the passed String message via Toast
-     * @param String The message to show
-     */
-    private fun showToast(message: String) {
-
-        Toast.makeText(this, message,
-            Toast.LENGTH_SHORT).show()
 
     }
 

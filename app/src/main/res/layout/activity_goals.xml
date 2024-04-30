@@ -175,19 +175,21 @@ LAST MODIFIED: 25/04/2024
                 android:src="@drawable/minus_icon" />
 
             <!-- Minimum Goal Hours  -->
+
+            <!-- Button for Incrementing -->
             <TextView
                 android:id="@+id/tv_MinimumGoalHours"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:inputType="number"
-                android:textAlignment="center"
-                android:textSize="35sp"
+                android:layout_weight="1"
                 android:fontFamily="@font/staatliches"
-                android:text="24"/>
+                android:inputType="number"
+                android:text="24"
+                android:editable="false"
+                android:textAlignment="center"
+                android:textSize="35sp" />
 
-            <!-- Button for Incrementing -->
             <ImageButton
                 android:id="@+id/imgb_MinIncrement"
                 android:layout_width="40dp"
@@ -243,6 +245,7 @@ LAST MODIFIED: 25/04/2024
                 android:inputType="number"
                 android:textAlignment="center"
                 android:textSize="35sp"
+                android:editable="false"
                 android:fontFamily="@font/staatliches"
                 android:text="24"/>
 
