@@ -8,15 +8,15 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 import android.content.Intent
-import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
-
-
+import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity //TimesheetCreationActivity
+import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 
 class TimesheetViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetViewBinding
     private lateinit var btnPreviousWeek: Button
     private lateinit var btnNextWeek: Button
     private lateinit var tvWeeklySelector: TextView
+    private val firestoreInstance = FirestoreConnection.getDatabaseInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +85,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         endCalendar.add(Calendar.DAY_OF_YEAR, 6)
         val endDate = endCalendar.time
 
-        // Format the dates as required ("7 - 14 March 2024")
+        //Setting the output format of date
         val dateFormat = SimpleDateFormat("d", Locale.getDefault())
         val startDay = dateFormat.format(startDate)
         val endDay = dateFormat.format(endDate)
