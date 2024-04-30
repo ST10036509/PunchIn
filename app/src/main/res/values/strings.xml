@@ -20,7 +20,6 @@
     <string name="register_button_text">Register</string>
     <string name="return_button_text">Return</string>
 
-
     <!-- Goals Page -->
     <string name="update_button_text">Update</string>
     <string name="title_activity_goals">Goals</string>
@@ -28,7 +27,7 @@
     <string name="min_goals_input_title">MINIMUM HOURS GOAL:</string>
     <string name="max_goals_input_title">MAXIMUM HOURS GOAL:</string>
 
-  <!-- Timesheet Creation Page -->
+  <!-- Timesheet View Page -->
     <string name="weekly_selection_text">7 – 14, March 2024</string>
     <string name="date_most_recent_text">Today, 14 March</string>
     <string name="fab_add_timesheet">FAB to add timesheets</string>
@@ -44,15 +43,18 @@
     <string name="hint_timesheet_photo">Add timesheet photo…</string>
     <string name="button_timesheet_return">Return</string>
     <string name="button_timesheet_add">Add</string>
+    <string name="default_start_time">00:00</string>
+    <string name="default_end_time">00:00</string>
+    <string name="timesheet_add_image_text">Press to Add Photo</string>
 
     <!-- Project Creation Page -->
     <string name="title_activity_project_creation">Enter Project Details</string>
-    <string name="hint_project_name">ENTER PROJECT NAME...</string>
-    <string name="hint_organization_name">ENTER ORGANIZATION NAME...</string>
-    <string name="hint_start_date">ENTER START DATE...</string>
-    <string name="hint_set_colour">SET COLOUR...</string>
-    <string name="hint_enter_hourly_rate">ENTER HOURLY RATE...</string>
-    <string name="hint_enter_description">ENTER DESCRIPTION...</string>
+    <string name="hint_project_name">ENTER PROJECT NAME…</string>
+    <string name="hint_organization_name">ENTER ORGANIZATION NAME…</string>
+    <string name="hint_start_date">ENTER START DATE…</string>
+    <string name="hint_set_colour">SET COLOUR…</string>
+    <string name="hint_enter_hourly_rate">ENTER HOURLY RATE…</string>
+    <string name="hint_enter_description">ENTER DESCRIPTION…</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
     <string name="title_activity_projectcreation">Project Creation</string>

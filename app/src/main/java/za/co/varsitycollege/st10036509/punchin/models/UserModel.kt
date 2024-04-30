@@ -42,10 +42,12 @@ object UserModel{
 
         val docReference = firestoreInstance.collection("users").document(uid)
 
+
         docReference.get()
             .addOnSuccessListener { documentSnapshot ->
 
                 if (documentSnapshot.exists()) {
+
 
                     val data = documentSnapshot.data
 
