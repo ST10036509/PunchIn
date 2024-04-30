@@ -43,6 +43,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
+            android:name=".activities.TimesheetViewActivity"
+            android:exported="true"
+            android:label="Timesheet View"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
