@@ -7,6 +7,8 @@ import android.widget.Button
 import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Intent
+import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
 
 
 
@@ -29,6 +31,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Set onClickListener for the next week button
         binding.btnNextWeek.setOnClickListener {
             navNextWeek()
+        }
+
+        binding.fabAddTimesheet.setOnClickListener{
+            val intent = Intent(this, GoalsActivity::class.java)
+            startActivity(intent)
         }
 
         // Display the current week initially
@@ -83,12 +90,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         val startDay = dateFormat.format(startDate)
         val endDay = dateFormat.format(endDate)
 
-        val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        val monthFormat = SimpleDateFormat("MMMM yy'", Locale.getDefault())
         val monthYear = monthFormat.format(startDate)
 
         // Update UI with the new week time window using data binding
         binding.tvWeeklySelector.setText("$startDay - $endDay $monthYear")
-
     }
 }
 
