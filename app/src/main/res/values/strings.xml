@@ -55,6 +55,26 @@
     <string name="hint_enter_description">ENTER DESCRIPTION...</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
+    <string name="title_activity_projectcreation">Project Creation</string>
+
+    <!-- Projects Details Page -->
+    <string name="title_activity_project_details">PROJECT DETAILS</string>
+    <string name="project_name_activity_project_details">PROJECT NAME INSERT</string>
+    <string name="project_details_hours">HOURS</string>
+    <string name="project_details_time_sheets">TIME SHEETS</string>
+    <string name="project_details_rate">RATE</string>
+    <string name="project_details_earnings">EARNINGS</string>
+    <string name="project_details_colour">COLOUR</string>
+    <string name="project_details_organization">ORGANIZATION</string>
+    <string name="project_details_timeseheet_title">TIME SHEETS</string>
+    <string name="project_details_descrption">DESCRIPTION</string>
+    <string name="project_details_return">RETURN</string>
+
+    <!-- Projects View Page -->
+    <string name="activity_project_view_title">PROJECTS</string>
+    <string name="activity_project_view_button_alphabet">A-Z</string>
+    <string name="activity_project_view_button_date">Date</string>
+    <string name="title_activity_project_view">Project view</string>
   
     <!-- Analytics Page -->
     <string name="title_analytics">ANALYTICS</string>

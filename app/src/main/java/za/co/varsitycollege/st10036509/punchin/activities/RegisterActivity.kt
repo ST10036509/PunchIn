@@ -9,7 +9,6 @@ package za.co.varsitycollege.st10036509.punchin.activities
 
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +21,7 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityRegisterBinding
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.PasswordVisibilityToggler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
 
@@ -38,6 +38,7 @@ class RegisterActivity : AppCompatActivity() {
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private lateinit var passwordVisibilityToggler: PasswordVisibilityToggler//setup an instance of the password visibility handler
+    private lateinit var toaster: ToastHandler
 
     //constant strings for toast messages
     private companion object {
@@ -58,10 +59,11 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         intentHandler = IntentHandler(this@RegisterActivity)//initialise the intentHandler
-        authModel = AuthenticationModel()//initialise the authentication context
         validationHandler = ValidationHandler()//initialise the validation handler
         loadingDialogHandler = LoadDialogHandler(this@RegisterActivity, progressDialog)//initialise the loading dialog
         passwordVisibilityToggler = PasswordVisibilityToggler()//initialise the password visibility toggler
+        authModel = AuthenticationModel()
+        toaster = ToastHandler(this@RegisterActivity)
 
         //setup listeners for ui controls
         setupListeners()
@@ -138,7 +140,7 @@ class RegisterActivity : AppCompatActivity() {
                             ::handleSignUpCallBack
                         )
                     } else {
-                        showToast(inputValidationErrorMessage)//display error message
+                        toaster.showToast(inputValidationErrorMessage)//display error message
                     }
                 }
 
@@ -194,32 +196,16 @@ class RegisterActivity : AppCompatActivity() {
         if (result.first) {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
-            showToast(MSG_REGISTER_SUCCESS)//show success message
+            toaster.showToast(MSG_REGISTER_SUCCESS)//show success message
             clearInputs()//clear input boxes
 
             //if if there were no errors
         } else {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
-            showToast(result.second)//show given error message
+            toaster.showToast(result.second)//show given error message
 
         }
-    }
-
-
-
-//__________________________________________________________________________________________________showToast
-
-
-    /**
-     * Method to show the passed String message via Toast
-     * @param String The message to show
-     */
-    private fun showToast(message: String) {
-
-        Toast.makeText(this, message,
-            Toast.LENGTH_SHORT).show()
-
     }
 
 
