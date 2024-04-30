@@ -22,8 +22,7 @@ class UserModel(
     var minGoal: Int,
     var maxGoal: Int
 
-) {
-
+){
 
 }
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\

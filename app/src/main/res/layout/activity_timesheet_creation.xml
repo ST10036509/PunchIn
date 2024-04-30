@@ -116,7 +116,7 @@ LAST MODIFIED: 25/04/2024
             >
 
             <EditText
-                android:id="@+id/et_Start_Time"
+                android:id="@+id/et_Timesheet_Start_Time"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -128,7 +128,7 @@ LAST MODIFIED: 25/04/2024
                 android:textSize="25sp" />
 
             <EditText
-                android:id="@+id/et_End_Time"
+                android:id="@+id/et_Timesheet_End_Time"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
