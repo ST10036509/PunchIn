@@ -45,6 +45,7 @@ class LoginActivity : AppCompatActivity() {
         const val MSG_CHECKING_INPUTS = "Validating inputs..."
         const val MSG_LOGIN_IN_USER = "Logging you in..."
         const val MSG_NULL_INPUTS_ERROR = "Please fill out all inputs!"
+        const val MSG_NULL = ""
         const val MSG_CORRUPT_ACCOUNT_DATA = "Your account data is corrupted. Please make a new account!"
     }
 
@@ -84,6 +85,8 @@ class LoginActivity : AppCompatActivity() {
 
         super.onStart()
 
+        loadingDialogHandler.showLoadingDialog(LoginActivity.MSG_NULL)
+
         val currentUser = authModel.getCurrentUser()
 
         currentUser?.reload()?.addOnCompleteListener() { task ->
@@ -98,15 +101,21 @@ class LoginActivity : AppCompatActivity() {
 
                     } else {
 
+                        loadingDialogHandler.dismissLoadingDialog()
                         toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
                         authModel.signOut()
 
                     }
                 }
             } else {
+
                 authModel.signOut()
+                loadingDialogHandler.dismissLoadingDialog()
+
             }
         }
+
+        loadingDialogHandler.dismissLoadingDialog()
     }
 
 //__________________________________________________________________________________________________setupListeners
