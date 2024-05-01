@@ -6,6 +6,7 @@ LAST MODIFIED: 29/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.models
 
+
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
