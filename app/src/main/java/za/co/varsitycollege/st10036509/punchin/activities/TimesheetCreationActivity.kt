@@ -6,20 +6,17 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.type.DateTime
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetCreationBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.TimesheetModel
-import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
-    private lateinit var authModel: AuthenticationModel
-    private val firestoreInstance = FirestoreConnection.getDatabaseInstance()
-    private val authInstance: FirebaseAuth by lazy { FirebaseAuth.getInstance() }//link an instance of the firebase authentication sdk
     private lateinit var intentHandler: IntentHandler
+    private lateinit var timesheetModel: TimesheetModel
+    private var currentUser: FirebaseUser? = null
 
     //strings to use
     private companion object {
@@ -35,28 +32,19 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Initialize firebase auth
+        val auth = FirebaseAuth.getInstance()
+
+        //Initialize TimesheetModel
+        timesheetModel = TimesheetModel("", "", "", "", "", "", "")
+
+        // Get current user
+        currentUser = auth.currentUser
+
         intentHandler = IntentHandler(this@TimesheetCreationActivity)
         //setup listeners for ui controls
         setupListeners()
 
-    }
-
-    override fun onStart() {
-
-        super.onStart()
-
-        authModel = AuthenticationModel()
-        val currentUser = authModel.getCurrentUser()
-
-        currentUser?.reload()?.addOnCompleteListener() { task ->
-
-            if (task.isSuccessful) {
-                //intentHandler.openActivityIntent(HomePage)
-
-            } else {
-                authModel.signOut()
-            }
-        }
     }
 
     /**
@@ -101,7 +89,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
         val timesheetDescriptionET = findViewById<EditText>(R.id.et_Timesheet_Description)
         //photo
 
-        val timesheetUser = authModel.getCurrentUser().toString()
         val timesheetName = timesheetNameET.text.toString().trim()
         val timesheetProjectName = timesheetProjectNameET.text.toString().trim()
         val timesheetStartDate = timesheetStartDateET.text.toString().trim()
@@ -110,51 +97,48 @@ class TimesheetCreationActivity : AppCompatActivity() {
         val timesheetDescription = timesheetDescriptionET.text.toString().trim()
         //val timesheetPhoto = ivTimesheetImage
 
-        // Define the Firestore collection
-        val collection = firestoreInstance.collection("timesheets")
+        val projectUID = timesheetProjectName
 
-        //store data in database
-        val timesheetData = hashMapOf(
-            "timesheetUser" to timesheetUser,
-            "timesheetName" to timesheetName,
-            "timesheetProjectName" to timesheetProjectName,
-            "timesheetStartDate" to timesheetStartDate,
-            "timesheetStartTime" to timesheetStartTime,
-            "timesheetEndTime" to timesheetEndTime,
-            "timesheetDescription" to timesheetDescription
-            //"timesheetPhoto" to timesheetPhoto
-        )
+        // Check if the current user is not null
+        currentUser?.let { user ->
+            // Get user id
+            val timesheetUID = user.uid
 
-        //add timesheet data to database
-        collection.add(timesheetData)
-            .addOnSuccessListener { documentReference ->
-                //data successfully stored
-                Log.d("ProjectCreationActivity", "Timesheet data stored successfully. Document ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                // Error storing data in Firestore
-                Log.e("ProjectCreationActivity", "Error storing timesheet data: $e")
-            }
+            // Set timesheet data using the setData method of TimesheetModel
+            timesheetModel.setData(
+                timesheetUID,
+                timesheetName,
+                projectUID,
+                timesheetStartDate,
+                timesheetStartTime,
+                timesheetEndTime,
+                timesheetDescription
+            )
 
-        retrieveDataFromFirestore()
+            // Call the method to write project data to Firestore
+            timesheetModel.writeDataToFirestore()
+
+            clearInputFields()
+
+        }
+
     }
 
-    private fun retrieveDataFromFirestore() {
-        //Define the firestore collection
-        val collection = firestoreInstance.collection("timesheets")
+    private fun clearInputFields() {
 
-        //retrieve data from firestore
-        collection.get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    //log each documents data
-                    Log.d("TimesheetCreationActivity", "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { e ->
-                //Error retrieving data
-                Log.e("TimesheetCreationActivity", "Error retrieving project data: $e")
-            }
+        val timesheetNameET = findViewById<EditText>(R.id.et_Timesheet_Name)
+        val timesheetProjectNameET = findViewById<EditText>(R.id.et_Timesheet_ProjectName)
+        val timesheetStartDateET = findViewById<EditText>(R.id.et_Timesheet_StartDate)
+        val timesheetStartTimeET = findViewById<EditText>(R.id.et_Timesheet_Start_Time)
+        val timesheetEndTimeET = findViewById<EditText>(R.id.et_Timesheet_End_Time)
+        val timesheetDescriptionET = findViewById<EditText>(R.id.et_Timesheet_Description)
+
+        timesheetNameET.setText("")
+        timesheetProjectNameET.setText("")
+        timesheetStartDateET.setText("")
+        timesheetStartTimeET.setText("")
+        timesheetEndTimeET.setText("")
+        timesheetDescriptionET.setText("")
     }
 
 }
