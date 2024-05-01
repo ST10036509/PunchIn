@@ -19,6 +19,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.Button
 import android.widget.Toast
+import com.google.firebase.Timestamp
 
 
 class TimesheetCreationActivity : AppCompatActivity() {
@@ -27,8 +28,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var timesheetModel: TimesheetModel
     private var currentUser: FirebaseUser? = null
     private var startDate: Date? = null
-    private var timesheetStartTime: String? = null
-    private var timesheetEndTime: String? = null
+    private var timesheetStartTime: Date? = null
+    private var timesheetEndTime: Date? = null
 
     //strings to use
     private companion object {
@@ -44,7 +45,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        timesheetModel = TimesheetModel("", "", "", null, "", "", "")
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "")
 
         //Initialize firebase auth
         val auth = FirebaseAuth.getInstance()
@@ -60,7 +61,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    timesheetStartTime = "$selectedHour:$selectedMinute"
+                    timesheetStartTime =  Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, selectedHour)
+                        set(Calendar.MINUTE, selectedMinute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
                 },
                 hour,
                 minute,
@@ -78,7 +84,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    timesheetEndTime = "$selectedHour:$selectedMinute"
+                    timesheetEndTime = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, selectedHour)
+                        set(Calendar.MINUTE, selectedMinute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
                 },
                 hour,
                 minute,
@@ -170,8 +181,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetName,
                         projectId,
                         timesheetStartDate,
-                        timesheetStartTime!!,
-                        timesheetEndTime!!,
+                        timesheetStartTime,
+                        timesheetEndTime,
                         timesheetDescription
                     )
 
