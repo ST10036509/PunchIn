@@ -33,8 +33,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         // Initialize ProjectsModel
         projectModel = ProjectsModel("", "", "", "", "", 0,0,0,"",)
 
-
-
         // Get current user
         currentUser = auth.currentUser
 
@@ -87,7 +85,6 @@ class ProjectCreationActivity : AppCompatActivity() {
 
         // Find all EditText views
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
-        val organizationNameEditText = findViewById<EditText>(R.id.ed_Organization_Name)
         val startDateEditText = findViewById<EditText>(R.id.ed_Start_Date)
         val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
         val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
@@ -95,7 +92,6 @@ class ProjectCreationActivity : AppCompatActivity() {
 
         // Set text of each EditText to an empty string
         projectNameEditText.setText("")
-        organizationNameEditText.setText("")
         startDateEditText.setText("")
         setColorEditText.setText("")
         hourlyRateEditText.setText("")
