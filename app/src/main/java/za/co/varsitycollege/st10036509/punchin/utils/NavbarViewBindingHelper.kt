@@ -6,85 +6,102 @@ LAST MODIFIED: 25/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.utils
 
+import android.app.Activity
 import android.content.Context
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import za.co.varsitycollege.st10036509.punchin.R
+import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
+import za.co.varsitycollege.st10036509.punchin.activities.ProjectViewActivity
+import za.co.varsitycollege.st10036509.punchin.activities.TimesheetViewActivity
 
 /**
  * Class to handle Hold Header View Binds
  */
-class NavbarViewBindingHelper (private val viewBinding: ViewBinding){
+class NavbarViewBindingHelper (context: Context, binding: ViewBinding){
 
-    //bind for header settings component
-    private val headerSettings: ImageButton? by lazy {
-        viewBinding.root.findViewById<ImageButton>(R.id.imgb_HeaderSettingsButton)!!
-    }
+    private var intentHandler = IntentHandler(context)//initialise an IntentHandler for page navigation
+    private var toaster = ToastHandler(context)//initialise an ToastHandler for displaying toast messages
 
-    //bind for footer home component
-    private val footerHome: ImageButton? by lazy {
-        viewBinding.root.findViewById<ImageButton>(R.id.imgb_FooterHomeButton)!!
-    }
-
-    //bind for footer projects component
-    private val footerProjects: ImageButton? by lazy {
-        viewBinding.root.findViewById<ImageButton>(R.id.imgb_FooterProjectsButton)!!
-    }
-
-    //bind for footer goals component
-    private val footerGoals: ImageButton? by lazy {
-        viewBinding.root.findViewById<ImageButton>(R.id.imgb_FooterGoalsButton)!!
-    }
-
-    //bind for footer analytics component
-    private val footerAnalytics: ImageButton? by lazy {
-        viewBinding.root.findViewById<ImageButton>(R.id.imgb_FooterAnalyticsButton)!!
-    }
+    //get the references for each navbar button
+    private val timesheetsButtonId: ImageButton? = binding.root.findViewById<ImageButton>(R.id.imgb_FooterHomeButton)
+    private val projectsButtonId: ImageButton? = binding.root.findViewById<ImageButton>(R.id.imgb_FooterProjectsButton)
+    private val goalsButtonId: ImageButton? = binding.root.findViewById<ImageButton>(R.id.imgb_FooterGoalsButton)
+    private val analyticsButtonId: ImageButton? = binding.root.findViewById<ImageButton>(R.id.imgb_FooterAnalyticsButton)
+    private val settingsButtonId: ImageButton? = binding.root.findViewById<ImageButton>(R.id.imgb_HeaderSettingsButton)
 
 
-//__________________________________________________________________________________________________setupNavBarAccessControls
+//__________________________________________________________________________________________________setUpNavBarOnClickEvents
 
 
     /**
-     * Event Handler for both Header and Footer NavBar onClick Events
-     * @param Context The Activity Context (this@ActivityName) for the UI page for which the NavBar controls need to be handled
+     * Method to setup listeners for NavBars
      */
-    fun setupNavBarAccessControls(context: Context) {
-        //handle settings button onClick listener
-        headerSettings?.let {buttonAccessControl(it, "Settings Coming Soon!", context)}//HEADER
+    fun setUpNavBarOnClickEvents() {
 
-        //handle home button onClick listener
-        footerHome?.let {buttonAccessControl(it, "Home Page Opening...", context)}//FOOTER
+        //create onClick methods:
+        buttonAddOnClickEvent(timesheetsButtonId)
 
-        //handle projects button onClick listener
-        footerProjects?.let {buttonAccessControl(it, "Projects Page Opening...", context)}//FOOTER
+        buttonAddOnClickEvent(projectsButtonId)
 
-        //handle goals button onClick listener
-        footerGoals?.let {buttonAccessControl(it, "Goals Page Opening...", context)}//FOOTER
+        buttonAddOnClickEvent(goalsButtonId)
 
-        //handle analytics button onClick listener
-        footerAnalytics?.let {buttonAccessControl(it, "Analytics Page Opening...", context)}//FOOTER
+        buttonAddOnClickEvent(analyticsButtonId)
 
+        buttonAddOnClickEvent(settingsButtonId)
     }
 
 
-//__________________________________________________________________________________________________buttonAccessControl
+//__________________________________________________________________________________________________buttonAddOnClickEvent
 
 
     /**
-     * On Click Event for the Header NavBar Settings Button
+     * On Click Event Setter for the NavBar
      * @param ImageButton The ImageButton component to set teh onClick Event to.
-     * @param String The Message to display via Toast
-     * @param Context The Activity Context (this@ActivityName) for the UI page for which the NavBar controls need to be handled
      */
-    private fun buttonAccessControl(button: ImageButton, message: String, activity: Context) {
+    private fun buttonAddOnClickEvent(button: ImageButton?) {
 
-        button.setOnClickListener {
-            Toast.makeText(activity, message,
-                Toast.LENGTH_SHORT).show()
+        //set the onClick method for the given button to the handleButtonClickEvents method call
+        button?.setOnClickListener{
+            handleButtonClickEvents(button)
         }
+    }
 
+
+//__________________________________________________________________________________________________handleButtonClickEvents
+
+
+    /**
+     * Method to handle on click event of passed button
+     * @param ImageButton button that was clicked
+     */
+    private fun handleButtonClickEvents(button: ImageButton?) {
+        when (button) {
+
+            //perform task based on button clicked:
+            timesheetsButtonId -> {
+                //intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
+                toaster.showToast("Opening Timesheets Page...")
+            }
+
+            projectsButtonId -> {
+                intentHandler.openActivityIntent(ProjectViewActivity::class.java)
+            }
+
+            goalsButtonId -> {
+                intentHandler.openActivityIntent(GoalsActivity::class.java)
+            }
+
+            analyticsButtonId -> {
+                //intentHandler.openActivityIntent(::class:java)
+                toaster.showToast("Analytics Page Coming Soon!")
+            }
+
+            settingsButtonId -> {
+                //intentHandler.openActivityIntent(::class:java)
+                toaster.showToast("Settings Page Coming Soon!")
+            }
+        }
     }
 
 

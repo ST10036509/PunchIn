@@ -46,13 +46,11 @@ class ProjectDetailsActivity : AppCompatActivity() {
 
                     // Update TextViews with retrieved data
                     val tvProjectName = findViewById<TextView>(R.id.tv_project_name)
-                    val tvOrganizationName = findViewById<TextView>(R.id.tv_organization)
                     val tvSetColor = findViewById<TextView>(R.id.tv_colour)
                     val tvHourlyRate = findViewById<TextView>(R.id.tv_rate)
                     val tvDescription = findViewById<TextView>(R.id.tv_description)
 
                     tvProjectName.text = projectName
-                    tvOrganizationName.text = organizationName
                     tvSetColor.text = setColor
                     tvHourlyRate.text = hourlyRate
                     tvDescription.text = description

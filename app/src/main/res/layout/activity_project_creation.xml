@@ -2,7 +2,7 @@
 <!--
 AUTHOR: Leonard Bester
 CREATED: 23/04/2024
-LAST MODIFIED: 30/04/2024
+LAST MODIFIED: 01/05/2024
 -->
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,25 +60,6 @@ LAST MODIFIED: 30/04/2024
                 android:textColorHint="@color/blue_gray_50" />
         </LinearLayout>
 
-        <!-- Organization Name -->
-        <LinearLayout
-            android:id="@+id/ll_Organization_Name"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
-
-            <EditText
-                android:id="@+id/ed_Organization_Name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-                android:elevation="2dp"
-                android:fontFamily="@font/reglo_bold"
-                android:hint="@string/hint_organization_name"
-                android:textColorHint="@color/blue_gray_50" />
-        </LinearLayout>
 
         <!-- Start Date -->
         <LinearLayout

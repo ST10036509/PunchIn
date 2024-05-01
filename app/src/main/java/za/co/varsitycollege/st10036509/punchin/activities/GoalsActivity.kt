@@ -8,6 +8,8 @@ package za.co.varsitycollege.st10036509.punchin.activities
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
@@ -25,24 +27,26 @@ import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 class GoalsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGoalsBinding//bind the GoalsActivity KT and XML files
-    private lateinit var navbarViewBindingHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
-    private var authModel= AuthenticationModel()
+
+    private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
+    private var authModel= AuthenticationModel()//get the instance of the authentication model
     private var firestoreInstance = FirestoreConnection.getDatabaseInstance()
-    private lateinit var toaster: ToastHandler
+    private lateinit var toaster: ToastHandler//create a ToastHandler to show toast messages
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
 
-    private var currentUser: FirebaseUser? = null
-    private var displayedMinimumGoal = UserModel._minGoal
-    private var displayedMaximumGoal = UserModel._maxGoal
+    private var currentUser: FirebaseUser? = null//variable for storing current user
+    private var displayedMinimumGoal = UserModel._minGoal//variable to hold the currently displayed user Minimum Goal
+    private var displayedMaximumGoal = UserModel._maxGoal//variable to hold the currently displayed user Maximum Goal
 
-    //constant strings for toast messages
+    //constants for app runtime
     private companion object {
         const val MSG_UPDATE_GOALS_SUCCESS = "Updated Goals Successfully!"
         const val MSG_MAX_HOURS_IN_A_DAY = "Love your enthusiasm! However, there are no more hours in the day!"
         const val MSG_PREPARING_PAGE = "Preparing the page..."
         const val MSG_UPDATING_GOALS = "Updating your goals..."
         const val MSG_UPDATE_GOALS_ERROR = "Failed to update your goals. Please Try again..."
+        const val DELAY_BEFORE_DISMISS_LOADING_DIALOG = 500L
     }
 
 
@@ -57,22 +61,34 @@ class GoalsActivity : AppCompatActivity() {
         binding = ActivityGoalsBinding.inflate(layoutInflater)//inflate UI
         setContentView(binding.root)
 
-        //initialize an instance of the header binds, and pass the binding class (ActivityGoalsBinding)
-        navbarViewBindingHelper = NavbarViewBindingHelper(this.binding)
-        //onClick event handler for all header and footer navbar controls
-        navbarViewBindingHelper.setupNavBarAccessControls(this@GoalsActivity)
-        toaster = ToastHandler(this@GoalsActivity)
-        currentUser = authModel.getCurrentUser()
+        //||NAVBAR INITIALIZATION||
+        //initialize an instance of the NavBarHelper and pass in the current context and binding
+        navbarHelper = NavbarViewBindingHelper(this@GoalsActivity, binding)
+        //setup listeners for NavBar onClick events
+        navbarHelper.setUpNavBarOnClickEvents()
+        //||NAVBAR INITIALIZATION||
+
+        toaster = ToastHandler(this@GoalsActivity)//initialise the toast handler
         loadingDialogHandler = LoadDialogHandler(this@GoalsActivity, progressDialog)//initialise the loading dialog
+        currentUser = authModel.getCurrentUser()//get current user form authentication model
 
-        loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_PREPARING_PAGE)
+        loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_PREPARING_PAGE)//show loading dialog
 
-        decoratePageWithUserData()
-
-        loadingDialogHandler.dismissLoadingDialog()
+        //prepare page asynchronously
+        preparePage()
 
         //setup listeners for ui controls
         setupListeners()
+    }
+
+
+//__________________________________________________________________________________________________onStart
+
+
+    override fun onStart() {
+        super.onStart()
+
+        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel._minGoal}/-${UserModel._maxGoal}")
 
     }
 
@@ -118,11 +134,19 @@ class GoalsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
 
-        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel._minGoal}/-${UserModel._maxGoal}")
+//__________________________________________________________________________________________________preparePage
 
+
+    private fun preparePage() {
+
+        Handler(Looper.getMainLooper()).postDelayed({
+
+            //update display to show user related data
+            decoratePageWithUserData()
+
+            loadingDialogHandler.dismissLoadingDialog()
+        }, DELAY_BEFORE_DISMISS_LOADING_DIALOG)
     }
 
 
@@ -135,10 +159,15 @@ class GoalsActivity : AppCompatActivity() {
 
             tvMinimumGoalHours.text = UserModel._minGoal.toString()
             tvMaximumGoalHours.text = UserModel._maxGoal.toString()
-            tvRightGoalDisplay.text = UserModel._minGoal.toString()
-            tvLeftGoalDisplay.text = UserModel._maxGoal.toString()
+            tvLeftGoalDisplay.text = UserModel._minGoal.toString()
+            tvRightGoalDisplay.text = UserModel._maxGoal.toString()
+
+            tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+            tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
 
         }
+
+        loadingDialogHandler.dismissLoadingDialog()
     }
 
 
@@ -187,7 +216,7 @@ class GoalsActivity : AppCompatActivity() {
 
         } else {
 
-            textColor = context.getColor(R.color.indigo_300)
+            textColor = context.getColor(R.color.blue_gray_50)
 
         }
 

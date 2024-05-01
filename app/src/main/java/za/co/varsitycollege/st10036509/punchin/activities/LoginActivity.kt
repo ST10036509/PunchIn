@@ -9,6 +9,8 @@ package za.co.varsitycollege.st10036509.punchin.activities
 import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,6 +47,9 @@ class LoginActivity : AppCompatActivity() {
         const val MSG_CHECKING_INPUTS = "Validating inputs..."
         const val MSG_LOGIN_IN_USER = "Logging you in..."
         const val MSG_NULL_INPUTS_ERROR = "Please fill out all inputs!"
+        const val MSG_NULL = ""
+        const val MSG_INVALID_USER_OR_TOKEN = "Invalid User Or Token"
+        const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
         const val MSG_CORRUPT_ACCOUNT_DATA = "Your account data is corrupted. Please make a new account!"
     }
 
@@ -84,28 +89,41 @@ class LoginActivity : AppCompatActivity() {
 
         super.onStart()
 
+        loadingDialogHandler.showLoadingDialog(LoginActivity.MSG_NULL)
+
         val currentUser = authModel.getCurrentUser()
 
-        currentUser?.reload()?.addOnCompleteListener() { task ->
+        if (currentUser != null) {
 
-            if (task.isSuccessful) {
+            currentUser.reload().addOnCompleteListener() { task ->
 
-                UserModel.fetchUserDataFromFireStore(currentUser.uid.toString()) { success ->
+                if (task.isSuccessful) {
 
-                    if(success) {
+                    UserModel.fetchUserDataFromFireStore(currentUser.uid.toString()) { success ->
 
-                        intentHandler.openActivityIntent(GoalsActivity::class.java)
+                        if(success) {
 
-                    } else {
+                            intentHandler.openActivityIntent(GoalsActivity::class.java)
 
-                        toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
-                        authModel.signOut()
+                        } else {
 
+                            toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
+                            authModel.signOut()
+                            loadingDialogHandler.dismissLoadingDialog()
+
+                        }
                     }
+                } else {
+
+                    authModel.signOut()
+                    loadingDialogHandler.dismissLoadingDialog()
+
                 }
-            } else {
-                authModel.signOut()
             }
+        } else {
+
+            loadingDialogHandler.dismissLoadingDialog()
+
         }
     }
 
@@ -194,6 +212,7 @@ class LoginActivity : AppCompatActivity() {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
             toaster.showToast(LoginActivity.MSG_LOGIN_SUCCESS)//show success message
+            intentHandler.openActivityIntent(GoalsActivity::class.java)//open goals page
             clearInputs()//clear input boxes
 
         //if if there were no errors

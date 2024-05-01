@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.cardview)
     implementation(libs.material)
+    //implementation(libs.car.ui.lib)
     testImplementation(libs.junit)
 
     //Firebase
