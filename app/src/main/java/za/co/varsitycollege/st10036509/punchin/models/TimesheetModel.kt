@@ -8,34 +8,35 @@ package za.co.varsitycollege.st10036509.punchin.models
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.type.Date
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
+import java.util.Date
+
 private lateinit var authModel: AuthenticationModel
 
 class TimesheetModel(
 
-    var timesheetUid: String,
+    var userId: String,
     var timesheetName: String,
-    var projectUid: String,
-    var timesheetStartDate: String,
+    var projectId: String,
+    var timesheetStartDate: Date?,
     var timesheetStartTime: String,
     var timesheetEndTime: String,
     var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
     fun setData(
-        timesheetUid: String,
+        userId: String,
         timesheetName: String,
-        projectUid: String,
-        timesheetStartDate: String,
+        projectId: String,
+        timesheetStartDate: Date,
         timesheetStartTime: String,
         timesheetEndTime: String,
         timesheetDescription: String
         //timesheetPhoto: String
     ) {
-        this.timesheetUid = timesheetUid
+        this.userId = userId
         this.timesheetName = timesheetName
-        this.projectUid = projectUid
+        this.projectId = projectId
         this.timesheetStartDate = timesheetStartDate
         this.timesheetStartTime = timesheetStartTime
         this.timesheetEndTime = timesheetEndTime
@@ -44,9 +45,9 @@ class TimesheetModel(
     }
     fun getData(): Map<String, Any?> {
         return mapOf(
-            "timesheetUid" to timesheetUid,
+            "userId" to userId,
             "timesheetName" to timesheetName,
-            "projectUid" to projectUid,
+            "projectId" to projectId,
             "timesheetStartDate" to timesheetStartDate,
             "timesheetStartTime" to timesheetStartTime,
             "timesheetEndTime" to timesheetEndTime,
