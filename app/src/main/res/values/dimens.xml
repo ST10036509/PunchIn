@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><dimen name="elevation">2dp</dimen>
+    <dimen name="text_size_large">27sp</dimen>
+    <dimen name="text_size_medium">22sp</dimen>
+    <dimen name="divider_width">2dp</dimen>
+    <dimen name="divider_width_details">2dp</dimen>
+    <dimen name="text_view_name_width">227dp</dimen>
+    <dimen name="linear_layout_details_width">152dp</dimen>
+    <dimen name="text_view_details_height">27dp</dimen>
+</resources>
