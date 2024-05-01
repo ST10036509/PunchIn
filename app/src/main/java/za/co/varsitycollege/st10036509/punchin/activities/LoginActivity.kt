@@ -212,6 +212,7 @@ class LoginActivity : AppCompatActivity() {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
             toaster.showToast(LoginActivity.MSG_LOGIN_SUCCESS)//show success message
+            intentHandler.openActivityIntent(GoalsActivity::class.java)//open goals page
             clearInputs()//clear input boxes
 
         //if if there were no errors
