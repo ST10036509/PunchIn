@@ -6,10 +6,8 @@ LAST MODIFIED: 29/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.models
 
-
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import java.util.Date
 
 private lateinit var authModel: AuthenticationModel
@@ -25,6 +23,8 @@ class TimesheetModel(
     var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
+    // Add no-argument constructor
+    constructor() : this("", "", "", null, "", "", "")
     fun setData(
         userId: String,
         timesheetName: String,

@@ -31,7 +31,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", "", "", 0,0,0,"",)
+        projectModel = ProjectsModel("", "", "", "", "", 0,0,0.0,"",)
 
         // Get current user
         currentUser = auth.currentUser
