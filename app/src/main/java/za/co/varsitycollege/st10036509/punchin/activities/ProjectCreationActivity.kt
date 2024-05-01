@@ -31,7 +31,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", "", "", "", "", "", "", "")
+        projectModel = ProjectsModel("", "", "", "", "", 0,0,0,"",)
 
 
 
@@ -56,7 +56,6 @@ class ProjectCreationActivity : AppCompatActivity() {
     private fun handleAddButtonClick() {
         // Find all EditText views
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
-        val organizationNameEditText = findViewById<EditText>(R.id.ed_Organization_Name)
         val startDateEditText = findViewById<EditText>(R.id.ed_Start_Date)
         val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
         val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
@@ -64,7 +63,6 @@ class ProjectCreationActivity : AppCompatActivity() {
 
         // Get text from EditText views
         val projectName = projectNameEditText.text.toString()
-        val organizationName = organizationNameEditText.text.toString()
         val startDate = startDateEditText.text.toString()
         val setColor = setColorEditText.text.toString()
         val hourlyRate = hourlyRateEditText.text.toString()
@@ -76,7 +74,7 @@ class ProjectCreationActivity : AppCompatActivity() {
             val userId = user.uid
 
             // Set project data using the setData method of ProjectsModel
-            projectModel.setData(projectName, organizationName, startDate, setColor, hourlyRate, description, "", "", "",userId, )
+            projectModel.setData(projectName, startDate, setColor, hourlyRate, description, userId, )
 
             // Call the method to write project data to Firestore
             projectModel.writeDataToFirestore()
@@ -103,7 +101,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         hourlyRateEditText.setText("")
         descriptionEditText.setText("")
     }
-
 }
 
 

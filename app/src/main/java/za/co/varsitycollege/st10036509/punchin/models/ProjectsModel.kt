@@ -14,38 +14,29 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class ProjectsModel (
     var projectName: String,
-    var organizationName: String,
     var startDate: String,
     var setColor: String,
     var hourlyRate: String,
     var description: String,
-    var totalTimeSheets: String,
-    var totalHours: String,
-    var totalEarnings: String,
+    var totalTimeSheets: Number = 0,
+    var totalHours: Number = 0,
+    var totalEarnings: Number = 0,
     var userId: String
 ) {
     // Method to set project data
     fun setData(
         projectName: String,
-        organizationName: String,
         startDate: String,
         setColor: String,
         hourlyRate: String,
         description: String,
-        totalTimeSheets: String,
-        totalHours: String,
-        totalEarnings: String,
         userId: String
     ) {
         this.projectName = projectName
-        this.organizationName = organizationName
         this.startDate = startDate
         this.setColor = setColor
         this.hourlyRate = hourlyRate
         this.description = description
-        this.totalTimeSheets = totalTimeSheets
-        this.totalHours = totalHours
-        this.totalEarnings = totalEarnings
         this.userId = userId
     }
 
@@ -53,7 +44,6 @@ class ProjectsModel (
     fun getData(): Map<String, Any> {
         return mapOf(
             "projectName" to projectName,
-            "organizationName" to organizationName,
             "startDate" to startDate,
             "setColor" to setColor,
             "hourlyRate" to hourlyRate,
