@@ -6,7 +6,6 @@ LAST MODIFIED: 29/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.models
 
-
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
@@ -20,8 +19,8 @@ class TimesheetModel(
     var timesheetName: String,
     var projectId: String,
     var timesheetStartDate: Date?,
-    var timesheetStartTime: String,
-    var timesheetEndTime: String,
+    var timesheetStartTime: Date?,
+    var timesheetEndTime: Date?,
     var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
@@ -30,8 +29,8 @@ class TimesheetModel(
         timesheetName: String,
         projectId: String,
         timesheetStartDate: Date,
-        timesheetStartTime: String,
-        timesheetEndTime: String,
+        timesheetStartTime: Date,
+        timesheetEndTime: Date,
         timesheetDescription: String
         //timesheetPhoto: String
     ) {

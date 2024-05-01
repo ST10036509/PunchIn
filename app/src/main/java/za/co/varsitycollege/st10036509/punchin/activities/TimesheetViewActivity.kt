@@ -124,10 +124,10 @@ class TimesheetViewActivity : AppCompatActivity() {
                     timesheetModel = TimesheetModel(
                         userId = documentSnapshot.getString("userUid") ?:"",
                         timesheetName = documentSnapshot.getString("timesheetName") ?:"",
-                        projectUid = documentSnapshot.getString("projectUid") ?:"",
-                        startDate = documentSnapshot.getDate("startDate"),
-                        startTimestamp = documentSnapshot.getDate("startTimestamp"),
-                        endTimestamp = documentSnapshot.getDate("endTimestamp"),
+                        projectId = documentSnapshot.getString("projectId") ?:"",
+                        timesheetStartDate = documentSnapshot.getDate("timesheetStartDate"),
+                        timesheetStartTime = documentSnapshot.getDate("timesheetStartTime"),
+                        timesheetEndTime = documentSnapshot.getDate("timesheetEndTime"),
                         timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:""
                     )
                 }
@@ -138,9 +138,11 @@ class TimesheetViewActivity : AppCompatActivity() {
             }
         return timesheetModel
     }
+
+    //leonards code
     private fun displayData(timesheetModel: TimesheetModel){
-        binding.tvStartTime.text = timesheetModel.startTimestamp.toString()
-        binding.tvEndTime.text = timesheetModel.endTimestamp.toString()
+        binding.tvStartTime.text = timesheetModel.timesheetStartTime.toString()
+        binding.tvEndTime.text = timesheetModel.timesheetEndTime.toString()
         binding.tvTimesheetDescription.text = timesheetModel.timesheetDescription.toString()
     }
 }
