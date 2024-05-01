@@ -27,7 +27,7 @@ class TimesheetModel (
     var startTimestamp: Date?,
     var endTimestamp: Date?,
     var timesheetDescription: String,
-    var userId: String
-){
+    var userId: String)
+{
 
 }
