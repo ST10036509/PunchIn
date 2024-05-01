@@ -83,17 +83,35 @@ LAST MODIFIED: 25/04/2024
             android:padding="12dp"
             android:textColorHint="@color/blue_gray_50" />
 
-        <EditText
-            android:id="@+id/et_Timesheet_StartDate"
+        <LinearLayout
+            android:id="@+id/ll_Date_Selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="4dp"
-            android:fontFamily="@font/reglo_bold"
-            android:hint="@string/hint_timesheet_start_date"
-            android:padding="12dp"
-            android:textColorHint="@color/blue_gray_50" />
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_Timesheet_StartDate"
+                android:layout_width="325dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:hint="@string/hint_timesheet_start_date"
+                android:padding="12dp"
+                android:textColorHint="@color/blue_gray_50" />
+
+            <Button
+                android:id="@+id/btn_date_picker"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_lines"
+                android:textSize="8sp" />
+
+
+        </LinearLayout>
 
 
         <TextView
