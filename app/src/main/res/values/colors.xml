@@ -11,4 +11,6 @@
     <color name="gold">#FDC537</color>
     <color name="opacity_blue_gray_50">#C7C9D0</color>
     <color name="red_300">#DA6B6B</color>
+    <color name="divider_color">#73798a</color>
+
 </resources>
