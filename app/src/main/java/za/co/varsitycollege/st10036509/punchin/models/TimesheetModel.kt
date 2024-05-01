@@ -7,6 +7,7 @@ LAST MODIFIED: 29/04/2024
 package za.co.varsitycollege.st10036509.punchin.models
 
 import com.google.type.DateTime
+import java.util.Date
 
 /**
  * Class to represent the Timesheet Context and handle timesheet specific functionality
@@ -20,15 +21,13 @@ import com.google.type.DateTime
  * //@param String timesheetPhoto
  */
 class TimesheetModel (
-
-    var timesheetUser: String,
     var timesheetName: String,
-    var timesheetProjectName: String,
-    var timesheetStartDate: String,
-    var timesheetStartTime: String,
-    var timesheetEndTime: String,
+    var projectUid: String,
+    var startDate: Date?,
+    var startTimestamp: Date?,
+    var endTimestamp: Date?,
     var timesheetDescription: String,
-    //var timesheetPhoto: String,
+    var userId: String
 ){
 
 }
