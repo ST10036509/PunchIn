@@ -259,9 +259,18 @@ LAST MODIFIED: 01/05/2024
                 android:textSize="25dp" />
 
             <ScrollView
-                android:id="@+id/sv_timesheets"
                 android:layout_width="match_parent"
-                android:layout_height="106dp"/>
+                android:layout_height="106dp">
+
+                <TextView
+                    android:id="@+id/tv_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/staatliches"
+                    android:text="sample"
+                    android:textColor="@color/dark_blue_900"
+                    android:textSize="14sp" />
+            </ScrollView>
 
         </LinearLayout>
 
