@@ -13,46 +13,45 @@ import java.util.Date
 private lateinit var authModel: AuthenticationModel
 
 class TimesheetModel(
-
     var userId: String,
-    var timesheetName: String,
+    var name: String,
     var projectId: String,
-    var timesheetStartDate: Date?,
-    var timesheetStartTime: String,
-    var timesheetEndTime: String,
-    var timesheetDescription: String
+    var createdAt: Date?,
+    var startedAt: Date?,
+    var endedAt: Date?,
+    var description: String
     //var timesheetPhoto: String,
 ){
     // Add no-argument constructor
-    constructor() : this("", "", "", null, "", "", "")
+    constructor() : this("", "", "", null, null, null, "")
     fun setData(
         userId: String,
-        timesheetName: String,
+        name: String,
         projectId: String,
-        timesheetStartDate: Date,
-        timesheetStartTime: String,
-        timesheetEndTime: String,
-        timesheetDescription: String
+        createdAt: Date,
+        startedAt: Date?,
+        endedAt: Date?,
+        description: String
         //timesheetPhoto: String
     ) {
         this.userId = userId
-        this.timesheetName = timesheetName
+        this.name = name
         this.projectId = projectId
-        this.timesheetStartDate = timesheetStartDate
-        this.timesheetStartTime = timesheetStartTime
-        this.timesheetEndTime = timesheetEndTime
-        this.timesheetDescription = timesheetDescription
+        this.createdAt = createdAt
+        this.startedAt = startedAt
+        this.endedAt = endedAt
+        this.description = description
         //this.timesheetPhoto = timesheetPhoto
     }
     fun getData(): Map<String, Any?> {
         return mapOf(
             "userId" to userId,
-            "timesheetName" to timesheetName,
+            "name" to name,
             "projectId" to projectId,
-            "timesheetStartDate" to timesheetStartDate,
-            "timesheetStartTime" to timesheetStartTime,
-            "timesheetEndTime" to timesheetEndTime,
-            "timesheetDescription" to timesheetDescription
+            "createdAt" to createdAt,
+            "startedAt" to startedAt,
+            "endedAt" to endedAt,
+            "description" to description
             //"timesheetPhoto" to timesheetPhoto
             )
     }

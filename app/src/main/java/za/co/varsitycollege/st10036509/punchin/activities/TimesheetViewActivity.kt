@@ -81,11 +81,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
-        val startDate = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
-        val startDay = startDate.dayOfMonth
+        val createdAt = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+        val startDay = createdAt.dayOfMonth
 
         // Calculate the end date of the week
-        val endDate = startDate.plusDays(6)
+        val endDate = createdAt.plusDays(6)
 
         // Calculate the end date of the current week
         val endOfWeek = LocalDate.now().with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY))
@@ -122,13 +122,13 @@ class TimesheetViewActivity : AppCompatActivity() {
                 if (documentSnapshot.exists()) {
                     // Parse and populate the TextViews with data
                     timesheetModel = TimesheetModel(
-                        userId = documentSnapshot.getString("userUid") ?:"",
-                        timesheetName = documentSnapshot.getString("timesheetName") ?:"",
-                        projectUid = documentSnapshot.getString("projectUid") ?:"",
-                        startDate = documentSnapshot.getDate("startDate"),
-                        startTimestamp = documentSnapshot.getDate("startTimestamp"),
-                        endTimestamp = documentSnapshot.getDate("endTimestamp"),
-                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:""
+                        userId = documentSnapshot.getString("userId") ?:"",
+                        name = documentSnapshot.getString("name") ?:"",
+                        projectId = documentSnapshot.getString("projectId") ?:"",
+                        createdAt = documentSnapshot.getDate("createdAt"),
+                        startedAt = documentSnapshot.getDate("startedAt"),
+                        endedAt = documentSnapshot.getDate("endedAt"),
+                        description = documentSnapshot.getString("description") ?:""
                     )
                 }
             }
@@ -139,9 +139,9 @@ class TimesheetViewActivity : AppCompatActivity() {
         return timesheetModel
     }
     private fun displayData(timesheetModel: TimesheetModel){
-        binding.tvStartTime.text = timesheetModel.startTimestamp.toString()
-        binding.tvEndTime.text = timesheetModel.endTimestamp.toString()
-        binding.tvTimesheetDescription.text = timesheetModel.timesheetDescription.toString()
+        binding.tvStartTime.text = timesheetModel.startedAt.toString()
+        binding.tvEndTime.text = timesheetModel.endedAt.toString()
+        binding.tvTimesheetDescription.text = timesheetModel.description.toString()
     }
 }
 
