@@ -1,36 +1,45 @@
 /*
 AUTHOR: Leonard Bester
 CREATED: 23/04/2024
-LAST MODIFIED: 30/04/2024
+LAST MODIFIED: 01/05/2024
  */
 package za.co.varsitycollege.st10036509.punchin.activities
 
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectCreationBinding
-import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
-import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
+import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
 
 class ProjectCreationActivity : AppCompatActivity() {
 
-    private var firestoreInstance = FirestoreConnection.getDatabaseInstance()
-    private lateinit var authModel: AuthenticationModel
+    private lateinit var binding: ActivityProjectCreationBinding
+    private lateinit var projectModel: ProjectsModel
+    private var currentUser: FirebaseUser? = null
 
-
-    private lateinit var binding: ActivityProjectCreationBinding //bind the ProjectCreationActivity KT and XML files
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize FirebaseAuth
+        val auth = FirebaseAuth.getInstance()
+
+        // Initialize ProjectsModel
+        projectModel = ProjectsModel("", "", "", "", "", "", "", "", "", "")
+
+
+
+        // Get current user
+        currentUser = auth.currentUser
+
         // Call the method to set up click listeners
         setupClickListeners()
-
     }
 
     private fun setupClickListeners() {
@@ -61,54 +70,41 @@ class ProjectCreationActivity : AppCompatActivity() {
         val hourlyRate = hourlyRateEditText.text.toString()
         val description = descriptionEditText.text.toString()
 
+        // Check if the current user is not null
+        currentUser?.let { user ->
+            // Get user id
+            val userId = user.uid
 
+            // Set project data using the setData method of ProjectsModel
+            projectModel.setData(projectName, organizationName, startDate, setColor, hourlyRate, description, "", "", "",userId, )
 
-        // Define the Firestore collection
-        val collection = firestoreInstance.collection("projects")
+            // Call the method to write project data to Firestore
+            projectModel.writeDataToFirestore()
 
-        // Store the project data in Firestore
-        val projectData = hashMapOf(
-            "projectName" to projectName,
-            "organizationName" to organizationName,
-            "startDate" to startDate,
-            "setColor" to setColor,
-            "hourlyRate" to hourlyRate,
-            "description" to description
-        )
-
-        // Add the project data to Firestore
-        collection.add(projectData)
-            .addOnSuccessListener { documentReference ->
-                // Data successfully stored in Firestore
-                Log.d("ProjectCreationActivity", "Project data stored successfully. Document ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                // Error storing data in Firestore
-                Log.e("ProjectCreationActivity", "Error storing project data: $e")
-            }
-
-        retrieveDataFromFirestore()
+            clearInputFields()
+        }
     }
 
-    private fun retrieveDataFromFirestore() {
-        // Define the Firestore collection
-        val collection = firestoreInstance.collection("projects")
+    fun clearInputFields(){
 
-        // Retrieve data from Firestore
-        collection.get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    // Log each document's data
-                    Log.d("ProjectCreationActivity", "${document.id} => ${document.data}")
-                }
-            }
-            .addOnFailureListener { e ->
-                // Error retrieving data from Firestore
-                Log.e("ProjectCreationActivity", "Error retrieving project data: $e")
-            }
+        // Find all EditText views
+        val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
+        val organizationNameEditText = findViewById<EditText>(R.id.ed_Organization_Name)
+        val startDateEditText = findViewById<EditText>(R.id.ed_Start_Date)
+        val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
+        val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
+        val descriptionEditText = findViewById<EditText>(R.id.ed_Description)
+
+        // Set text of each EditText to an empty string
+        projectNameEditText.setText("")
+        organizationNameEditText.setText("")
+        startDateEditText.setText("")
+        setColorEditText.setText("")
+        hourlyRateEditText.setText("")
+        descriptionEditText.setText("")
     }
-
-
 
 }
+
+
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\
