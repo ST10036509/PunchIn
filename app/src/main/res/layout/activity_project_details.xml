@@ -2,7 +2,7 @@
 <!--
 AUTHOR: Leonard Bester
 CREATED: 29/04/2024
-LAST MODIFIED: 29/04/2024
+LAST MODIFIED: 01/05/2024
 -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -218,15 +218,6 @@ LAST MODIFIED: 29/04/2024
                     android:textColor="@color/indigo_900"
                     android:textSize="19sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="110dp"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/staatliches"
-                    android:text="@string/project_details_organization"
-                    android:textColor="@color/indigo_900"
-                    android:textSize="19sp" />
             </TableRow>
 
             <TableRow
@@ -243,18 +234,8 @@ LAST MODIFIED: 29/04/2024
                     android:text="sample"
                     android:textColor="@color/dark_blue_900"
                     android:textSize="19sp" />
-
-                <TextView
-                    android:id="@+id/tv_organization"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="110dp"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/staatliches"
-                    android:text="sample"
-                    android:textColor="@color/dark_blue_900"
-                    android:textSize="19sp" />
             </TableRow>
+
             <ImageView
                 android:layout_width="370dp"
                 android:layout_height="2dp"
