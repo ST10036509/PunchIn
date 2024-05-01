@@ -30,33 +30,17 @@ LAST MODIFIED: 25/04/2024
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ToggleButton
-        android:id="@+id/tb_stopwatch_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:background="#E3ECFE"
-        android:checked="false"
-        android:fontFamily="@font/staatliches"
-        android:textAlignment="center"
-        android:textColor="#14306A"
-        android:textOff="@string/toggle_button_off"
-        android:textOn="@string/toggle_button_on"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/ll_Timesheet_Entry_Group"
         android:layout_width="370dp"
         android:layout_height="520dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
         android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_TimesheetCreationTitle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_stopwatch_timer">
+        tools:layout_editor_absoluteY="133dp">
 
         <EditText
             android:id="@+id/et_Timesheet_Name"
@@ -127,35 +111,67 @@ LAST MODIFIED: 25/04/2024
             android:textSize="18sp" />
 
         <LinearLayout
-            android:id="@+id/ll_Start_End_Time"
+            android:id="@+id/ll_time_picker"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:layout_height="50dp"
+            android:elevation="4dp"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/et_Timesheet_Start_Time"
+
+            <Button
+                android:id="@+id/btn_time_start"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ems="10"
-                android:inputType="text"
+                android:minWidth="64dp"
+                android:minHeight="54dp"
                 android:text="@string/default_start_time"
-                android:textAlignment="center"
-                android:textColor="@color/blue_gray_50"
-                android:textSize="25sp" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#6983BD"
+                android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/et_Timesheet_End_Time"
+            <Button
+                android:id="@+id/btn_time_end"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:minWidth="64dp"
+                android:minHeight="54dp"
+                android:text="@string/default_end_time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#6983BD"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_Photo_Add_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_Add_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/timesheet_add_image_text"
                 android:textAlignment="center"
                 android:textColor="@color/blue_gray_50"
-                android:textSize="25sp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="@string/default_end_time" />
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_Timesheet_Image"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                app:srcCompat="@android:drawable/alert_light_frame" />
         </LinearLayout>
 
         <EditText
@@ -171,34 +187,6 @@ LAST MODIFIED: 25/04/2024
             android:padding="12dp"
             android:singleLine="false"
             android:textColorHint="@color/blue_gray_50" />
-
-        <LinearLayout
-            android:id="@+id/ll_Photo_Add_Layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_Add_Image"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:fontFamily="@font/reglo_bold"
-                android:text="@string/timesheet_add_image_text"
-                android:layout_marginTop="5dp"
-                android:textAlignment="center"
-                android:textColor="@color/blue_gray_50"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/iv_Timesheet_Image"
-                android:layout_width="130dp"
-                android:layout_height="110dp"
-                android:textAlignment="center"
-                android:layout_gravity="center_horizontal"
-                app:srcCompat="@android:drawable/alert_light_frame" />
-        </LinearLayout>
 
     </LinearLayout>
 
