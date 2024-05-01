@@ -12,6 +12,8 @@ import android.widget.ImageButton
 import androidx.viewbinding.ViewBinding
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
+import za.co.varsitycollege.st10036509.punchin.activities.ProjectViewActivity
+import za.co.varsitycollege.st10036509.punchin.activities.TimesheetViewActivity
 
 /**
  * Class to handle Hold Header View Binds
@@ -78,13 +80,12 @@ class NavbarViewBindingHelper (context: Context, binding: ViewBinding){
 
             //perform task based on button clicked:
             timesheetsButtonId -> {
-                //intentHandler.openActivityIntent(::class:java)
+                //intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
                 toaster.showToast("Opening Timesheets Page...")
             }
 
             projectsButtonId -> {
-                //intentHandler.openActivityIntent(::class:java)
-                toaster.showToast("Opening Projects Page...")
+                intentHandler.openActivityIntent(ProjectViewActivity::class.java)
             }
 
             goalsButtonId -> {

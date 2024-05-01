@@ -159,8 +159,11 @@ class GoalsActivity : AppCompatActivity() {
 
             tvMinimumGoalHours.text = UserModel._minGoal.toString()
             tvMaximumGoalHours.text = UserModel._maxGoal.toString()
-            tvRightGoalDisplay.text = UserModel._minGoal.toString()
-            tvLeftGoalDisplay.text = UserModel._maxGoal.toString()
+            tvLeftGoalDisplay.text = UserModel._minGoal.toString()
+            tvRightGoalDisplay.text = UserModel._maxGoal.toString()
+
+            tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+            tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
 
         }
 

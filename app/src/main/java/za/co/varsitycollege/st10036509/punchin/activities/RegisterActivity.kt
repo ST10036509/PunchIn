@@ -197,6 +197,7 @@ class RegisterActivity : AppCompatActivity() {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
             toaster.showToast(MSG_REGISTER_SUCCESS)//show success message
+            intentHandler.openActivityIntent(GoalsActivity::class.java)//open goals page
             clearInputs()//clear input boxes
 
             //if if there were no errors
