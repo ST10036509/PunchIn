@@ -8,8 +8,7 @@ package za.co.varsitycollege.st10036509.punchin.models
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.type.Date
-import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
+
 private lateinit var authModel: AuthenticationModel
 
 class TimesheetModel(
@@ -23,6 +22,8 @@ class TimesheetModel(
     var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
+    // Add no-argument constructor
+    constructor() : this("", "", "", "", "", "", "")
     fun setData(
         timesheetUid: String,
         timesheetName: String,

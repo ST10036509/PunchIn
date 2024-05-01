@@ -18,12 +18,14 @@ class ProjectsModel (
     var setColor: String,
     var hourlyRate: String,
     var description: String,
-    var totalTimeSheets: Number = 0,
-    var totalHours: Number = 0,
-    var totalEarnings: Number = 0,
+    var totalTimeSheets: Long = 0,
+    var totalHours: Long = 0,
+    var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    // Method to set project data
+    constructor() : this("", "", "", "", "", 0, 0, 0.0, "")
+
+    private lateinit var firestore: FirebaseFirestore
     fun setData(
         projectName: String,
         startDate: String,
@@ -38,6 +40,53 @@ class ProjectsModel (
         this.hourlyRate = hourlyRate
         this.description = description
         this.userId = userId
+    }
+
+    fun readProjectData(projectid: String, callback: (ProjectsModel?, List<TimesheetModel>) -> Unit) {
+        val projectId: String = projectid
+
+        val firestore = FirebaseFirestore.getInstance()
+        val projectRef = firestore.collection("projects").document(projectId)
+
+        // Retrieve the project
+        projectRef.get()
+            .addOnSuccessListener { projectDoc ->
+                if (projectDoc.exists()) {
+                    val projectData = projectDoc.toObject(ProjectsModel::class.java)
+                    projectData?.let { project ->
+                        Log.d("ProjectsModel", "Project Data: $project")
+
+                        // Now, retrieve timesheets associated with this project
+                        val timesheetsCollectionRef = firestore.collection("timesheets")
+                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectUid", projectId)
+
+                        timesheetsQuery.get()
+                            .addOnSuccessListener { timesheetsSnapshot ->
+                                val timesheets = mutableListOf<TimesheetModel>()  // Corrected type here
+                                for (timesheetDoc in timesheetsSnapshot.documents) {
+                                    val timesheetData = timesheetDoc.toObject(TimesheetModel::class.java)
+                                    timesheetData?.let { timesheet ->
+                                        timesheets.add(timesheet)
+                                    }
+                                }
+
+                                // Return the project and its associated timesheets
+                                callback(project, timesheets)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ProjectsModel", "Error reading timesheets data: $e")
+                                callback(null, emptyList())
+                            }
+                    }
+                } else {
+                    Log.d("ProjectsModel", "No project found with ID: $projectId")
+                    callback(null, emptyList())
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("ProjectsModel", "Error reading project data: $e")
+                callback(null, emptyList())
+            }
     }
 
     // Method to get project data as a map
@@ -57,6 +106,7 @@ class ProjectsModel (
 
     // Method to write project data to Firestore
     fun writeDataToFirestore() {
+
         // Access Firestore instance
         val firestore = FirebaseFirestore.getInstance()
 
