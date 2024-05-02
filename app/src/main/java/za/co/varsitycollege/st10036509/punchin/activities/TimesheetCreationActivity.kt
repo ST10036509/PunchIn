@@ -21,6 +21,10 @@ import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
+import com.google.firebase.Timestamp
+import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
+
+
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -31,6 +35,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
+
 
     //strings to use
     private companion object {
@@ -88,9 +93,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                    calendar.set(Calendar.MINUTE, selectedMinute)
-                    timesheetStartTime = calendar.time // Set timesheetStartTime as Date
+                    timesheetStartTime =  Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, selectedHour)
+                        set(Calendar.MINUTE, selectedMinute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
                 },
                 hour,
                 minute,
@@ -108,9 +116,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
-                    calendar.set(Calendar.MINUTE, selectedMinute)
-                    timesheetEndTime = calendar.time // Set timesheetStartTime as Date
+                    timesheetEndTime = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, selectedHour)
+                        set(Calendar.MINUTE, selectedMinute)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
                 },
                 hour,
                 minute,

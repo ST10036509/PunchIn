@@ -81,11 +81,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
-        val startDate = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
-        val startDay = startDate.dayOfMonth
+        val createdAt = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+        val startDay = createdAt.dayOfMonth
 
         // Calculate the end date of the week
-        val endDate = startDate.plusDays(6)
+        val endDate = createdAt.plusDays(6)
 
         // Calculate the end date of the current week
         val endOfWeek = LocalDate.now().with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY))

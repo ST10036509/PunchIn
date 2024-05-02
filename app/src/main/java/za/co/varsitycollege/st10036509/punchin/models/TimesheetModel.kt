@@ -57,7 +57,7 @@ class TimesheetModel(
             "timesheetEndTime" to timesheetEndTime,
             "timesheetDescription" to timesheetDescription
             //"timesheetPhoto" to timesheetPhoto
-            )
+        )
     }
 
     fun writeDataToFirestore() {
