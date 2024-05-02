@@ -103,11 +103,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
-        val startDate = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
-        val startDay = startDate.dayOfMonth
+        val createdAt = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+        val startDay = createdAt.dayOfMonth
 
         // Calculate the end date of the week
-        val endDate = startDate.plusDays(6)
+        val endDate = createdAt.plusDays(6)
 
         // Calculate the end date of the current week
         val endOfWeek = LocalDate.now().with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY))
@@ -140,6 +140,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         binding.tvWeeklySelector.text= "${startDay} - ${formatDate(endDate)}"
     }
 
+
     fun getHourAndMinutes(date: Date): String {
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         return sdf.format(date)
@@ -162,6 +163,26 @@ class TimesheetViewActivity : AppCompatActivity() {
                         timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
                         timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
                         timesheetDescription = document.getString("timesheetDescription") ?: ""
+
+    private fun retrieveDataFromFirestore(): TimesheetModel? {
+        var timesheetModel: TimesheetModel? = null
+        // Reference to the project document in Firestore
+        val timesheetRef = firestoreInstance.collection("timesheets").document("adminTimesheetTest")
+
+        // Retrieve data from Firestore
+        timesheetRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Parse and populate the TextViews with data
+                    timesheetModel = TimesheetModel(
+                        userId = documentSnapshot.getString("userUid") ?:"",
+                        timesheetName = documentSnapshot.getString("timesheetName") ?:"",
+                        projectId = documentSnapshot.getString("projectId") ?:"",
+                        timesheetStartDate = documentSnapshot.getDate("timesheetStartDate"),
+                        timesheetStartTime = documentSnapshot.getDate("timesheetStartTime"),
+                        timesheetEndTime = documentSnapshot.getDate("timesheetEndTime"),
+                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:"",
+                        timesheetPhoto = null
                     )
 
                     // Add the TimesheetModel object to the list
@@ -174,6 +195,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 exception.printStackTrace()
             }
     }
+
 
     fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
         // Iterate through the list of timesheets
@@ -361,6 +383,13 @@ class TimesheetViewActivity : AppCompatActivity() {
         ivTimesheetDivider.setPadding(10, 0, 0, 0)
         ivTimesheetDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
         llTimesheetView.addView(ivTimesheetDivider)
+
+    //leonards code
+    private fun displayData(timesheetModel: TimesheetModel){
+        binding.tvStartTime.text = timesheetModel.timesheetStartTime.toString()
+        binding.tvEndTime.text = timesheetModel.timesheetEndTime.toString()
+        binding.tvTimesheetDescription.text = timesheetModel.timesheetDescription.toString()
+
     }
 }
 

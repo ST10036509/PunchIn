@@ -2,7 +2,7 @@ package za.co.varsitycollege.st10036509.punchin.models
 /*
 AUTHOR: Leonard Bester
 CREATED: 30/04/2024
-LAST MODIFIED: 1/05/2024
+LAST MODIFIED: 02/05/2024
  */
 
 /*
@@ -11,37 +11,73 @@ functions and variables
  */
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 class ProjectsModel (
     var projectName: String,
-    var startDate: String,
+    var startDate: Date? = null,
     var setColor: String,
-    var hourlyRate: String,
+    var hourlyRate: Double,
     var description: String,
-    var totalTimeSheets: Number = 0,
-    var totalHours: Number = 0,
-    var totalEarnings: Number = 0,
+    var totalTimeSheets: Long = 0,
+    var totalHours: Long = 0,
+    var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    // Method to set project data
-    fun setData(
-        projectName: String,
-        startDate: String,
-        setColor: String,
-        hourlyRate: String,
-        description: String,
-        userId: String
-    ) {
-        this.projectName = projectName
-        this.startDate = startDate
-        this.setColor = setColor
-        this.hourlyRate = hourlyRate
-        this.description = description
-        this.userId = userId
+    constructor() : this("", null, "", 0.0, "", 0, 0, 0.0, "")
+
+    private lateinit var firestore: FirebaseFirestore
+
+    fun readProjectData(projectid: String, callback: (ProjectsModel?, List<TimesheetModel>) -> Unit) {
+
+        val projectId: String = projectid
+
+        val firestore = FirebaseFirestore.getInstance()
+        val projectRef = firestore.collection("projects").document(projectId)
+
+        // Retrieve the project
+        projectRef.get()
+            .addOnSuccessListener { projectDoc ->
+                if (projectDoc.exists()) {
+                    val projectData = projectDoc.toObject(ProjectsModel::class.java)
+                    projectData?.let { project ->
+                        Log.d("ProjectsModel", "Project Data: $project")
+
+                        // Now, retrieve timesheets associated with this project
+                        val timesheetsCollectionRef = firestore.collection("timesheets")
+                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectId", projectId)
+
+                        timesheetsQuery.get()
+                            .addOnSuccessListener { timesheetsSnapshot ->
+                                val timesheets = mutableListOf<TimesheetModel>()  // Corrected type here
+                                for (timesheetDoc in timesheetsSnapshot.documents) {
+                                    val timesheetData = timesheetDoc.toObject(TimesheetModel::class.java)
+                                    timesheetData?.let { timesheet ->
+                                        timesheets.add(timesheet)
+                                    }
+                                }
+
+                                // Return the project and its associated timesheets
+                                callback(project, timesheets)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ProjectsModel", "Error reading timesheets data: $e")
+                                callback(null, emptyList())
+                            }
+                    }
+                } else {
+                    Log.d("ProjectsModel", "No project found with ID: $projectId")
+                    callback(null, emptyList())
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("ProjectsModel", "Error reading project data: $e")
+                callback(null, emptyList())
+            }
     }
 
     // Method to get project data as a map
-    fun getData(): Map<String, Any> {
+    fun getData(): Map<String, Any?> {
         return mapOf(
             "projectName" to projectName,
             "startDate" to startDate,
@@ -57,6 +93,7 @@ class ProjectsModel (
 
     // Method to write project data to Firestore
     fun writeDataToFirestore() {
+
         // Access Firestore instance
         val firestore = FirebaseFirestore.getInstance()
 
@@ -77,4 +114,44 @@ class ProjectsModel (
                 Log.e("ProjectsModel", "Error storing project data: $e")
             }
     }
+
+
+    fun countProjects(userId: String, callback: (List<ProjectsModel>) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        val projectsCollectionRef = firestore.collection("projects")
+
+        // Query projects where userId field equals the passed userId
+        val query = projectsCollectionRef.whereEqualTo("userId", userId)
+
+        // Get the projects matching the query
+        query.get()
+            .addOnSuccessListener { querySnapshot ->
+                val projects = mutableListOf<ProjectsModel>()
+                for (doc in querySnapshot.documents) {
+                    val project = doc.toObject(ProjectsModel::class.java)
+                    project?.let {
+                        projects.add(it)
+                    }
+                }
+                callback(projects)
+            }
+            .addOnFailureListener { e ->
+                // Error handling
+                Log.e("ProjectsModel", "Error counting projects: $e")
+                callback(emptyList()) // Return an empty list in case of failure
+            }
+    }
+
+
+
+
+
 }
+/*
+___________           .___         _____  ___________.__.__
+\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
+ |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
+ |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
+/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
+        \/     \/      \/                      \/                 \/
+*/

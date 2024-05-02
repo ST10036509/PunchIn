@@ -5,61 +5,85 @@ CREATED: 23/04/2024
 LAST MODIFIED: 30/04/2024
  */
 
+import android.app.ProgressDialog
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
-import za.co.varsitycollege.st10036509.punchin.R
+import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectDetailsBinding
+import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
+import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
+import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 
 class ProjectDetailsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityProjectDetailsBinding
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var projectModel: ProjectsModel
+    private lateinit var toaster: ToastHandler
+    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
+    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_project_details)
+        binding = ActivityProjectDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        loadingDialogHandler = LoadDialogHandler(this@ProjectDetailsActivity, progressDialog)//initialise the loading dialog
+        intentHandler = IntentHandler(this@ProjectDetailsActivity)//setup an intent handler for navigating pages
         // Initialize FirebaseFirestore instance
         firestore = FirebaseFirestore.getInstance()
 
+
+        toaster = ToastHandler(this@ProjectDetailsActivity)
+
+        // Initialize ProjectsModel
+        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
+
+        loadingDialogHandler.showLoadingDialog("Loading Data...")
         // Call method to retrieve data from Firestore
-        retrieveDataFromFirestore()
+        projectModel.readProjectData("7gKLKJNLe8kVyuKUQwhp") { project, timesheets ->
+            // Handle the received project and timesheets objects here
+            if (project != null) {
 
-    }
-
-    private fun retrieveDataFromFirestore() {
-        // Reference to the project document in Firestore
-        val projectRef = firestore.collection("projects").document("GA0Ya1qpe3qPUymnFoyd")
-
-        // Retrieve data from Firestore
-        projectRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    // Parse and populate the TextViews with data
-                    val projectName = documentSnapshot.getString("projectName")
-                    val organizationName = documentSnapshot.getString("organizationName")
-                    val startDate = documentSnapshot.getString("startDate")
-                    val setColor = documentSnapshot.getString("setColor")
-                    val hourlyRate = documentSnapshot.getString("hourlyRate")
-                    val description = documentSnapshot.getString("description")
-
-                    // Update TextViews with retrieved data
-                    val tvProjectName = findViewById<TextView>(R.id.tv_project_name)
-                    val tvSetColor = findViewById<TextView>(R.id.tv_colour)
-                    val tvHourlyRate = findViewById<TextView>(R.id.tv_rate)
-                    val tvDescription = findViewById<TextView>(R.id.tv_description)
-
-                    tvProjectName.text = projectName
-                    tvSetColor.text = setColor
-                    tvHourlyRate.text = hourlyRate
-                    tvDescription.text = description
+                binding.apply {
+                    tvProjectName.text = project.projectName
+                    tvColour.text = project.setColor
+                    tvProjectName.text =project.projectName
+                    tvRate.text = project.hourlyRate.toString()
+                    tvEarnings.text = project.totalEarnings.toString()
+                    tvTimeSheets.text =project.totalTimeSheets.toString()
+                    tvHours.text = project.totalHours.toString()
+                    tvDescription.text = project.description
                 }
+
+                for (timesheet in timesheets){
+                    binding.tvList.append("${timesheet.timesheetName}\n")
+                }
+                loadingDialogHandler.dismissLoadingDialog()
+            } else {
+                // Handle case where project is null (e.g., project not found)
+                toaster.showToast("No project found...")
             }
-            .addOnFailureListener { exception ->
-                // Log any errors that occur while retrieving data
-                Log.e("ProjectDetailsActivity", "Error retrieving project data: $exception")
-            }
+        }
+
+        // Find the return button and set OnClickListener
+        binding.btnReturn.setOnClickListener {
+            toaster.showToast("Returning")
+            intentHandler.openActivityIntent(ProjectViewActivity::class.java)
+        }
     }
 }
-//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\
+
+/*
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
+*/
