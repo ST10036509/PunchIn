@@ -59,7 +59,11 @@ class ProjectViewActivity : AppCompatActivity() {
             // Start the activity for project creation
             intentHandler.openActivityIntent(ProjectCreationActivity::class.java)
         }
-
+        val btnDate =binding.btnAlphabet
+        btnDate.setOnClickListener{
+            // Rearrange components alphabetically
+            rearrangeComponentsAlphabetically()
+        }
 
         // Initialize ProjectsModel
         projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
@@ -67,8 +71,39 @@ class ProjectViewActivity : AppCompatActivity() {
 
         loadingDialogHandler.showLoadingDialog("Loading Projects...")
         initializePopulate()
-
     }
+
+    private fun rearrangeComponentsAlphabetically() {
+        // Remove all existing views from ll_holder
+        binding.llHolder.removeAllViews()
+
+        val currentUser = authModel.getCurrentUser()
+        if (currentUser != null) {
+            projectModel.countProjects(currentUser.uid) { projects ->
+                // Now projects contains the list of projects
+                if (projects.isNotEmpty()) {
+                    // Sort the list of projects alphabetically regardless of capitalization
+                    val sortedProjects = projects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.projectName })
+
+                    // Create and add XML components for each project to ll_holder
+                    for (project in sortedProjects) {
+                        createXmlComponent(project)
+                    }
+
+                    toaster.showToast("Projects Loaded and rearranged alphabetically")
+                } else {
+                    toaster.showToast("No projects found")
+                    Log.e("ProjectViewActivity", "No projects found for current user")
+                }
+            }
+        } else {
+            toaster.showToast("No projects found")
+            Log.e("ProjectViewActivity", "Current user is null")
+        }
+    }
+
+
+
 
     private fun initializePopulate(){
 
