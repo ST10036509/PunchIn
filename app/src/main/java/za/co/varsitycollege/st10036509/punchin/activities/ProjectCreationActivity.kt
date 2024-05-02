@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectCreationBinding
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
+import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
@@ -31,11 +32,14 @@ class ProjectCreationActivity : AppCompatActivity() {
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var toaster: ToastHandler
+    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        intentHandler = IntentHandler(this@ProjectCreationActivity)//setup an intent handler for navigating pages
 
         loadingDialogHandler = LoadDialogHandler(this@ProjectCreationActivity, progressDialog)//initialise the loading dialog
         //initialise the validation handler
@@ -54,14 +58,25 @@ class ProjectCreationActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
+
         // Find the "Add" button
         val addButton = findViewById<Button>(R.id.btn_Add)
+        val returnButton =findViewById<Button>(R.id.btn_Return)
 
         // Set a click listener for the "Add" button
         addButton.setOnClickListener {
             // Call the method to handle the click event
             handleAddButtonClick()
         }
+
+        returnButton.setOnClickListener{
+            handleReturnClick()
+        }
+    }
+
+    private fun handleReturnClick(){
+        toaster.showToast("Returning to Projects page")
+        intentHandler.openActivityIntent(ProjectViewActivity::class.java)
     }
 
     private fun handleAddButtonClick() {
