@@ -39,6 +39,8 @@ class CameraActivity : AppCompatActivity(){
             startActivityForResult(cameraIntent, REQUEST_CODE)
         }
 
+        intentHandler = IntentHandler(this@CameraActivity)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

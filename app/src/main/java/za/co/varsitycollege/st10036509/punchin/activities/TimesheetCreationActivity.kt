@@ -27,6 +27,8 @@ import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
+import java.io.ByteArrayOutputStream
+import java.util.Base64
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -41,7 +43,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
-    private var image : Bitmap? = null
+    private var image : ByteArray? = null
+    private lateinit var timesheetPhotoString : String
 
     //strings to use
     private companion object {
@@ -67,7 +70,26 @@ class TimesheetCreationActivity : AppCompatActivity() {
         val imageView: ImageView = binding.ivTimesheetImage
         capturedPhoto?.let {
             imageView.setImageBitmap(it)
-            image = it
+
+            /**
+            // Convert Bitmap to byte array
+            val stream = ByteArrayOutputStream()
+            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            image = stream.toByteArray()
+            */
+
+            // Convert Bitmap to byte array
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            it.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+
+            // Convert byte array to Base64 string manually
+            val base64String = StringBuilder()
+            for (byte in byteArray) {
+                base64String.append(String.format("%02X", byte))
+            }
+            timesheetPhotoString = base64String.toString()
+
         }
 
         // Call fetchUserProjects function
@@ -165,7 +187,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding.apply {
 
             btnReturn.setOnClickListener { returnToView() }
-            btnAdd.setOnClickListener { createTimesheet(image) }
+            btnAdd.setOnClickListener { createTimesheet(timesheetPhotoString) }
             ivTimesheetImage.setOnClickListener { intentHandler.openActivityIntent(CameraActivity::class.java) }
             btnDatePicker.setOnClickListener {
                 showDatePicker { selectedDate ->
@@ -211,7 +233,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     /**
      * Method to add new timesheet once fully entered
      */
-    private fun createTimesheet(timesheetPhoto: Bitmap?) {
+    private fun createTimesheet(timesheetPhotoString : String) {
         // Ensure both start and end times are selected before proceeding
         if (timesheetStartTime != null && timesheetEndTime != null) {
             // Ensure timesheetStartDate is not null before proceeding
@@ -239,14 +261,10 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 // Check if a project is selected and retrieve its ID
                 val projectId = selectedProject?.second ?: ""
 
-                // Assign the timesheetPhoto to timesheetPhoto variable
-                //val timesheetPhoto = timesheetPhoto
-
                 // Check if the current user is not null
                 currentUser?.let { user ->
                     // Get user id
                     val userId = user.uid
-                    // Set timesheet data using the setData method of TimesheetModel
                     timesheetModel.setData(
                         userId,
                         timesheetName,
@@ -255,7 +273,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetStartTime!!,
                         timesheetEndTime!!,
                         timesheetDescription,
-                        timesheetPhoto!!
+                        timesheetPhotoString
                     )
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
@@ -266,8 +284,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     private fun clearInputFields() {
 

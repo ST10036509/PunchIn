@@ -22,7 +22,7 @@ class TimesheetModel(
     var timesheetStartTime: Date? = null,
     var timesheetEndTime: Date? = null,
     var timesheetDescription: String,
-    var timesheetPhoto: Bitmap?
+    var timesheetPhoto: String?
 ){
     // Add no-argument constructor
     constructor() : this("", "", "", null, null, null, "", null)
@@ -37,7 +37,7 @@ class TimesheetModel(
         timesheetStartTime: Date,
         timesheetEndTime: Date,
         timesheetDescription: String,
-        timesheetPhoto: Bitmap
+        timesheetPhoto: String
     ) {
         this.userId = userId
         this.timesheetName = timesheetName
