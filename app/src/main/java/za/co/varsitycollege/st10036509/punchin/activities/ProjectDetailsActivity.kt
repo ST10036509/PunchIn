@@ -39,11 +39,11 @@ class ProjectDetailsActivity : AppCompatActivity() {
         toaster = ToastHandler(this@ProjectDetailsActivity)
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
+        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
 
         loadingDialogHandler.showLoadingDialog("Loading Data...")
         // Call method to retrieve data from Firestore
-        projectModel.readProjectData("SJ7cy8KHnKSIElKkGfzG") { project, timesheets ->
+        projectModel.readProjectData("7gKLKJNLe8kVyuKUQwhp") { project, timesheets ->
             // Handle the received project and timesheets objects here
             if (project != null) {
 
@@ -73,16 +73,17 @@ class ProjectDetailsActivity : AppCompatActivity() {
             toaster.showToast("Returning")
             intentHandler.openActivityIntent(ProjectViewActivity::class.java)
         }
-
-
     }
 }
 
 /*
-___________           .___         _____  ___________.__.__
-\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
- |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
- |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
-/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
-        \/     \/      \/                      \/                 \/
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
 */

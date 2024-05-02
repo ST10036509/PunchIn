@@ -5,7 +5,7 @@ LAST MODIFIED: 01/05/2024
  */
 package za.co.varsitycollege.st10036509.punchin.activities
 
-
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.util.Log
@@ -21,7 +21,10 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
-
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ProjectCreationActivity : AppCompatActivity() {
 
@@ -29,128 +32,134 @@ class ProjectCreationActivity : AppCompatActivity() {
     private lateinit var projectModel: ProjectsModel
     private var currentUser: FirebaseUser? = null
     private lateinit var validationHandler: ValidationHandler
-    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
-    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
+    private var progressDialog: ProgressDialog? = null
+    private lateinit var loadingDialogHandler: LoadDialogHandler
     private lateinit var toaster: ToastHandler
-    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+    private lateinit var intentHandler: IntentHandler
+    private var startDate: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        intentHandler = IntentHandler(this@ProjectCreationActivity)//setup an intent handler for navigating pages
-
-        loadingDialogHandler = LoadDialogHandler(this@ProjectCreationActivity, progressDialog)//initialise the loading dialog
-        //initialise the validation handler
+        intentHandler = IntentHandler(this@ProjectCreationActivity)
+        loadingDialogHandler = LoadDialogHandler(this@ProjectCreationActivity, progressDialog)
         validationHandler = ValidationHandler()
-        // Initialize FirebaseAuth
         toaster = ToastHandler(this@ProjectCreationActivity)
         val auth = FirebaseAuth.getInstance()
-
-
-
-        // Get current user
         currentUser = auth.currentUser
 
-        // Call the method to set up click listeners
         setupClickListeners()
     }
 
     private fun setupClickListeners() {
-
-        // Find the "Add" button
         val addButton = findViewById<Button>(R.id.btn_Add)
-        val returnButton =findViewById<Button>(R.id.btn_Return)
+        val returnButton = findViewById<Button>(R.id.btn_Return)
+        val addDateButton = binding.llStartDate
 
-        // Set a click listener for the "Add" button
         addButton.setOnClickListener {
-            // Call the method to handle the click event
             handleAddButtonClick()
         }
 
-        returnButton.setOnClickListener{
+        returnButton.setOnClickListener {
             handleReturnClick()
         }
+
+        addDateButton.setOnClickListener {
+            showDatePicker()
+        }
+
     }
 
-    private fun handleReturnClick(){
+    private fun showDatePicker() {
+        // Get current date to set as default in the picker
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Create a DatePickerDialog instance with current date as default
+        val datePickerDialog = DatePickerDialog(
+            this@ProjectCreationActivity,
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                // Set the selected date in the startDate variable
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, monthOfYear)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                startDate = selectedDate.time // Update the startDate variable with the selected date
+                // If you need to update the UI, you can do it here
+                binding.edStartDate.setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time))
+            },
+            year,
+            month,
+            day
+        )
+
+        // Show the DatePickerDialog
+        datePickerDialog.show()
+    }
+
+
+
+
+
+    private fun handleReturnClick() {
         toaster.showToast("Returning to Projects page")
         intentHandler.openActivityIntent(ProjectViewActivity::class.java)
     }
 
     private fun handleAddButtonClick() {
-        // Find all EditText views
-        val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
-        val startDateEditText = findViewById<EditText>(R.id.ed_Start_Date)
-        val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
-        val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
-        val descriptionEditText = findViewById<EditText>(R.id.ed_Description)
+        val projectNameEditText = binding.edProjectName
+        val startDateEditText = binding.edStartDate
+        val setColorEditText = binding.edSetColour
+        val hourlyRateEditText = binding.edHourlyRate
+        val descriptionEditText = binding.edDescription
 
-        // Get text from EditText views
         val projectName = projectNameEditText.text.toString()
         val startDate = startDateEditText.text.toString()
         val setColor = setColorEditText.text.toString()
-        val hourlyRateText= hourlyRateEditText.text.toString()
+        val hourlyRateText = hourlyRateEditText.text.toString()
         val description = descriptionEditText.text.toString()
 
-
-        validateNullInput(projectName,startDate,setColor,hourlyRateText,description)
+        validateNullInput(projectName, startDate, setColor, hourlyRateText, description)
     }
 
-    private fun validateNullInput(name: String, date : String, color : String, rate : String, description: String){
 
-        val checkForNull =  validationHandler.checkForNullInputs(name,date,color,rate,description)
+    private fun validateNullInput(name: String, date: String, color: String, rate: String, description: String) {
+        val checkForNull = validationHandler.checkForNullInputs(name, date, color, rate, description)
 
-        if (!checkForNull){
+        if (!checkForNull) {
             validateDouble(name, date, color, rate, description)
-        }else{
-            // Display error message here & clear input
+        } else {
             toaster.showToast("Do not leave any fields empty...")
         }
     }
 
-    private fun validateDouble(name: String, date : String, color : String, rate : String, description: String){
-
+    private fun validateDouble(name: String, date: String, color: String, rate: String, description: String) {
         val checkDouble = validationHandler.validateDouble(rate)
 
         if (checkDouble) {
-            // Validation succeeded
             Log.d("Validation", "Hourly rate validation succeeded: $rate")
-            // Proceed with other operations or write to the database here
-            writeToDataBase(name,date,color,rate,description)
-
+            writeToDataBase(name, date, color, rate, description)
         } else {
-            // Validation failed
             Log.d("Validation", "Hourly rate validation failed: $rate")
-            // Handle the failure, such as displaying an error message to the user
             toaster.showToast("Type in a number for Rate...")
         }
-
     }
 
-
-    private fun writeToDataBase(name: String, date : String, color : String, rate : String, description: String){
-
+    private fun writeToDataBase(name: String, date : String, color: String, rate: String, description: String) {
         val projectName: String = name
-        val startDate: String = date
         val setColor: String = color
         val hourlyRate: Double = rate.toDouble()
-        val description : String = description
+        val description: String = description
 
-
-        // Check if the current user is not null
         currentUser?.let { user ->
-            // Get user id
             val userId = user.uid
 
-            // Set project data using the setData method of ProjectsModel
-
-          //  projectModel.setData(projectName, startDate, setColor, hourlyRate, description, userId, )
             loadingDialogHandler.showLoadingDialog("Saving your project")
-            // Initialize ProjectsModel
-            projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0,0,0.0,userId,)
-            // Call the method to write project data to Firestore
+            projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0, 0, 0.0, userId)
             projectModel.writeDataToFirestore()
             loadingDialogHandler.dismissLoadingDialog()
             toaster.showToast("Project added!")
@@ -158,16 +167,13 @@ class ProjectCreationActivity : AppCompatActivity() {
         }
     }
 
-    fun clearInputFields(){
-
-        // Find all EditText views
+    private fun clearInputFields() {
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
-        val startDateEditText = findViewById<EditText>(R.id.ed_Start_Date)
+        val startDateEditText = binding.edStartDate
         val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
         val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
         val descriptionEditText = findViewById<EditText>(R.id.ed_Description)
 
-        // Set text of each EditText to an empty string
         projectNameEditText.setText("")
         startDateEditText.setText("")
         setColorEditText.setText("")
@@ -177,11 +183,15 @@ class ProjectCreationActivity : AppCompatActivity() {
 }
 
 
+
 /*
-___________           .___         _____  ___________.__.__
-\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
- |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
- |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
-/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
-        \/     \/      \/                      \/                 \/
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
 */

@@ -66,7 +66,7 @@ class ProjectViewActivity : AppCompatActivity() {
         }
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
+        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
         toaster = ToastHandler(this@ProjectViewActivity)
 
         loadingDialogHandler.showLoadingDialog("Loading Projects...")
