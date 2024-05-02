@@ -18,14 +18,21 @@ import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityGoalsBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.models.TimesheetModel
 import za.co.varsitycollege.st10036509.punchin.models.UserModel
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
+import java.lang.Math.round
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.absoluteValue
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 /**
  * Class to handle Goals Activity Functionality
@@ -42,10 +49,10 @@ class GoalsActivity : AppCompatActivity() {
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
 
     private var currentUser: FirebaseUser? = null//variable for storing current user
-    private var displayedMinimumGoal = UserModel._minGoal//variable to hold the currently displayed user Minimum Goal
-    private var displayedMaximumGoal = UserModel._maxGoal//variable to hold the currently displayed user Maximum Goal
+    private var displayedMinimumGoal = UserModel.minGoal//variable to hold the currently displayed user Minimum Goal
+    private var displayedMaximumGoal = UserModel.maxGoal//variable to hold the currently displayed user Maximum Goal
     private var timesheets: MutableList<TimesheetModel> = mutableListOf()//declare an array to hold user related timesheets
-    private var totalTimeWorkedToday: Double = 0.0//declare an variable to hold total time worked
+
     //constants for app runtime
     private companion object {
         const val MSG_UPDATE_GOALS_SUCCESS = "Updated Goals Successfully!"
@@ -57,17 +64,6 @@ class GoalsActivity : AppCompatActivity() {
         const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
         const val MSG_NO_TIMESHEETS_ERROR = "No timesheets found for today!"
     }
-
-
-    class TimesheetModel(
-        timesheetUid: String,
-        timesheetName: String,
-        projectUid: String,
-        startDate: Date?,
-        startTimestamp: Date?,
-        endTimestamp: Date?,
-        timesheetDescription: String
-        )
 
 
 //__________________________________________________________________________________________________onCreate
@@ -108,7 +104,7 @@ class GoalsActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel._minGoal}/-${UserModel._maxGoal}")
+        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel.minGoal}/-${UserModel.maxGoal}")
 
     }
 
@@ -163,10 +159,33 @@ class GoalsActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
 
             //update display to show user related data
-            decoratePageWithUserData()
+            decoratePageWithNewUserData()
 
             loadingDialogHandler.dismissLoadingDialog()
         }, DELAY_BEFORE_DISMISS_LOADING_DIALOG)
+    }
+
+
+//__________________________________________________________________________________________________decoratePageWithUserData
+
+
+    private fun decoratePageWithNewUserData() {
+
+        binding.apply {
+
+            updateGoalsProgressBarWithNewData()
+
+            tvMinimumGoalHours.text = UserModel.minGoal.toString()
+            tvMaximumGoalHours.text = UserModel.maxGoal.toString()
+            tvLeftGoalDisplay.text = "${UserModel.minGoal.toString()} HRS"
+            tvRightGoalDisplay.text = "${UserModel.maxGoal.toString()} HRS"
+
+            tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+            tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+
+        }
+
+        loadingDialogHandler.dismissLoadingDialog()
     }
 
 
@@ -179,10 +198,10 @@ class GoalsActivity : AppCompatActivity() {
 
             updateGoalsProgressBar()
 
-            tvMinimumGoalHours.text = UserModel._minGoal.toString()
-            tvMaximumGoalHours.text = UserModel._maxGoal.toString()
-            tvLeftGoalDisplay.text = UserModel._minGoal.toString()
-            tvRightGoalDisplay.text = UserModel._maxGoal.toString()
+            tvMinimumGoalHours.text = UserModel.minGoal.toString()
+            tvMaximumGoalHours.text = UserModel.maxGoal.toString()
+            tvLeftGoalDisplay.text = "${UserModel.minGoal.toString()} HRS"
+            tvRightGoalDisplay.text = "${UserModel.maxGoal.toString()} HRS"
 
             tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
             tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
@@ -196,19 +215,30 @@ class GoalsActivity : AppCompatActivity() {
 //__________________________________________________________________________________________________updateGoalsProgressBar
 
 
-    private fun updateGoalsProgressBar() {
+    private fun updateGoalsProgressBarWithNewData() {
 
         getUserRelatedTimesheets() { success ->
 
             if (success){
 
-                //getTotalHoursWorked()
-                //getProgressByHours()
+                getProgressByHours()
 
             } else {
+
                 toaster.showToast(GoalsActivity.MSG_NO_TIMESHEETS_ERROR)
+
             }
         }
+    }
+
+
+//__________________________________________________________________________________________________updateGoalsProgressBar
+
+
+    private fun updateGoalsProgressBar() {
+
+        getProgressByHours()
+
     }
 
 
@@ -219,9 +249,6 @@ class GoalsActivity : AppCompatActivity() {
 
         val timesheetCollection = firestoreInstance.collection("timesheets")
         val currentUid = currentUser?.uid.toString()
-
-        val todaysDate: LocalDate = LocalDate.now()
-        val todaysTimestamp = Timestamp(Date.from(todaysDate.atStartOfDay(ZoneId.systemDefault()).toInstant()))
 
         val startOfDay = Calendar.getInstance().apply {
 
@@ -241,39 +268,37 @@ class GoalsActivity : AppCompatActivity() {
 
         }
 
-        val startTimestamp = Timestamp(startOfDay.timeInMillis/1000,0)
-        val endTimestamp = Timestamp(endOfDay.timeInMillis/1000,999000000)
+        val startTimestamp = Timestamp(startOfDay.timeInMillis / 1000, 0)
+        val endTimestamp = Timestamp(endOfDay.timeInMillis / 1000, 999000000)
 
-
-        timesheetCollection.whereEqualTo("userUid", currentUid)
-            //.whereGreaterThanOrEqualTo("startDate", startTimestamp)
-            //.whereLessThanOrEqualTo("startDate", endTimestamp)
+        timesheetCollection.whereEqualTo("userId", currentUid)
+            .whereGreaterThanOrEqualTo("timesheetStartDate", startTimestamp)
+            .whereLessThanOrEqualTo("timesheetStartDate", endTimestamp)
             .get()
             .addOnSuccessListener { querySnapshot ->
 
                 if (!querySnapshot.isEmpty) {
 
                     for (document in querySnapshot){
-                        val timesheetUid = document.getString("timesheetUid") ?: ""
-                        val timesheetName = document.getString("timesheetName") ?: ""
-                        val projectUid = document.getString("projectUid") ?: ""
-                        val startDate = document.getDate("startDate")
-                        val startTimestamp = document.getDate("startTimestamp")
-                        val endTimestamp = document.getDate("endTimestamp")
-                        val timesheetDescription = document.getString("timesheetDescription") ?: ""
+                        val userId = document.getString("userId") ?:""
+                        val timesheetName = document.getString("timesheetName") ?:""
+                        val projectId = document.getString("projectId") ?:""
+                        val timesheetStartDate = document.getDate("timesheetStartDate")
+                        val timesheetStartTime = document.getDate("timesheetStartTime")
+                        val timesheetEndTime = document.getDate("timesheetEndTime")
+                        val timesheetDescription = document.getString("timesheetDescription") ?:""
 
                         val newTimesheet = TimesheetModel(
-                            timesheetUid,
+                            userId,
                             timesheetName,
-                            projectUid,
-                            startDate,
-                            startTimestamp,
-                            endTimestamp,
+                            projectId,
+                            timesheetStartDate,
+                            timesheetStartTime,
+                            timesheetEndTime,
                             timesheetDescription
                         )
 
                         timesheets.add(newTimesheet)
-                        toaster.showToast(newTimesheet.toString())
                     }
 
                     callback(true)
@@ -285,7 +310,7 @@ class GoalsActivity : AppCompatActivity() {
             }
             .addOnFailureListener {exception ->
 
-                println(exception.toString())
+                println(exception.message.toString())
 
                 callback(false)
 
@@ -296,23 +321,65 @@ class GoalsActivity : AppCompatActivity() {
 //__________________________________________________________________________________________________getTotalHoursWorked
 
 
-    private fun getTotalHoursWorked() {
+    private fun getTotalHoursWorked(): Double {
+
+        var totalHoursWorked = 0.0
 
         for (timesheet in timesheets) {
 
-
+            val durationMillis = (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
+            val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
+            totalHoursWorked += hoursWorked
 
         }
+
+        return totalHoursWorked.roundToDecimalPlaces(3)
+
     }
 
+
+    fun Double.roundToDecimalPlaces(decimalPlaces: Int): Double {
+        val factor = 10.0.pow(decimalPlaces)
+        return (this * factor).roundToInt() / factor
+    }
 
 //__________________________________________________________________________________________________getProgressByHours
 
 
     private fun getProgressByHours() {
 
+        val totalHoursWorked = getTotalHoursWorked()
+        val minGoal = UserModel.minGoal
+        val maxGoal = UserModel.maxGoal
+
+        val progressPercentage = when {
+            totalHoursWorked <= minGoal -> 0f
+            totalHoursWorked >= maxGoal -> 100f
+            else -> calculatePercentageOfWorkedHours(minGoal, maxGoal, totalHoursWorked).toFloat()
+        }
+
+        binding.pbProgressBarTracker.progress = Math.round(progressPercentage)
 
 
+        updateHoursWorkedText(totalHoursWorked, minGoal, maxGoal)
+
+    }
+
+
+//__________________________________________________________________________________________________calculatePercentageOfWorkedHours
+
+
+    private fun calculatePercentageOfWorkedHours(min: Int, max: Int, hoursWorked: Double): Double {
+
+        val range = max - min
+
+        val hoursExcess = hoursWorked - min
+
+        val percentage = (hoursExcess.toDouble() / range.toDouble()) * 100.0
+
+        toaster.showToast(percentage.toString())
+
+        return percentage
     }
 
 
@@ -339,6 +406,39 @@ class GoalsActivity : AppCompatActivity() {
 
             tvMaximumGoalHours.text = displayedMaximumGoal.toString()
             updateTextColor()
+
+        }
+    }
+
+
+//__________________________________________________________________________________________________updateMaximumGoalsText
+
+
+    private fun updateHoursWorkedText(totalHours: Double, minGoal: Int, maxGoal: Int) {
+
+        val context = this@GoalsActivity
+        val textColor: Int
+
+        binding.apply {
+
+            tvHoursWorked.text = "${(totalHours.toInt()).toString()} HRS"
+
+            if (totalHours > maxGoal || totalHours < minGoal) {
+
+                textColor = context.getColor(R.color.red_300)
+                tvHoursWorked.setTextColor(textColor)
+
+            } else if (totalHours <= maxGoal || totalHours >= minGoal) {
+
+                textColor = context.getColor(R.color.green_200)
+                tvHoursWorked.setTextColor(textColor)
+
+            } else {
+
+                textColor = context.getColor(R.color.dark_blue_900)
+                tvHoursWorked.setTextColor(textColor)
+
+            }
 
         }
     }
@@ -381,7 +481,7 @@ class GoalsActivity : AppCompatActivity() {
 
         binding.apply {
 
-            if ((displayedMinimumGoal + displayedMaximumGoal) < 24) {
+            if ((displayedMinimumGoal + displayedMaximumGoal) < 24 && displayedMinimumGoal < displayedMaximumGoal) {
                 displayedMinimumGoal++
                 updateMinimumGoalsText()
             }
@@ -427,7 +527,7 @@ class GoalsActivity : AppCompatActivity() {
 
         binding.apply {
 
-            if (displayedMaximumGoal > 0) {
+            if (displayedMaximumGoal > 1 && displayedMaximumGoal > displayedMinimumGoal) {
                 displayedMaximumGoal--
                 updateMaximumGoalsText()
             }
@@ -459,8 +559,8 @@ class GoalsActivity : AppCompatActivity() {
                 )
                 .addOnSuccessListener {
 
-                    UserModel._minGoal = displayedMinimumGoal
-                    UserModel._maxGoal = displayedMaximumGoal
+                    UserModel.minGoal = displayedMinimumGoal
+                    UserModel.maxGoal = displayedMaximumGoal
 
                     callback(true)
 

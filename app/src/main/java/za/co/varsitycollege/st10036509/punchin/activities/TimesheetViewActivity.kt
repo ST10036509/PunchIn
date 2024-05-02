@@ -122,13 +122,13 @@ class TimesheetViewActivity : AppCompatActivity() {
                 if (documentSnapshot.exists()) {
                     // Parse and populate the TextViews with data
                     timesheetModel = TimesheetModel(
-                        userId = documentSnapshot.getString("userId") ?:"",
-                        name = documentSnapshot.getString("name") ?:"",
+                        userId = documentSnapshot.getString("userUid") ?:"",
+                        timesheetName = documentSnapshot.getString("timesheetName") ?:"",
                         projectId = documentSnapshot.getString("projectId") ?:"",
-                        createdAt = documentSnapshot.getDate("createdAt"),
-                        startedAt = documentSnapshot.getDate("startedAt"),
-                        endedAt = documentSnapshot.getDate("endedAt"),
-                        description = documentSnapshot.getString("description") ?:""
+                        timesheetStartDate = documentSnapshot.getDate("timesheetStartDate"),
+                        timesheetStartTime = documentSnapshot.getDate("timesheetStartTime"),
+                        timesheetEndTime = documentSnapshot.getDate("timesheetEndTime"),
+                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:""
                     )
                 }
             }
@@ -139,9 +139,9 @@ class TimesheetViewActivity : AppCompatActivity() {
         return timesheetModel
     }
     private fun displayData(timesheetModel: TimesheetModel){
-        binding.tvStartTime.text = timesheetModel.startedAt.toString()
-        binding.tvEndTime.text = timesheetModel.endedAt.toString()
-        binding.tvTimesheetDescription.text = timesheetModel.description.toString()
+        binding.tvStartTime.text = timesheetModel.timesheetStartTime.toString()
+        binding.tvEndTime.text = timesheetModel.timesheetEndTime.toString()
+        binding.tvTimesheetDescription.text = timesheetModel.timesheetDescription.toString()
     }
 }
 

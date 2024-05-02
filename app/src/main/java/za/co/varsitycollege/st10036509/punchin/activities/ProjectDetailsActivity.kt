@@ -45,7 +45,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
                 }
 
                 for (timesheet in timesheets){
-                    binding.tvList.append("${timesheet.name}\n")
+                    binding.tvList.append("${timesheet.timesheetName}\n")
                 }
 
 

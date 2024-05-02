@@ -13,47 +13,48 @@ import java.util.Date
 private lateinit var authModel: AuthenticationModel
 
 class TimesheetModel(
+
     var userId: String,
-    var name: String,
+    var timesheetName: String,
     var projectId: String,
-    var createdAt: Date?,
-    var startedAt: Date?,
-    var endedAt: Date?,
-    var description: String
+    var timesheetStartDate: Date?,
+    var timesheetStartTime: Date?,
+    var timesheetEndTime: Date?,
+    var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
     // Add no-argument constructor
     constructor() : this("", "", "", null, null, null, "")
     fun setData(
         userId: String,
-        name: String,
+        timesheetName: String,
         projectId: String,
-        createdAt: Date,
-        startedAt: Date?,
-        endedAt: Date?,
-        description: String
+        timesheetStartDate: Date,
+        timesheetStartTime: Date,
+        timesheetEndTime: Date,
+        timesheetDescription: String
         //timesheetPhoto: String
     ) {
         this.userId = userId
-        this.name = name
+        this.timesheetName = timesheetName
         this.projectId = projectId
-        this.createdAt = createdAt
-        this.startedAt = startedAt
-        this.endedAt = endedAt
-        this.description = description
+        this.timesheetStartDate = timesheetStartDate
+        this.timesheetStartTime = timesheetStartTime
+        this.timesheetEndTime = timesheetEndTime
+        this.timesheetDescription = timesheetDescription
         //this.timesheetPhoto = timesheetPhoto
     }
     fun getData(): Map<String, Any?> {
         return mapOf(
             "userId" to userId,
-            "name" to name,
+            "timesheetName" to timesheetName,
             "projectId" to projectId,
-            "createdAt" to createdAt,
-            "startedAt" to startedAt,
-            "endedAt" to endedAt,
-            "description" to description
+            "timesheetStartDate" to timesheetStartDate,
+            "timesheetStartTime" to timesheetStartTime,
+            "timesheetEndTime" to timesheetEndTime,
+            "timesheetDescription" to timesheetDescription
             //"timesheetPhoto" to timesheetPhoto
-            )
+        )
     }
 
     fun writeDataToFirestore() {

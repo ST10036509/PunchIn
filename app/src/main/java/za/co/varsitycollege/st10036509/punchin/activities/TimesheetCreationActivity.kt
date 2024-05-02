@@ -181,8 +181,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetName,
                         projectId,
                         timesheetStartDate,
-                        timesheetStartTime,
-                        timesheetEndTime,
+                        timesheetStartTime!!,
+                        timesheetEndTime!!,
                         timesheetDescription
                     )
 
