@@ -2,7 +2,7 @@ package za.co.varsitycollege.st10036509.punchin.models
 /*
 AUTHOR: Leonard Bester
 CREATED: 30/04/2024
-LAST MODIFIED: 1/05/2024
+LAST MODIFIED: 02/05/2024
  */
 
 /*
@@ -113,4 +113,44 @@ class ProjectsModel (
                 Log.e("ProjectsModel", "Error storing project data: $e")
             }
     }
+
+
+    fun countProjects(userId: String, callback: (List<ProjectsModel>) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        val projectsCollectionRef = firestore.collection("projects")
+
+        // Query projects where userId field equals the passed userId
+        val query = projectsCollectionRef.whereEqualTo("userId", userId)
+
+        // Get the projects matching the query
+        query.get()
+            .addOnSuccessListener { querySnapshot ->
+                val projects = mutableListOf<ProjectsModel>()
+                for (doc in querySnapshot.documents) {
+                    val project = doc.toObject(ProjectsModel::class.java)
+                    project?.let {
+                        projects.add(it)
+                    }
+                }
+                callback(projects)
+            }
+            .addOnFailureListener { e ->
+                // Error handling
+                Log.e("ProjectsModel", "Error counting projects: $e")
+                callback(emptyList()) // Return an empty list in case of failure
+            }
+    }
+
+
+
+
+
 }
+/*
+___________           .___         _____  ___________.__.__
+\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
+ |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
+ |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
+/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
+        \/     \/      \/                      \/                 \/
+*/

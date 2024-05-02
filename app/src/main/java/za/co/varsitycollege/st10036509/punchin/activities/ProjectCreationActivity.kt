@@ -132,11 +132,12 @@ class ProjectCreationActivity : AppCompatActivity() {
             // Set project data using the setData method of ProjectsModel
 
           //  projectModel.setData(projectName, startDate, setColor, hourlyRate, description, userId, )
-
+            loadingDialogHandler.showLoadingDialog("Saving your project")
             // Initialize ProjectsModel
             projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0,0,0.0,userId,)
             // Call the method to write project data to Firestore
             projectModel.writeDataToFirestore()
+            loadingDialogHandler.dismissLoadingDialog()
             toaster.showToast("Project added!")
             clearInputFields()
         }
