@@ -81,7 +81,7 @@ LAST MODIFIED: 01/05/2024
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tvSelectDate"
                 android:layout_width="290dp"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
@@ -112,7 +112,7 @@ LAST MODIFIED: 01/05/2024
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textViewColour"
+                android:id="@+id/tv_Set_Colour"
                 android:layout_width="290dp"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
@@ -122,16 +122,15 @@ LAST MODIFIED: 01/05/2024
                 android:textColor="@color/blue_gray_50"
                 android:textSize="18sp" />
 
-            <Spinner
-                android:id="@+id/colourSpinner"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="35dp"
+            <Button
+                android:id="@+id/btnColourSelect"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:spinnerMode="dropdown"
-                android:background="@drawable/colour_blob"
-                android:layout_marginStart="-30dp" />
+                android:background="@color/red_300"
+                android:layout_marginStart="38dp" />
 
         </LinearLayout>
 
