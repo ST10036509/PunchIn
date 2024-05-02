@@ -26,23 +26,9 @@ class ProjectsModel (
     constructor() : this("", "", "", 0.0, "", 0, 0, 0.0, "")
 
     private lateinit var firestore: FirebaseFirestore
-    fun setData(
-        projectName: String,
-        startDate: String,
-        setColor: String,
-        hourlyRate: Double,
-        description: String,
-        userId: String
-    ) {
-        this.projectName = projectName
-        this.startDate = startDate
-        this.setColor = setColor
-        this.hourlyRate = hourlyRate
-        this.description = description
-        this.userId = userId
-    }
 
     fun readProjectData(projectid: String, callback: (ProjectsModel?, List<TimesheetModel>) -> Unit) {
+
         val projectId: String = projectid
 
         val firestore = FirebaseFirestore.getInstance()
