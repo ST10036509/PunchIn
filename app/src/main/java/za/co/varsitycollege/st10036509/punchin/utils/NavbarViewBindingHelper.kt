@@ -80,8 +80,7 @@ class NavbarViewBindingHelper (context: Context, binding: ViewBinding){
 
             //perform task based on button clicked:
             timesheetsButtonId -> {
-                //intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
-                toaster.showToast("Opening Timesheets Page...")
+                intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
             }
 
             projectsButtonId -> {
