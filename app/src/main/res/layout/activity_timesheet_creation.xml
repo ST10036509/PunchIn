@@ -73,6 +73,7 @@ LAST MODIFIED: 25/04/2024
             android:layout_height="40dp"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
             android:elevation="2dp"
+            android:prompt="@color/blue_50"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
@@ -91,6 +92,7 @@ LAST MODIFIED: 25/04/2024
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="290dp"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"

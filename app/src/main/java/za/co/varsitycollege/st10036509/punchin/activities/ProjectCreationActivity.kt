@@ -56,7 +56,7 @@ class ProjectCreationActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         val addButton = findViewById<Button>(R.id.btn_Add)
         val returnButton = findViewById<Button>(R.id.btn_Return)
-        val addDateButton = binding.llStartDate
+        val addDateButton = binding.btnDatePicker
 
         addButton.setOnClickListener {
             handleAddButtonClick()
@@ -90,7 +90,7 @@ class ProjectCreationActivity : AppCompatActivity() {
                 selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 startDate = selectedDate.time // Update the startDate variable with the selected date
                 // If you need to update the UI, you can do it here
-                binding.edStartDate.setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time))
+                binding.tvSelectDate.setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time))
             },
             year,
             month,
@@ -112,8 +112,8 @@ class ProjectCreationActivity : AppCompatActivity() {
 
     private fun handleAddButtonClick() {
         val projectNameEditText = binding.edProjectName
-        val startDateEditText = binding.edStartDate
-        val setColorEditText = binding.edSetColour
+        val startDateEditText = binding.tvSelectDate
+        val setColorEditText = binding.tvSetColour
         val hourlyRateEditText = binding.edHourlyRate
         val descriptionEditText = binding.edDescription
 
@@ -169,8 +169,8 @@ class ProjectCreationActivity : AppCompatActivity() {
 
     private fun clearInputFields() {
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
-        val startDateEditText = binding.edStartDate
-        val setColorEditText = findViewById<EditText>(R.id.ed_Set_Colour)
+        val startDateEditText = binding.tvSelectDate
+        val setColorEditText = binding.tvSetColour
         val hourlyRateEditText = findViewById<EditText>(R.id.ed_Hourly_Rate)
         val descriptionEditText = findViewById<EditText>(R.id.ed_Description)
 

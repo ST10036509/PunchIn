@@ -56,13 +56,13 @@
     <string name="timesheet_add_image_text">Press to Add Photo</string>
 
     <!-- Project Creation Page -->
-    <string name="title_activity_project_creation">Enter Project Details</string>
-    <string name="hint_project_name">ENTER PROJECT NAME…</string>
-    <string name="hint_organization_name">ENTER ORGANIZATION NAME…</string>
-    <string name="hint_start_date">ENTER START DATE…</string>
-    <string name="hint_set_colour">SET COLOUR…</string>
-    <string name="hint_enter_hourly_rate">ENTER HOURLY RATE…</string>
-    <string name="hint_enter_description">ENTER DESCRIPTION…</string>
+    <string name="title_activity_project_creation">PROJECT ENTRY</string>
+    <string name="hint_project_name">Enter Project Name…</string>
+    <string name="hint_organization_name">Enter Organization Name…</string>
+    <string name="hint_start_date">Enter Start Date…</string>
+    <string name="hint_set_colour">Set Colour…</string>
+    <string name="hint_enter_hourly_rate">Enter Hourly Rate…</string>
+    <string name="hint_enter_description">Enter Description…</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
     <string name="title_activity_projectcreation">Project Creation</string>
