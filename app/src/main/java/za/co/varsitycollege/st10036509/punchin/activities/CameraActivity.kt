@@ -57,11 +57,9 @@ class CameraActivity : AppCompatActivity(){
 
     // Function to send the captured photo to another activity
     private fun sendPhotoToNextActivity() {
-        capturedPhoto?.let { photo ->
-            val intent = Intent(this, ActivityTimesheetCreationBinding::class.java)
-            intent.putExtra("photo", photo) // Pass the photo bitmap to the intent
-            startActivity(intent)
-        }
+
+        intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
+
     }
 
     private fun returnToCreate() {

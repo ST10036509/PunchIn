@@ -56,13 +56,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
         //Initialize firebase auth
         val auth = FirebaseAuth.getInstance()
 
-        val photoBitmap = intent.getParcelableExtra<Bitmap>("photo")
-
-        if (photoBitmap != null) {
-            val imageView: ImageView = binding.ivTimesheetImage
-            imageView.setImageBitmap(photoBitmap)
-        }
-
         val startTimePickerButton: Button = binding.btnTimeStart
         val endTimePickerButton: Button = binding.btnTimeEnd
         startTimePickerButton.setOnClickListener {
