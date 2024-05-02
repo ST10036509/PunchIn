@@ -26,7 +26,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", "", "", 0,0,0.0,"")
+        projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
 
         // Call method to retrieve data from Firestore
         projectModel.readProjectData("SJ7cy8KHnKSIElKkGfzG") { project, timesheets ->
@@ -37,7 +37,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
                     tvProjectName.text = project.projectName
                     tvColour.text = project.setColor
                     tvProjectName.text =project.projectName
-                    tvRate.text = project.hourlyRate
+                    //tvRate.text = project.hourlyRate
                     tvEarnings.text = project.totalEarnings.toString()
                     tvTimeSheets.text =project.totalTimeSheets.toString()
                     tvHours.text = project.totalHours.toString()

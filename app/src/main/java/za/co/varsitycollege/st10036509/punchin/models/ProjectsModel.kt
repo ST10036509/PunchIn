@@ -16,21 +16,21 @@ class ProjectsModel (
     var projectName: String,
     var startDate: String,
     var setColor: String,
-    var hourlyRate: String,
+    var hourlyRate: Double,
     var description: String,
     var totalTimeSheets: Long = 0,
     var totalHours: Long = 0,
     var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    constructor() : this("", "", "", "", "", 0, 0, 0.0, "")
+    constructor() : this("", "", "", 0.0, "", 0, 0, 0.0, "")
 
     private lateinit var firestore: FirebaseFirestore
     fun setData(
         projectName: String,
         startDate: String,
         setColor: String,
-        hourlyRate: String,
+        hourlyRate: Double,
         description: String,
         userId: String
     ) {

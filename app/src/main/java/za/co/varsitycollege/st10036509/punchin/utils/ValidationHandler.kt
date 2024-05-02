@@ -9,7 +9,6 @@ package za.co.varsitycollege.st10036509.punchin.utils
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
-import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 
 
 /**
@@ -114,6 +113,19 @@ class ValidationHandler() : ViewModel() {
 
     }
 
+    /**
+     * Overloaded version of checkForNullInputs method
+     * @param String project name
+     * @param String start date
+     * @param String project color
+     * @param String hourly rate
+     * @param String project description
+     * @return Boolean
+     */
+    fun checkForNullInputs(name: String, date : String, color : String, rate : String, description: String): Boolean {
+
+        return (name.isEmpty() || date.isEmpty() || color.isEmpty() || rate.isEmpty() || description.isEmpty())
+    }
 
 //__________________________________________________________________________________________________validateUsername
 
@@ -216,6 +228,22 @@ class ValidationHandler() : ViewModel() {
         return Pair(true, "")
 
     }
+
+    //__________________________________________________________________________________________________validateDouble
+
+    /**
+     * Method to validate the double for hourly rate
+     * @param Double rate
+     * @return Boolean true if the rate is a double
+     */
+    fun validateDouble(rate: String): Boolean {
+        val hourlyRate = rate.toDoubleOrNull()
+
+        // If hourlyRate is not null, return true
+        // Otherwise, return false
+        return hourlyRate != null
+    }
+
 
 
 }
