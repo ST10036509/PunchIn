@@ -19,20 +19,20 @@ private lateinit var authModel: AuthenticationModel
  */
 object UserModel{
 
-    var _username: String = ""
-    var _email: String = ""
-    var _points: Int = 0
-    var _minGoal: Int = 0
-    var _maxGoal: Int = 0
+    var username: String = ""
+    var email: String = ""
+    var points: Int = 0
+    var minGoal: Int = 0
+    var maxGoal: Int = 0
 
 
     fun populateUserModel(username: String, email: String, points: Int, minGoal: Int, maxGoal: Int) {
 
-        this._username = username
-        this._email = email
-        this._points = points
-        this._minGoal = minGoal
-        this._maxGoal = maxGoal
+        this.username = username
+        this.email = email
+        this.points = points
+        this.minGoal = minGoal
+        this.maxGoal = maxGoal
 
     }
 
