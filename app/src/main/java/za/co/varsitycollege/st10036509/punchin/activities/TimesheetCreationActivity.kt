@@ -46,6 +46,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var image : ByteArray? = null
     private lateinit var timesheetPhotoString : String
 
+
     //strings to use
     private companion object {
         const val MSG_NULL = ""
@@ -59,6 +60,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         loadingDialogHandler = LoadDialogHandler(this@TimesheetCreationActivity, progressDialog)//initialise the loading dialog
         //initialise the validation handler
@@ -89,6 +91,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 base64String.append(String.format("%02X", byte))
             }
             timesheetPhotoString = base64String.toString()
+
 
         }
 
@@ -134,12 +137,14 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
+
                     timesheetStartTime =  Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, selectedHour)
                         set(Calendar.MINUTE, selectedMinute)
                         set(Calendar.SECOND, 0)
                         set(Calendar.MILLISECOND, 0)
                     }.time
+
                 },
                 hour,
                 minute,
@@ -148,6 +153,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
+
 
         endTimePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -157,12 +163,14 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
+
                     timesheetEndTime = Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, selectedHour)
                         set(Calendar.MINUTE, selectedMinute)
                         set(Calendar.SECOND, 0)
                         set(Calendar.MILLISECOND, 0)
                     }.time
+
                 },
                 hour,
                 minute,
@@ -171,6 +179,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
+
+
 
 
         intentHandler = IntentHandler(this@TimesheetCreationActivity)

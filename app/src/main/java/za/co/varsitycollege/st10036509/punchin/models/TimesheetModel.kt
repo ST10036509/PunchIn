@@ -23,6 +23,7 @@ class TimesheetModel(
     var timesheetEndTime: Date? = null,
     var timesheetDescription: String,
     var timesheetPhoto: String?
+
 ){
     // Add no-argument constructor
     constructor() : this("", "", "", null, null, null, "", null)
@@ -38,6 +39,7 @@ class TimesheetModel(
         timesheetEndTime: Date,
         timesheetDescription: String,
         timesheetPhoto: String
+
     ) {
         this.userId = userId
         this.timesheetName = timesheetName
@@ -80,5 +82,4 @@ class TimesheetModel(
                 Log.e("TimesheetModel", "Error storing timesheet data: $e")
             }
     }
-
 }
