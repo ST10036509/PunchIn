@@ -1,14 +1,10 @@
 package za.co.varsitycollege.st10036509.punchin.activities
 //
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.EditText
-import android.widget.TextView
-import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetCreationBinding
@@ -17,17 +13,12 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.provider.MediaStore
-import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
-import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
 
@@ -39,7 +30,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var startDate: Date? = null
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
-    private lateinit var projectModel: ProjectsModel
     private var authModel = AuthenticationModel()
 
     //strings to use
@@ -57,10 +47,31 @@ class TimesheetCreationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Call fetchUserProjects function
-        fetchUserProjects { projectNames ->
-            // Assuming you have a dropdown box named "projectDropdown" in your UI
-            val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, projectNames)
+        fetchUserProjects { projectData ->
+            val adapter = ArrayAdapter<Pair<String, String>>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                projectData
+            )
             binding.projectDropdown.adapter = adapter
+
+            binding.projectDropdown.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        val selectedProject = projectData[position]
+                        val selectedProjectId = selectedProject.second
+                        // Now you have the selected project ID, you can use it as needed
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        // Do nothing if nothing is selected
+                    }
+                }
         }
 
         timesheetModel = TimesheetModel("", "", "", null, null, null, "")
@@ -177,10 +188,10 @@ class TimesheetCreationActivity : AppCompatActivity() {
             // Ensure timesheetStartDate is not null before proceeding
             startDate?.let { timesheetStartDate ->
                 val timesheetName = binding.etTimesheetName.text.toString().trim()
-                val timesheetProjectName = binding.projectDropdown.selectedItem.toString()
+                val selectedProject = binding.projectDropdown.selectedItem as? Pair<String, String>
 
-                // edit this so that it gets the actual projectId
-                val projectId = timesheetProjectName
+                // Check if a project is selected and retrieve its ID
+                val projectId = selectedProject?.second ?: ""
 
                 val timesheetDescription = binding.etTimesheetDescription.text.toString().trim()
 
@@ -223,8 +234,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
         timesheetDescriptionET.setText("")
     }
 
-    // Function to fetch project names for the current user
-    fun fetchUserProjects(completion: (List<String>) -> Unit) {
+    // Function to fetch project names and IDs for the current user
+    fun fetchUserProjects(completion: (List<Pair<String, String>>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
 
         currentUser = authModel.getCurrentUser()
@@ -236,15 +247,15 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 .whereEqualTo("userId", user.uid)
                 .get()
                 .addOnSuccessListener { documents ->
-                    val projectNames = mutableListOf<String>()
+                    val projectData = mutableListOf<Pair<String, String>>()
                     for (document in documents) {
-                        // Assuming "name" is the field containing the project name
                         val projectName = document.getString("projectName")
+                        val projectId = document.id // Assuming the document ID is the project ID
                         projectName?.let {
-                            projectNames.add(it)
+                            projectData.add(it to projectId)
                         }
                     }
-                    completion(projectNames)
+                    completion(projectData)
                 }
                 .addOnFailureListener { exception ->
                     // Handle failure
