@@ -1,6 +1,7 @@
 package za.co.varsitycollege.st10036509.punchin.activities
 //
 import android.app.DatePickerDialog
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.widget.DatePicker
 import android.widget.EditText
@@ -18,31 +19,33 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.view.isEmpty
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
-import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
-import com.google.firebase.Timestamp
-import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
-
-
+import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
     private lateinit var intentHandler: IntentHandler
     private lateinit var timesheetModel: TimesheetModel
+    private lateinit var validationHandler: ValidationHandler
+    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
+    private lateinit var toaster: ToastHandler
     private var currentUser: FirebaseUser? = null
     private var startDate: Date? = null
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
 
-
     //strings to use
     private companion object {
         const val MSG_NULL = ""
         const val MSG_DATABASE_ADD_ERROR = "Failed to add timesheet data to database"
         const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
-        const val MSG_INVALID_CREDENTIALS = "No account found matches these credentials"
+        const val MSG_NO_PROJECT_SELECTED = "Please select a project first"
 
     }
 
@@ -50,6 +53,14 @@ class TimesheetCreationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        loadingDialogHandler = LoadDialogHandler(this@TimesheetCreationActivity, progressDialog)//initialise the loading dialog
+        //initialise the validation handler
+        validationHandler = ValidationHandler()
+        // Initialize FirebaseAuth
+        toaster = ToastHandler(this@TimesheetCreationActivity)
+
+
 
         // Call fetchUserProjects function
         fetchUserProjects { projectData ->
@@ -74,7 +85,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
-                        // Do nothing if nothing is selected
+                        toaster.showToast(MSG_NO_PROJECT_SELECTED)
                     }
                 }
         }
@@ -130,7 +141,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
-
 
 
         intentHandler = IntentHandler(this@TimesheetCreationActivity)
@@ -199,18 +209,32 @@ class TimesheetCreationActivity : AppCompatActivity() {
             // Ensure timesheetStartDate is not null before proceeding
             startDate?.let { timesheetStartDate ->
                 val timesheetName = binding.etTimesheetName.text.toString().trim()
-                val selectedProject = binding.projectDropdown.selectedItem as? Pair<String, String>
+                val timesheetDescription = binding.etTimesheetDescription.text.toString().trim()
 
+                // Check if project name and description are not empty
+                if (timesheetName.isEmpty() || timesheetDescription.isEmpty()) {
+                    if (timesheetName.isEmpty()) {
+                        Toast.makeText(this, "Please include a project name", Toast.LENGTH_SHORT).show()
+                    }
+                    if (timesheetDescription.isEmpty()) {
+                        Toast.makeText(this, "Please include a project description", Toast.LENGTH_SHORT).show()
+                    }
+                    // Return without proceeding further
+                    return
+                }
+
+                val selectedProject = binding.projectDropdown.selectedItem as? Pair<String, String>
+                if (binding.projectDropdown.isEmpty()) {
+                    Toast.makeText(this, "Please create a project first", Toast.LENGTH_SHORT).show()
+                    return
+                }
                 // Check if a project is selected and retrieve its ID
                 val projectId = selectedProject?.second ?: ""
-
-                val timesheetDescription = binding.etTimesheetDescription.text.toString().trim()
 
                 // Check if the current user is not null
                 currentUser?.let { user ->
                     // Get user id
                     val userId = user.uid
-
                     // Set timesheet data using the setData method of TimesheetModel
                     timesheetModel.setData(
                         userId,
@@ -221,16 +245,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetEndTime!!,
                         timesheetDescription
                     )
-
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
-
                 }
-
                 clearInputFields()
             }
         } else {
-            // Inform the user that both start and end times need to be selected
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
