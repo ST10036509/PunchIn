@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.CameraActivity">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/border_background"
+        android:layout_marginBottom="15dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_Timesheet_Button_Group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Return Button -->
+        <Button
+            android:id="@+id/btn_Return"
+            android:layout_width="133dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_return"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_light_green"
+            android:fontFamily="@font/reglo_bold"
+            android:text="Camera"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:fontFamily="@font/reglo_bold"
+            android:text="Save"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

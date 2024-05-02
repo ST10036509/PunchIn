@@ -1,5 +1,6 @@
 package za.co.varsitycollege.st10036509.punchin.activities
-
+//
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.DatePicker
@@ -17,9 +18,14 @@ import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
-
+import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -29,6 +35,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var startDate: Date? = null
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
+
 
     //strings to use
     private companion object {
@@ -49,6 +56,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
         //Initialize firebase auth
         val auth = FirebaseAuth.getInstance()
 
+        val photoBitmap = intent.getParcelableExtra<Bitmap>("photo")
+
+        if (photoBitmap != null) {
+            val imageView: ImageView = binding.ivTimesheetImage
+            imageView.setImageBitmap(photoBitmap)
+        }
 
         val startTimePickerButton: Button = binding.btnTimeStart
         val endTimePickerButton: Button = binding.btnTimeEnd
@@ -71,7 +84,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
-
 
         endTimePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -112,6 +124,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             btnReturn.setOnClickListener { returnToView() }
             btnAdd.setOnClickListener { createTimesheet() }
+            ivTimesheetImage.setOnClickListener { intentHandler.openActivityIntent(CameraActivity::class.java) }
             btnDatePicker.setOnClickListener {
                 showDatePicker { selectedDate ->
                     // Save the selected date to timesheetStartDate
@@ -148,6 +161,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
      * Method to return to the View page and cancel adding a new timesheet
      */
     private fun returnToView() {
+
+        intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
 
     }
 
