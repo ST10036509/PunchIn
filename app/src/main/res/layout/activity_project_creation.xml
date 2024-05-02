@@ -9,9 +9,19 @@ LAST MODIFIED: 01/05/2024
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/blue_50"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
+    </FrameLayout>
 
 <!-- Title -->
     <TextView
@@ -32,150 +42,167 @@ LAST MODIFIED: 01/05/2024
 
     <LinearLayout
         android:id="@+id/ll_TextEditContainer"
-        android:layout_width="393dp"
-        android:layout_height="379dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="370dp"
+        android:layout_height="530dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_Title">
 
-        <!-- Project Name -->
-        <LinearLayout
-            android:id="@+id/ll_Project_Name"
-            android:layout_width="match_parent"
-            android:layout_height="37dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
 
             <EditText
                 android:id="@+id/ed_Project_Name"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:padding="12dp"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
                 android:elevation="2dp"
                 android:fontFamily="@font/reglo_bold"
                 android:hint="@string/hint_project_name"
                 android:textColorHint="@color/blue_gray_50" />
-        </LinearLayout>
 
 
         <!-- Start Date -->
+
         <LinearLayout
-            android:id="@+id/ll_Start_Date"
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
+            android:layout_height="wrap_content"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
+            android:elevation="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/ed_Start_Date"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+                android:id="@+id/textView"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
-                android:hint="@string/hint_start_date"
-                android:textColorHint="@color/blue_gray_50"
-                android:textSize="18dp"/>
+                android:padding="12dp"
+                android:text="Select a date..."
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnDatePicker"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="38dp"
+                android:background="@drawable/calendar_lines" />
 
         </LinearLayout>
 
-        <!--Set Colour -->
-        <LinearLayout
-            android:id="@+id/ll_Colour"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
 
-            <EditText
-                android:id="@+id/ed_Set_Colour"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewColour"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
-                android:hint="@string/hint_set_colour"
-                android:textColorHint="@color/blue_gray_50" />
-        </LinearLayout>
+                android:padding="12dp"
+                android:text="Select a Colour..."
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
 
-        <!-- Hourly Rate -->
-        <LinearLayout
-            android:id="@+id/ll_Hourly_Rate"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
+            <Spinner
+                android:id="@+id/colourSpinner"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="35dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:spinnerMode="dropdown"
+                android:background="@drawable/colour_blob"
+                android:layout_marginStart="-30dp" />
+
+        </LinearLayout>
 
             <EditText
                 android:id="@+id/ed_Hourly_Rate"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:padding="12dp"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-                android:elevation="4dp"
+                android:elevation="2dp"
                 android:fontFamily="@font/reglo_bold"
                 android:hint="@string/hint_enter_hourly_rate"
-                android:textColorHint="@color/blue_gray_50" />
-        </LinearLayout>
+                android:textColorHint="@color/blue_gray_50"  />
+
 
         <!-- Description -->
-        <LinearLayout
-            android:id="@+id/ll_Description"
-            android:layout_width="match_parent"
-            android:layout_height="76dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp">
-
             <EditText
                 android:id="@+id/ed_Description"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="86dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
-                android:hint="@string/hint_enter_description"
-                android:textColorHint="@color/blue_gray_50" />
-        </LinearLayout>
+                android:gravity="top|start"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:hint="@string/hint_timesheet_description"
+                android:padding="12dp"
+                android:singleLine="false"
+                android:textColorHint="@color/blue_gray_50"  />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="233dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="68dp"
+        android:id="@+id/ll_Timesheet_Button_Group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_TextEditContainer">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_TextEditContainer">>
 
-        <Button
-            android:id="@+id/btn_Add"
-            android:layout_width="105dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/rectangle_wrapper_medium_blue"
-            android:fontFamily="@font/reglo_bold"
-            android:text="@string/button_project_add"
-            android:textColor="@color/white_A700"
-            android:textSize="25dp"
-            android:elevation="2dp"/>
-
+        <!-- Return Button -->
         <Button
             android:id="@+id/btn_Return"
-            android:layout_width="105dp"
+            android:layout_width="133dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_return"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/btn_Add"
+            android:layout_width="122dp"
             android:layout_height="match_parent"
             android:background="@drawable/rectangle_wrapper_light_green"
             android:fontFamily="@font/reglo_bold"
-            android:text="@string/button_project_return"
+            android:text="@string/button_timesheet_add"
             android:textColor="@color/white_A700"
-            android:textSize="25dp"
-            android:elevation="2dp"/>
+            android:textSize="12pt" />
+
     </LinearLayout>
 
 
