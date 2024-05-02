@@ -11,10 +11,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectViewBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
+import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
@@ -28,6 +30,7 @@ class ProjectViewActivity : AppCompatActivity() {
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
+    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
 
 
 
@@ -36,6 +39,7 @@ class ProjectViewActivity : AppCompatActivity() {
         binding = ActivityProjectViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        intentHandler = IntentHandler(this@ProjectViewActivity)//setup an intent handler for navigating pages
         //NAVBAR INITIALIZATION
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@ProjectViewActivity, binding)
@@ -46,6 +50,16 @@ class ProjectViewActivity : AppCompatActivity() {
         authModel = AuthenticationModel()
 
         loadingDialogHandler = LoadDialogHandler(this@ProjectViewActivity, progressDialog)//initialise the loading dialog
+
+        // Initialize FAB
+        val fabAddProject: FloatingActionButton = findViewById(R.id.fab_add_project)
+        // Set OnClickListener to FAB
+        fabAddProject.setOnClickListener {
+            toaster.showToast("Opening project creation page")
+            // Start the activity for project creation
+            intentHandler.openActivityIntent(ProjectCreationActivity::class.java)
+        }
+
 
         // Initialize ProjectsModel
         projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
@@ -158,8 +172,20 @@ class ProjectViewActivity : AppCompatActivity() {
         linearLayout.addView(imageView)
         linearLayout.addView(nestedLinearLayout)
 
+        // Set click listener to the linear layout
+        linearLayout.setOnClickListener {
+            handleProjectClick(project)
+        }
+
         // Add linearLayout to sv_projects ScrollView using binding
         binding.llHolder.addView(linearLayout)
+    }
+
+    private fun handleProjectClick(project: ProjectsModel){
+
+
+        // Create an Intent to start the ProjectsDetailActivity
+        intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
     }
 
     // Extension function to convert dp to pixels
