@@ -1,5 +1,6 @@
 package za.co.varsitycollege.st10036509.punchin.activities
-
+//
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.DatePicker
@@ -17,9 +18,15 @@ import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.Timestamp
+import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
 
 
 class TimesheetCreationActivity : AppCompatActivity() {
@@ -49,7 +56,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
         //Initialize firebase auth
         val auth = FirebaseAuth.getInstance()
-
 
         val startTimePickerButton: Button = binding.btnTimeStart
         val endTimePickerButton: Button = binding.btnTimeEnd
@@ -99,6 +105,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
             timePickerDialog.show()
         }
 
+
         // Get current user
         currentUser = auth.currentUser
 
@@ -117,6 +124,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             btnReturn.setOnClickListener { returnToView() }
             btnAdd.setOnClickListener { createTimesheet() }
+            ivTimesheetImage.setOnClickListener { intentHandler.openActivityIntent(CameraActivity::class.java) }
             btnDatePicker.setOnClickListener {
                 showDatePicker { selectedDate ->
                     // Save the selected date to timesheetStartDate
@@ -153,6 +161,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
      * Method to return to the View page and cancel adding a new timesheet
      */
     private fun returnToView() {
+
+        intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
 
     }
 

@@ -16,33 +16,19 @@ class ProjectsModel (
     var projectName: String,
     var startDate: String,
     var setColor: String,
-    var hourlyRate: String,
+    var hourlyRate: Double,
     var description: String,
     var totalTimeSheets: Long = 0,
     var totalHours: Long = 0,
     var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    constructor() : this("", "", "", "", "", 0, 0, 0.0, "")
+    constructor() : this("", "", "", 0.0, "", 0, 0, 0.0, "")
 
     private lateinit var firestore: FirebaseFirestore
-    fun setData(
-        projectName: String,
-        startDate: String,
-        setColor: String,
-        hourlyRate: String,
-        description: String,
-        userId: String
-    ) {
-        this.projectName = projectName
-        this.startDate = startDate
-        this.setColor = setColor
-        this.hourlyRate = hourlyRate
-        this.description = description
-        this.userId = userId
-    }
 
     fun readProjectData(projectid: String, callback: (ProjectsModel?, List<TimesheetModel>) -> Unit) {
+
         val projectId: String = projectid
 
         val firestore = FirebaseFirestore.getInstance()
@@ -58,7 +44,7 @@ class ProjectsModel (
 
                         // Now, retrieve timesheets associated with this project
                         val timesheetsCollectionRef = firestore.collection("timesheets")
-                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectUid", projectId)
+                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectId", projectId)
 
                         timesheetsQuery.get()
                             .addOnSuccessListener { timesheetsSnapshot ->
