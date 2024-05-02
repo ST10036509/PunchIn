@@ -10,12 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectDetailsBinding
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 
 class ProjectDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProjectDetailsBinding
     private lateinit var firestore: FirebaseFirestore
     private lateinit var projectModel: ProjectsModel
+    private lateinit var toaster: ToastHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +26,8 @@ class ProjectDetailsActivity : AppCompatActivity() {
 
         // Initialize FirebaseFirestore instance
         firestore = FirebaseFirestore.getInstance()
+
+        toaster = ToastHandler(this@ProjectDetailsActivity)
 
         // Initialize ProjectsModel
         projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"")
@@ -47,58 +51,11 @@ class ProjectDetailsActivity : AppCompatActivity() {
                 for (timesheet in timesheets){
                     binding.tvList.append("${timesheet.timesheetName}\n")
                 }
-
-
-
             } else {
                 // Handle case where project is null (e.g., project not found)
+                toaster.showToast("No project found...")
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-/*
-    private fun retrieveDataFromFirestore() {
-        // Reference to the project document in Firestore
-        val projectRef = firestore.collection("projects").document("SJ7cy8KHnKSIElKkGfzG")
-
-        // Retrieve data from Firestore
-        projectRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    // Parse and populate the TextViews with data
-                    val projectName = documentSnapshot.getString("projectName")
-                    val organizationName = documentSnapshot.getString("organizationName")
-                    val startDate = documentSnapshot.getString("startDate")
-                    val setColor = documentSnapshot.getString("setColor")
-                    val hourlyRate = documentSnapshot.getString("hourlyRate")
-                    val description = documentSnapshot.getString("description")
-
-                    // Update TextViews with retrieved data
-                    val tvProjectName = findViewById<TextView>(R.id.tv_project_name)
-                    val tvSetColor = findViewById<TextView>(R.id.tv_colour)
-                    val tvHourlyRate = findViewById<TextView>(R.id.tv_rate)
-                    val tvDescription = findViewById<TextView>(R.id.tv_description)
-
-                    tvProjectName.text = projectName
-                    tvSetColor.text = setColor
-                    tvHourlyRate.text = hourlyRate
-                    tvDescription.text = description
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Log any errors that occur while retrieving data
-                Log.e("ProjectDetailsActivity", "Error retrieving project data: $exception")
-            }
-    } */
-
 //______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\

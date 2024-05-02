@@ -44,8 +44,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         toaster = ToastHandler(this@ProjectCreationActivity)
         val auth = FirebaseAuth.getInstance()
 
-        // Initialize ProjectsModel
-        projectModel = ProjectsModel("", "", "", 0.0, "", 0,0,0.0,"",)
+
 
         // Get current user
         currentUser = auth.currentUser
@@ -122,7 +121,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         val startDate: String = date
         val setColor: String = color
         val hourlyRate: Double = rate.toDouble()
-        val description: String = description
+        val description : String = description
 
 
         // Check if the current user is not null
@@ -131,8 +130,11 @@ class ProjectCreationActivity : AppCompatActivity() {
             val userId = user.uid
 
             // Set project data using the setData method of ProjectsModel
-            projectModel.setData(projectName, startDate, setColor, hourlyRate, description, userId, )
 
+          //  projectModel.setData(projectName, startDate, setColor, hourlyRate, description, userId, )
+
+            // Initialize ProjectsModel
+            projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0,0,0.0,userId,)
             // Call the method to write project data to Firestore
             projectModel.writeDataToFirestore()
             toaster.showToast("Project added!")

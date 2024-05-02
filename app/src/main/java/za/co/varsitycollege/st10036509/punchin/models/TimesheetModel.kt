@@ -17,9 +17,9 @@ class TimesheetModel(
     var userId: String,
     var timesheetName: String,
     var projectId: String,
-    var timesheetStartDate: Date?,
-    var timesheetStartTime: Date?,
-    var timesheetEndTime: Date?,
+    var timesheetStartDate: Date? = null,
+    var timesheetStartTime: Date? = null,
+    var timesheetEndTime: Date? = null,
     var timesheetDescription: String
     //var timesheetPhoto: String,
 ){
