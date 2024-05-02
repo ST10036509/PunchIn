@@ -69,7 +69,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         addDateButton.setOnClickListener {
             showDatePicker()
         }
-
     }
 
     private fun showDatePicker() {
@@ -96,13 +95,9 @@ class ProjectCreationActivity : AppCompatActivity() {
             month,
             day
         )
-
         // Show the DatePickerDialog
         datePickerDialog.show()
     }
-
-
-
 
 
     private fun handleReturnClick() {
