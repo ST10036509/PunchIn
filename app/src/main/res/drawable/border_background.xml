@@ -2,8 +2,8 @@
     android:shape="rectangle">
     <solid android:color="@android:color/transparent" />
     <stroke
-        android:width="2dp"
-        android:color="@android:color/holo_blue_dark" /> <!-- Change the color and width as desired -->
+        android:width="4dp"
+        android:color="@color/blue_50" /> <!-- Change the color and width as desired -->
     <padding
         android:left="2dp"
         android:top="2dp"
