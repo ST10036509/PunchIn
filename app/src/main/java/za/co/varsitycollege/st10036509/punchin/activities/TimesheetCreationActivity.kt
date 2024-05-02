@@ -27,8 +27,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var timesheetModel: TimesheetModel
     private var currentUser: FirebaseUser? = null
     private var startDate: Date? = null
-    private var timesheetStartTime: String? = null
-    private var timesheetEndTime: String? = null
+    private var timesheetStartTime: Date? = null
+    private var timesheetEndTime: Date? = null
 
     //strings to use
     private companion object {
@@ -44,7 +44,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        timesheetModel = TimesheetModel("", "", "", null, "", "", "")
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "")
 
         //Initialize firebase auth
         val auth = FirebaseAuth.getInstance()
@@ -60,7 +60,9 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    timesheetStartTime = "$selectedHour:$selectedMinute"
+                    calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                    calendar.set(Calendar.MINUTE, selectedMinute)
+                    timesheetStartTime = calendar.time // Set timesheetStartTime as Date
                 },
                 hour,
                 minute,
@@ -69,6 +71,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
+
 
         endTimePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -78,7 +81,9 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    timesheetEndTime = "$selectedHour:$selectedMinute"
+                    calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                    calendar.set(Calendar.MINUTE, selectedMinute)
+                    timesheetEndTime = calendar.time // Set timesheetStartTime as Date
                 },
                 hour,
                 minute,
@@ -87,6 +92,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
+
 
         // Get current user
         currentUser = auth.currentUser

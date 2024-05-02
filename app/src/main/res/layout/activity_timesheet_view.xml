@@ -81,136 +81,18 @@ LAST MODIFIED: 25/04/2024
     </LinearLayout>
 
     <!-- Timesheet Viewing -->
-    <LinearLayout
-        android:id="@+id/ll_Timesheet_Viewing"
-        android:layout_width="377dp"
-        android:layout_height="499dp"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_WeeklySelector"
-        tools:layout_editor_absoluteX="17dp"
-        tools:layout_editor_absoluteY="175dp">
-
-
-        <TextView
-            android:id="@+id/tv_timesheet_recent_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:fontFamily="@font/reglo_bold"
-            android:text="@string/date_most_recent_text"
-            android:textColor="#14306A" />
+    <ScrollView
+        android:id="@+id/sv_ScrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="70dp">
 
         <LinearLayout
-            android:id="@+id/ll_Timesheet_Recent_Views"
+            android:id="@+id/ll_ScrollContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:background="@drawable/rectangle_wrapper_white_round_corners"
-            android:elevation="2dp"
-            android:orientation="vertical"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_timesheet_recent_date">
-
-
-            <LinearLayout
-                android:id="@+id/ll_Timesheet_View"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rectangle_wrapper_white_round_corners"
-                android:elevation="2dp"
-                android:orientation="horizontal"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ll_Timesheet_Recent_Views">
-
-                <LinearLayout
-                    android:id="@+id/ll_StartStop"
-                    android:layout_width="75dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/tv_StartTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="27dp"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="@font/staatliches"
-                        android:textColor="@color/dark_blue_900"
-                        android:text="16:00" />
-
-                    <TextView
-                        android:id="@+id/tv_EndTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="27dp"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/staatliches"
-                        android:textColor="@color/dark_blue_900"
-                        android:text="18:30" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/iv_Divider"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10sp"
-                    android:layout_marginBottom="10sp"
-                    android:background="#5C818181"
-                    app:srcCompat="@android:drawable/divider_horizontal_dim_dark"
-                    tools:srcCompat="?attr/dividerHorizontal" android:layout_width="1dp"/>
-
-                <LinearLayout
-                    android:id="@+id/ll_TimesheetInfo"
-                    android:layout_width="match_parent"
-                    android:layout_marginEnd="25dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/tv_TimesheetDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="@font/reglo_bold"
-                        android:text="Create Settings page in figma"
-                        android:textColor="@color/dark_blue_900" />
-
-                    <TextView
-                        android:id="@+id/tv_ProjectName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="@color/dark_blue_900"
-                        android:fontFamily="@font/reglo_bold"
-                        android:text="OPSC7311_POE"
-
-                        />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/iv_TimesheetDivider"
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:background="@color/dark_blue_900" />
-            </LinearLayout>
-
+            android:orientation="vertical">
         </LinearLayout>
-
-    </LinearLayout>
-
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
