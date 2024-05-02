@@ -55,17 +55,12 @@ LAST MODIFIED: 25/04/2024
             android:padding="12dp"
             android:textColorHint="@color/blue_gray_50" />
 
-        <EditText
-            android:id="@+id/et_Timesheet_ProjectName"
+        <Spinner
+            android:id="@+id/projectDropdown"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="4dp"
-            android:fontFamily="@font/reglo_bold"
-            android:hint="@string/hint_timesheet_project_name"
-            android:padding="12dp"
-            android:textColorHint="@color/blue_gray_50" />
+            android:layout_height="40dp"
+
+            />
 
         <LinearLayout
             android:id="@+id/ll_Date_Selector"

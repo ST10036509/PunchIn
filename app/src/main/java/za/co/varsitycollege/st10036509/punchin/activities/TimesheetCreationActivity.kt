@@ -22,10 +22,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityCameraBinding
+import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
+import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -35,7 +39,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var startDate: Date? = null
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
-
+    private lateinit var projectModel: ProjectsModel
+    private var authModel = AuthenticationModel()
 
     //strings to use
     private companion object {
@@ -51,10 +56,16 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Call fetchUserProjects function
+        fetchUserProjects { projectNames ->
+            // Assuming you have a dropdown box named "projectDropdown" in your UI
+            val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, projectNames)
+            binding.projectDropdown.adapter = adapter
+        }
+
         timesheetModel = TimesheetModel("", "", "", null, null, null, "")
 
-        //Initialize firebase auth
-        val auth = FirebaseAuth.getInstance()
+        currentUser = authModel.getCurrentUser()
 
         val startTimePickerButton: Button = binding.btnTimeStart
         val endTimePickerButton: Button = binding.btnTimeEnd
@@ -99,8 +110,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
         }
 
 
-        // Get current user
-        currentUser = auth.currentUser
 
         intentHandler = IntentHandler(this@TimesheetCreationActivity)
         //setup listeners for ui controls
@@ -168,9 +177,11 @@ class TimesheetCreationActivity : AppCompatActivity() {
             // Ensure timesheetStartDate is not null before proceeding
             startDate?.let { timesheetStartDate ->
                 val timesheetName = binding.etTimesheetName.text.toString().trim()
-                val timesheetProjectName = binding.etTimesheetProjectName.text.toString().trim()
+                val timesheetProjectName = binding.projectDropdown.selectedItem.toString()
+
                 // edit this so that it gets the actual projectId
                 val projectId = timesheetProjectName
+
                 val timesheetDescription = binding.etTimesheetDescription.text.toString().trim()
 
                 // Check if the current user is not null
@@ -206,12 +217,44 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private fun clearInputFields() {
 
         val timesheetNameET = findViewById<EditText>(R.id.et_Timesheet_Name)
-        val timesheetProjectNameET = findViewById<EditText>(R.id.et_Timesheet_ProjectName)
         val timesheetDescriptionET = findViewById<EditText>(R.id.et_Timesheet_Description)
 
         timesheetNameET.setText("")
-        timesheetProjectNameET.setText("")
         timesheetDescriptionET.setText("")
     }
+
+    // Function to fetch project names for the current user
+    fun fetchUserProjects(completion: (List<String>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        currentUser = authModel.getCurrentUser()
+
+        // Check if user is logged in
+        currentUser?.let { user ->
+            // Query Firestore for projects created by the current user
+            db.collection("projects")
+                .whereEqualTo("userId", user.uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val projectNames = mutableListOf<String>()
+                    for (document in documents) {
+                        // Assuming "name" is the field containing the project name
+                        val projectName = document.getString("projectName")
+                        projectName?.let {
+                            projectNames.add(it)
+                        }
+                    }
+                    completion(projectNames)
+                }
+                .addOnFailureListener { exception ->
+                    // Handle failure
+                    completion(emptyList()) // Return empty list on failure
+                }
+        } ?: run {
+            // User is not logged in
+            completion(emptyList()) // Return empty list if user is not logged in
+        }
+    }
+
 
 }
