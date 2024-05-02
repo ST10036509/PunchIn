@@ -71,7 +71,7 @@ LAST MODIFIED: 01/05/2024
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
             android:elevation="2dp">
 
-            <EditText
+            <TextView
                 android:id="@+id/ed_Start_Date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -79,7 +79,8 @@ LAST MODIFIED: 01/05/2024
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
                 android:hint="@string/hint_start_date"
-                android:textColorHint="@color/blue_gray_50" />
+                android:textColorHint="@color/blue_gray_50"
+                android:textSize="18dp"/>
 
         </LinearLayout>
 

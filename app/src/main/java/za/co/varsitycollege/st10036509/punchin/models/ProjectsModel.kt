@@ -11,10 +11,11 @@ functions and variables
  */
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 class ProjectsModel (
     var projectName: String,
-    var startDate: String,
+    var startDate: Date? = null,
     var setColor: String,
     var hourlyRate: Double,
     var description: String,
@@ -23,7 +24,7 @@ class ProjectsModel (
     var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    constructor() : this("", "", "", 0.0, "", 0, 0, 0.0, "")
+    constructor() : this("", null, "", 0.0, "", 0, 0, 0.0, "")
 
     private lateinit var firestore: FirebaseFirestore
 
@@ -76,7 +77,7 @@ class ProjectsModel (
     }
 
     // Method to get project data as a map
-    fun getData(): Map<String, Any> {
+    fun getData(): Map<String, Any?> {
         return mapOf(
             "projectName" to projectName,
             "startDate" to startDate,
