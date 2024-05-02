@@ -128,7 +128,8 @@ class TimesheetViewActivity : AppCompatActivity() {
                         timesheetStartDate = documentSnapshot.getDate("timesheetStartDate"),
                         timesheetStartTime = documentSnapshot.getDate("timesheetStartTime"),
                         timesheetEndTime = documentSnapshot.getDate("timesheetEndTime"),
-                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:""
+                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:"",
+                        timesheetPhoto = null
                     )
                 }
             }

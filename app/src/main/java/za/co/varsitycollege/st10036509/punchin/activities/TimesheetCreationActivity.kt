@@ -14,10 +14,12 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
+import android.graphics.Bitmap
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.isEmpty
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,6 +41,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
+    private var image : Bitmap? = null
 
     //strings to use
     private companion object {
@@ -60,7 +63,12 @@ class TimesheetCreationActivity : AppCompatActivity() {
         // Initialize FirebaseAuth
         toaster = ToastHandler(this@TimesheetCreationActivity)
 
-
+        val capturedPhoto = intent.getParcelableExtra<Bitmap>("capturedPhoto")
+        val imageView: ImageView = binding.ivTimesheetImage
+        capturedPhoto?.let {
+            imageView.setImageBitmap(it)
+            image = it
+        }
 
         // Call fetchUserProjects function
         fetchUserProjects { projectData ->
@@ -90,7 +98,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 }
         }
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "")
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
 
         currentUser = authModel.getCurrentUser()
 
@@ -157,7 +165,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding.apply {
 
             btnReturn.setOnClickListener { returnToView() }
-            btnAdd.setOnClickListener { createTimesheet() }
+            btnAdd.setOnClickListener { createTimesheet(image) }
             ivTimesheetImage.setOnClickListener { intentHandler.openActivityIntent(CameraActivity::class.java) }
             btnDatePicker.setOnClickListener {
                 showDatePicker { selectedDate ->
@@ -203,7 +211,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     /**
      * Method to add new timesheet once fully entered
      */
-    private fun createTimesheet() {
+    private fun createTimesheet(timesheetPhoto: Bitmap?) {
         // Ensure both start and end times are selected before proceeding
         if (timesheetStartTime != null && timesheetEndTime != null) {
             // Ensure timesheetStartDate is not null before proceeding
@@ -231,6 +239,9 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 // Check if a project is selected and retrieve its ID
                 val projectId = selectedProject?.second ?: ""
 
+                // Assign the timesheetPhoto to timesheetPhoto variable
+                //val timesheetPhoto = timesheetPhoto
+
                 // Check if the current user is not null
                 currentUser?.let { user ->
                     // Get user id
@@ -243,7 +254,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetStartDate,
                         timesheetStartTime!!,
                         timesheetEndTime!!,
-                        timesheetDescription
+                        timesheetDescription,
+                        timesheetPhoto!!
                     )
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
@@ -254,6 +266,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
     private fun clearInputFields() {

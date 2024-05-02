@@ -295,7 +295,8 @@ class GoalsActivity : AppCompatActivity() {
                             timesheetStartDate,
                             timesheetStartTime,
                             timesheetEndTime,
-                            timesheetDescription
+                            timesheetDescription,
+                            timesheetPhoto = null
                         )
 
                         timesheets.add(newTimesheet)
