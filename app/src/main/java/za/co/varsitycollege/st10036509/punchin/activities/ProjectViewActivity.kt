@@ -5,6 +5,7 @@ CREATED: 29/04/2024
 LAST MODIFIED: 02/04/2024
 */
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -79,7 +80,7 @@ class ProjectViewActivity : AppCompatActivity() {
 
         val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
-            projectModel.countProjects(currentUser.uid) { projects ->
+            projectModel.getProjectList(currentUser.uid) { projects ->
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
                     // Sort the list of projects alphabetically regardless of capitalization
@@ -109,7 +110,7 @@ class ProjectViewActivity : AppCompatActivity() {
 
         val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
-            projectModel.countProjects(currentUser.uid) { projects ->
+            projectModel.getProjectList(currentUser.uid) { projects ->
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
                     populateHolder(projects)
@@ -218,9 +219,23 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun handleProjectClick(project: ProjectsModel){
 
+        //val jsonString = Json.encodeToString(project)
+
+        var intent = Intent(this@ProjectViewActivity,ProjectDetailsActivity::class.java)
+        intent.putExtra("projectName", project.projectName)
+        intent.putExtra("startDate", project.startDate)
+        intent.putExtra("setColor", project.setColor)
+        intent.putExtra("hourlyRate", project.hourlyRate)
+        intent.putExtra("description", project.description)
+        intent.putExtra("totalTimeSheets", project.totalTimeSheets)
+        intent.putExtra("totalHours", project.totalHours)
+        intent.putExtra("totalEarnings", project.totalEarnings)
+        intent.putExtra("userId", project.userId)
+        startActivity(intent)
+       // val projectId = project.
 
         // Create an Intent to start the ProjectsDetailActivity
-        intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
+        //intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
     }
 
     // Extension function to convert dp to pixels
@@ -232,10 +247,13 @@ class ProjectViewActivity : AppCompatActivity() {
 }
 
 /*
-___________           .___         _____  ___________.__.__
-\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
- |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
- |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
-/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
-        \/     \/      \/                      \/                 \/
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
 */
