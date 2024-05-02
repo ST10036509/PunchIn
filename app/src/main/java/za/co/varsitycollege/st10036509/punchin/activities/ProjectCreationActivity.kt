@@ -18,6 +18,7 @@ import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectCreationBinding
 import za.co.varsitycollege.st10036509.punchin.models.ProjectsModel
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 
 
@@ -29,6 +30,7 @@ class ProjectCreationActivity : AppCompatActivity() {
     private lateinit var validationHandler: ValidationHandler
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
+    private lateinit var toaster: ToastHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         //initialise the validation handler
         validationHandler = ValidationHandler()
         // Initialize FirebaseAuth
+        toaster = ToastHandler(this@ProjectCreationActivity)
         val auth = FirebaseAuth.getInstance()
 
         // Initialize ProjectsModel
@@ -89,6 +92,7 @@ class ProjectCreationActivity : AppCompatActivity() {
             validateDouble(name, date, color, rate, description)
         }else{
             // Display error message here & clear input
+            toaster.showToast("Do not leave any fields empty...")
         }
     }
 
@@ -106,6 +110,7 @@ class ProjectCreationActivity : AppCompatActivity() {
             // Validation failed
             Log.d("Validation", "Hourly rate validation failed: $rate")
             // Handle the failure, such as displaying an error message to the user
+            toaster.showToast("Type in a number for Rate...")
         }
 
     }
@@ -130,7 +135,7 @@ class ProjectCreationActivity : AppCompatActivity() {
 
             // Call the method to write project data to Firestore
             projectModel.writeDataToFirestore()
-
+            toaster.showToast("Project added!")
             clearInputFields()
         }
     }
