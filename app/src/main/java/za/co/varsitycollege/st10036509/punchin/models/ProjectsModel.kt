@@ -44,7 +44,7 @@ class ProjectsModel (
 
                         // Now, retrieve timesheets associated with this project
                         val timesheetsCollectionRef = firestore.collection("timesheets")
-                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectUid", projectId)
+                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectId", projectId)
 
                         timesheetsQuery.get()
                             .addOnSuccessListener { timesheetsSnapshot ->
