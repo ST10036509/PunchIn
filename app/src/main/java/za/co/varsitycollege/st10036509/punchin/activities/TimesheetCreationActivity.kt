@@ -14,10 +14,12 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
+import android.graphics.Bitmap
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.isEmpty
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,6 +27,8 @@ import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
+import java.io.ByteArrayOutputStream
+import java.util.Base64
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -39,6 +43,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
+    private var image : ByteArray? = null
+    private lateinit var timesheetPhotoString : String
 
     //strings to use
     private companion object {
@@ -60,7 +66,31 @@ class TimesheetCreationActivity : AppCompatActivity() {
         // Initialize FirebaseAuth
         toaster = ToastHandler(this@TimesheetCreationActivity)
 
+        val capturedPhoto = intent.getParcelableExtra<Bitmap>("capturedPhoto")
+        val imageView: ImageView = binding.ivTimesheetImage
+        capturedPhoto?.let {
+            imageView.setImageBitmap(it)
 
+            /**
+            // Convert Bitmap to byte array
+            val stream = ByteArrayOutputStream()
+            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            image = stream.toByteArray()
+            */
+
+            // Convert Bitmap to byte array
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            it.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+
+            // Convert byte array to Base64 string manually
+            val base64String = StringBuilder()
+            for (byte in byteArray) {
+                base64String.append(String.format("%02X", byte))
+            }
+            timesheetPhotoString = base64String.toString()
+
+        }
 
         // Call fetchUserProjects function
         fetchUserProjects { projectData ->
@@ -90,7 +120,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 }
         }
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "")
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
 
         currentUser = authModel.getCurrentUser()
 
@@ -157,7 +187,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding.apply {
 
             btnReturn.setOnClickListener { returnToView() }
-            btnAdd.setOnClickListener { createTimesheet() }
+            btnAdd.setOnClickListener { createTimesheet(timesheetPhotoString) }
             ivTimesheetImage.setOnClickListener { intentHandler.openActivityIntent(CameraActivity::class.java) }
             btnDatePicker.setOnClickListener {
                 showDatePicker { selectedDate ->
@@ -203,7 +233,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     /**
      * Method to add new timesheet once fully entered
      */
-    private fun createTimesheet() {
+    private fun createTimesheet(timesheetPhotoString : String) {
         // Ensure both start and end times are selected before proceeding
         if (timesheetStartTime != null && timesheetEndTime != null) {
             // Ensure timesheetStartDate is not null before proceeding
@@ -235,7 +265,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 currentUser?.let { user ->
                     // Get user id
                     val userId = user.uid
-                    // Set timesheet data using the setData method of TimesheetModel
                     timesheetModel.setData(
                         userId,
                         timesheetName,
@@ -243,7 +272,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetStartDate,
                         timesheetStartTime!!,
                         timesheetEndTime!!,
-                        timesheetDescription
+                        timesheetDescription,
+                        timesheetPhotoString
                     )
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
@@ -254,7 +284,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun clearInputFields() {
 

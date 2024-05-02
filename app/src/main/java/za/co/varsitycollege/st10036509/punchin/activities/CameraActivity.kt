@@ -39,6 +39,8 @@ class CameraActivity : AppCompatActivity(){
             startActivityForResult(cameraIntent, REQUEST_CODE)
         }
 
+        intentHandler = IntentHandler(this@CameraActivity)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -55,12 +57,12 @@ class CameraActivity : AppCompatActivity(){
         }
     }
 
-    // Function to send the captured photo to another activity
     private fun sendPhotoToNextActivity() {
-
-        intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
-
+        val intent = Intent(this, TimesheetCreationActivity::class.java)
+        intent.putExtra("capturedPhoto", capturedPhoto)
+        startActivity(intent)
     }
+
 
     private fun returnToCreate() {
 

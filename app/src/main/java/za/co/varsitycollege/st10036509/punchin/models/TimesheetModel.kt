@@ -6,6 +6,7 @@ LAST MODIFIED: 29/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.models
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Date
@@ -20,11 +21,11 @@ class TimesheetModel(
     var timesheetStartDate: Date? = null,
     var timesheetStartTime: Date? = null,
     var timesheetEndTime: Date? = null,
-    var timesheetDescription: String
-    //var timesheetPhoto: String,
+    var timesheetDescription: String,
+    var timesheetPhoto: String?
 ){
     // Add no-argument constructor
-    constructor() : this("", "", "", null, null, null, "")
+    constructor() : this("", "", "", null, null, null, "", null)
 
 
 
@@ -35,8 +36,8 @@ class TimesheetModel(
         timesheetStartDate: Date,
         timesheetStartTime: Date,
         timesheetEndTime: Date,
-        timesheetDescription: String
-        //timesheetPhoto: String
+        timesheetDescription: String,
+        timesheetPhoto: String
     ) {
         this.userId = userId
         this.timesheetName = timesheetName
@@ -45,7 +46,7 @@ class TimesheetModel(
         this.timesheetStartTime = timesheetStartTime
         this.timesheetEndTime = timesheetEndTime
         this.timesheetDescription = timesheetDescription
-        //this.timesheetPhoto = timesheetPhoto
+        this.timesheetPhoto = timesheetPhoto
     }
     fun getData(): Map<String, Any?> {
         return mapOf(
@@ -55,8 +56,8 @@ class TimesheetModel(
             "timesheetStartDate" to timesheetStartDate,
             "timesheetStartTime" to timesheetStartTime,
             "timesheetEndTime" to timesheetEndTime,
-            "timesheetDescription" to timesheetDescription
-            //"timesheetPhoto" to timesheetPhoto
+            "timesheetDescription" to timesheetDescription,
+            "timesheetPhoto" to timesheetPhoto
         )
     }
 
@@ -79,14 +80,5 @@ class TimesheetModel(
                 Log.e("TimesheetModel", "Error storing timesheet data: $e")
             }
     }
-
-    fun fetchProjectNames() {
-
-    }
-
-    fun fetchProjectID() {
-
-    }
-
 
 }
