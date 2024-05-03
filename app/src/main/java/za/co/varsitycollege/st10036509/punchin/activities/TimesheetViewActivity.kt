@@ -13,7 +13,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
-import androidx.core.view.marginBottom
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetCreationActivity
@@ -67,7 +65,6 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         intentHandler = IntentHandler(this@TimesheetViewActivity)
 
-
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
         //setup listeners for NavBar onClick events
@@ -108,7 +105,6 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun updateUI(){
         clearParentLayout()
-        binding.llScrollContainer.removeAllViews()
         updateWeekDisplay()
         filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
         displayTimesheetsForWeek(filteredTimesheets)
@@ -116,7 +112,6 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun navPreviousWeek() {
         this.currentDate = currentDate.minusWeeks(1)
-        filteredTimesheets.clear()
         updateUI()
     }
 
@@ -136,7 +131,6 @@ class TimesheetViewActivity : AppCompatActivity() {
         }
         // Update the current date and display
         currentDate = currentDate.plusWeeks(1)
-        filteredTimesheets.clear()
         updateUI()
     }
 
@@ -219,8 +213,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
-        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
-        val customFontStaatliches: Typeface? = ResourcesCompat.getFont(this, R.font.staatliches)
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
 
@@ -268,7 +260,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 dayTextView.text = day
                 dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
-                dayTextView.typeface = customFontReglo
+                //dayTextView.fon
                 dayTextView.textSize = 20f
                 dayTextView.setPadding(20, 10, 20, 10)
                 dayLayout.addView(dayTextView)
@@ -288,8 +280,7 @@ class TimesheetViewActivity : AppCompatActivity() {
 
 
     private fun createLayout(timesheet: TimesheetModel): LinearLayout {
-        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
-        val customFontStaatliches: Typeface? = ResourcesCompat.getFont(this, R.font.staatliches)
+
         val context = this
 
         // Create the parent LinearLayout
@@ -299,14 +290,14 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         llTimesheetContainer.orientation = LinearLayout.VERTICAL
-        llTimesheetContainer.setPadding(20, 20, 20, 20)
+        llTimesheetContainer.setPadding(20, 0, 20, 0)
         llTimesheetContainer.elevation = 2f
 
         // Create the LinearLayout for timesheet view
-        val llTimesheetView = LinearLayout(context)
+        val llTimesheetView = LinearLayout(this)
         llTimesheetView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            250
+            200
         )
         llTimesheetView.orientation = LinearLayout.HORIZONTAL
         llTimesheetView.setPadding(45, 30, 45, 30)
@@ -315,7 +306,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetContainer.addView(llTimesheetView)
 
         // Create the LinearLayout for start and stop times
-        val llStartStop = LinearLayout(context)
+        val llStartStop = LinearLayout(this)
         llStartStop.layoutParams = LinearLayout.LayoutParams(
             200,
             LinearLayout.LayoutParams.MATCH_PARENT
@@ -325,7 +316,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetView.addView(llStartStop)
 
         // Create the TextView for start time
-        val tvStartTime = TextView(context)
+        val tvStartTime = TextView(this)
         tvStartTime.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -333,23 +324,21 @@ class TimesheetViewActivity : AppCompatActivity() {
         tvStartTime.setPadding(30, 20, 0, 0)
         tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
         tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvStartTime.typeface = customFontStaatliches
         llStartStop.addView(tvStartTime)
 
         // Create the TextView for end time
-        val tvEndTime = TextView(context)
+        val tvEndTime = TextView(this)
         tvEndTime.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvEndTime.setPadding(30, 0, 0, 20)
         tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
         tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvEndTime.typeface = customFontStaatliches
         llStartStop.addView(tvEndTime)
 
         // Create the ImageView for the divider
-        val ivDivider = ImageView(context)
+        val ivDivider = ImageView(this)
         ivDivider.layoutParams = LinearLayout.LayoutParams(
             1,
             LinearLayout.LayoutParams.MATCH_PARENT
@@ -359,63 +348,38 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetView.addView(ivDivider)
 
         // Create the LinearLayout for timesheet info
-        val llTimesheetInfo = LinearLayout(context)
+        val llTimesheetInfo = LinearLayout(this)
         llTimesheetInfo.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
         )
         llTimesheetInfo.orientation = LinearLayout.VERTICAL
         llTimesheetInfo.setPadding(10, 0, 25, 0)
         llTimesheetView.addView(llTimesheetInfo)
 
         // Create the TextView for timesheet description
-        val tvTimesheetName = TextView(context)
+        val tvTimesheetName = TextView(this)
         tvTimesheetName.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvTimesheetName.setPadding(10, 10, 0, 0)
         tvTimesheetName.text = timesheet.timesheetName
-        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
         tvTimesheetName.textSize = 16f
-        tvTimesheetName.typeface = customFontReglo
         llTimesheetInfo.addView(tvTimesheetName)
 
         // Create the TextView for project name
-        val tvTimesheetDescription = TextView(context)
-        tvTimesheetDescription.layoutParams = LinearLayout.LayoutParams(
+        val tvProjectName = TextView(this)
+        tvProjectName.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvTimesheetDescription.setPadding(15, 5, 0, 0)
-        tvTimesheetDescription.text = timesheet.timesheetDescription // Here was the issue: changed timesheetModel to timesheet
-        tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvTimesheetDescription.textSize = 16f
-        tvTimesheetDescription.typeface = customFontReglo
-        llTimesheetInfo.addView(tvTimesheetDescription)
-
-        val llTimesheetImage = LinearLayout(context)
-        llTimesheetImage.layoutParams = LinearLayout.LayoutParams( // Fixed the layout params here
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        llTimesheetImage.orientation = LinearLayout.VERTICAL
-        llTimesheetImage.setPadding(0, 0, 25, 0)
-
-        llTimesheetView.addView(llTimesheetImage)
-
-        // Create a new ImageView instance for the timesheet photo
-        val timesheetImage = ImageView(context)
-        timesheetImage.layoutParams = LinearLayout.LayoutParams(
-            250,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        (timesheetImage.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.END
-        // Decode the base64 string to Bitmap and set it to the ImageView
-        val timesheetString = timesheet.timesheetPhoto
-        val timesheetBitmap = timesheetString?.let { decodeBase64ToBitmap(it) }
-        timesheetImage.setImageBitmap(timesheetBitmap)
-        llTimesheetImage.addView(timesheetImage)
+        tvProjectName.setPadding(15, 5, 0, 0)
+        tvProjectName.text = timesheetModel.projectId
+        tvProjectName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
+        tvProjectName.textSize = 16f
+        llTimesheetInfo.addView(tvProjectName)
 
         // Create the ImageView for the image on the right
         val timesheetImage = ImageView(this)
@@ -432,7 +396,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
 
-
     // Function to convert base64 string to Bitmap
     fun decodeBase64ToBitmap(input: String): Bitmap {
         // Decode base64 string to byte array
@@ -441,13 +404,6 @@ class TimesheetViewActivity : AppCompatActivity() {
             decodedBytes[i / 2] = Integer.parseInt(input.substring(i, i + 2), 16).toByte()
         }
 
-
-        // Convert byte array to Bitmap
-        val inputStream = ByteArrayInputStream(decodedBytes)
-        return BitmapFactory.decodeStream(inputStream)
-    }
-
-
         // Convert byte array to Bitmap
         val inputStream = ByteArrayInputStream(decodedBytes)
         return BitmapFactory.decodeStream(inputStream)
@@ -455,11 +411,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
 
     private fun clearParentLayout() {
-        val scrollView = findViewById<ScrollView>(R.id.sv_ScrollContainer)
-        val scrollViewChild = scrollView.getChildAt(0) as LinearLayout // Assuming the direct child is a LinearLayout
+        val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
+        //parentLayout.removeAllViews()
+        // Alternatively, remove child views individually
+        parentLayout.forEach { view -> parentLayout.removeView(view) }
 
-        // Remove all views from the LinearLayout
-        scrollViewChild.removeAllViews()
     }
 }
 
