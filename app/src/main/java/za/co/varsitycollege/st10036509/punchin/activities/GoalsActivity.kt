@@ -10,7 +10,6 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
@@ -23,13 +22,7 @@ import za.co.varsitycollege.st10036509.punchin.models.UserModel
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
-import java.lang.Math.round
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.Calendar
-import java.util.Date
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -42,7 +35,7 @@ class GoalsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGoalsBinding//bind the GoalsActivity KT and XML files
 
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
-    private var authModel= AuthenticationModel()//get the instance of the authentication model
+    private var authModel = AuthenticationModel()//get the instance of the authentication model
     private var firestoreInstance = FirestoreConnection.getDatabaseInstance()
     private lateinit var toaster: ToastHandler//create a ToastHandler to show toast messages
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
