@@ -23,7 +23,7 @@ object UserModel{
     var email: String = ""
     var points: Int = 0
     var minGoal: Int = 0
-    var maxGoal: Int = 0
+    var maxGoal: Int = 24
 
 
     fun populateUserModel(username: String, email: String, points: Int, minGoal: Int, maxGoal: Int) {

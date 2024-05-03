@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsActivity">
+
+    <include layout="@layout/header_navbar_without_settings_layout" />
+
+    <ImageView
+        android:id="@+id/img_Avatar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/avatar"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_usernameDetailsWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/img_Avatar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/badge_icon"
+            />
+
+        <!-- Goals Title -->
+        <TextView
+            android:id="@+id/tv_Username"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="textStart"
+            android:paddingTop="7dp"
+            android:fontFamily="@font/reglo_bold"
+            android:textSize="30sp"
+            android:textColor="@color/indigo_900" />
+
+    </LinearLayout>
+
+
+    <!-- Goals Wrapper Block -->
+    <LinearLayout
+        android:id="@+id/ll_SettingsWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/ll_usernameDetailsWrapper"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:elevation="2dp"
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
+
+        <!-- Sign-Out Button -->
+        <LinearLayout
+            android:id="@+id/ll_SignOutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_red_round_corners"
+            android:elevation="2dp">
+
+            <!-- Username Input -->
+            <TextView
+                android:id="@+id/tv_SignOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:fontFamily="@font/reglo_bold"
+                android:pointerIcon="hand"
+                android:text="@string/signout_button_text"
+                android:textColor="@color/white_A700"
+                android:textAlignment="center"
+                android:textSize="32sp" />
+        </LinearLayout>
+
+        <!-- Return Button -->
+        <LinearLayout
+            android:id="@+id/ll_ReturnButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:elevation="2dp">
+
+            <!-- Return Input -->
+            <TextView
+                android:id="@+id/tv_ReturnButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:fontFamily="@font/reglo_bold"
+                android:pointerIcon="hand"
+                android:text="@string/return_button_text"
+                android:textColor="@color/white_A700"
+                android:textAlignment="center"
+                android:textSize="32sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

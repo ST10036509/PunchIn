@@ -16,8 +16,6 @@ LAST MODIFIED: 25/04/2024
 
     <!-- Header NavBar -->
     <include layout="@layout/header_navbar_with_settings_layout" />
-    <!-- Footer NavBar -->
-    <include layout="@layout/footer_navbar_layout" />
 
     <!-- Goals Title -->
     <TextView
@@ -45,7 +43,6 @@ LAST MODIFIED: 25/04/2024
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-
         android:elevation="2dp"
         android:background="@drawable/rectangle_wrapper_white_round_corners">
 
@@ -290,7 +287,7 @@ LAST MODIFIED: 25/04/2024
 
             <!-- Username Input -->
             <TextView
-                android:id="@+id/tv_SignIn"
+                android:id="@+id/tv_Update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
@@ -304,6 +301,9 @@ LAST MODIFIED: 25/04/2024
         </LinearLayout>
 
     </LinearLayout>
+
+    <!-- Footer NavBar -->
+    <include layout="@layout/footer_navbar_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 <!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->

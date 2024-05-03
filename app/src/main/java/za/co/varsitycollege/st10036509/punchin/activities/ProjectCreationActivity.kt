@@ -111,7 +111,6 @@ class ProjectCreationActivity : AppCompatActivity() {
             // Handle the failure, such as displaying an error message to the user
             toaster.showToast("Type in a number for Rate...")
         }
-
     }
 
 

@@ -6,13 +6,13 @@ LAST MODIFIED: 25/04/2024
 
 package za.co.varsitycollege.st10036509.punchin.utils
 
-import android.app.Activity
 import android.content.Context
 import android.widget.ImageButton
 import androidx.viewbinding.ViewBinding
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
 import za.co.varsitycollege.st10036509.punchin.activities.ProjectViewActivity
+import za.co.varsitycollege.st10036509.punchin.activities.SettingsActivity
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetViewActivity
 
 /**
@@ -97,8 +97,7 @@ class NavbarViewBindingHelper (context: Context, binding: ViewBinding){
             }
 
             settingsButtonId -> {
-                //intentHandler.openActivityIntent(::class:java)
-                toaster.showToast("Settings Page Coming Soon!")
+                intentHandler.openActivityIntent(SettingsActivity::class.java)
             }
         }
     }
