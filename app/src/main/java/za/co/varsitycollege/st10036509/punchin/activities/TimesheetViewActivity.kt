@@ -1,5 +1,6 @@
 package za.co.varsitycollege.st10036509.punchin.activities
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
@@ -29,7 +30,9 @@ import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.TimesheetModel
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
+import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
+import java.io.ByteArrayInputStream
 import java.time.LocalDate
 import java.time.LocalDate.ofInstant
 import java.time.ZoneId
@@ -40,8 +43,10 @@ class TimesheetViewActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     private var authModel = AuthenticationModel()
     private val firestoreInstance = FirestoreConnection.getDatabaseInstance()
-    private lateinit var binding: za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
+    private lateinit var binding: ActivityTimesheetViewBinding
     private lateinit var intentHandler: IntentHandler
+    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
+    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var timesheetModel: TimesheetModel
     private lateinit var selectedDateStart: Date
     private lateinit var selectedDateEnd: Date
@@ -56,6 +61,9 @@ class TimesheetViewActivity : AppCompatActivity() {
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loadingDialogHandler = LoadDialogHandler(this@TimesheetViewActivity, progressDialog)//initialise the loading dialog
+
+        intentHandler = IntentHandler(this@TimesheetViewActivity)
 
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
@@ -68,6 +76,15 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
 
+        setupListeners()
+        updateUI()
+    }
+
+
+    /**
+     * Method to setup listeners for UI controls
+     */
+    private fun setupListeners() {
 
         // Set onClickListener for the previous week button
         binding.btnPreviousWeek.setOnClickListener {
@@ -80,9 +97,10 @@ class TimesheetViewActivity : AppCompatActivity() {
         }
 
         binding.fabAddTimesheet.setOnClickListener {
+            loadingDialogHandler.showLoadingDialog("Loading...")
             intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
         }
-        updateUI()
+
     }
 
     private fun updateUI(){
@@ -115,6 +133,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         currentDate = currentDate.plusWeeks(1)
         updateUI()
     }
+
     private fun searchTimesheetsForUser(currentUser: String) {
         // Reference to the collection of timesheets in Firestore
         val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
@@ -132,7 +151,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                     timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
                     timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
                     timesheetDescription = document.getString("timesheetDescription") ?: "",
-                    timesheetPhoto = null
+                    timesheetPhoto = document.getString("timesheetPhoto") ?: ""
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
@@ -362,19 +381,34 @@ class TimesheetViewActivity : AppCompatActivity() {
         tvProjectName.textSize = 16f
         llTimesheetInfo.addView(tvProjectName)
 
+        // Create the ImageView for the image on the right
+        val timesheetImage = ImageView(this)
+        timesheetImage.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        val timesheetString = timesheetModel.timesheetPhoto
+        // Decode the base64 string to Bitmap
+        val timesheetBitmap = timesheetString?.let { decodeBase64ToBitmap(it) }
+        timesheetImage.setImageBitmap(timesheetBitmap)
+
         return llTimesheetContainer
     }
 
 
-    fun decodeBase64ToBitmap(base64String: String): Bitmap? {
-        val decodedBytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    // Function to convert base64 string to Bitmap
+    fun decodeBase64ToBitmap(input: String): Bitmap {
+        // Decode base64 string to byte array
+        val decodedBytes = ByteArray(input.length / 2)
+        for (i in 0 until input.length step 2) {
+            decodedBytes[i / 2] = Integer.parseInt(input.substring(i, i + 2), 16).toByte()
+        }
+
+        // Convert byte array to Bitmap
+        val inputStream = ByteArrayInputStream(decodedBytes)
+        return BitmapFactory.decodeStream(inputStream)
     }
 
-    fun displayImageFromBase64(base64String: String, imageView: ImageView) {
-        val bitmap = decodeBase64ToBitmap(base64String)
-        imageView.setImageBitmap(bitmap)
-    }
 
     private fun clearParentLayout() {
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
