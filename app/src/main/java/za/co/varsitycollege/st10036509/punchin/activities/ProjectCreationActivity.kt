@@ -39,7 +39,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         R.color.Blue,
         R.color.Purple,
         R.color.Pink,
-
     )
 
 
@@ -65,6 +64,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser
 
+        binding.btnColourSelect
         setupClickListeners()
     }
 
@@ -128,7 +128,7 @@ class ProjectCreationActivity : AppCompatActivity() {
 
 
     private fun handleReturnClick() {
-        toaster.showToast("Returning to Projects page")
+
         intentHandler.openActivityIntent(ProjectViewActivity::class.java)
     }
 
@@ -176,9 +176,9 @@ class ProjectCreationActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeToDataBase(name: String, date : String, color: String, rate: String, description: String) {
+    private fun writeToDataBase(name: String, date: String, color: String, rate: String, description: String) {
         val projectName: String = name
-        val setColor: String = color
+        val setColor: String = color // Use the selected color
         val hourlyRate: Double = rate.toDouble()
         val description: String = description
 
@@ -194,6 +194,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         }
     }
 
+
     private fun clearInputFields() {
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
         val startDateEditText = binding.tvSelectDate
@@ -202,8 +203,8 @@ class ProjectCreationActivity : AppCompatActivity() {
         val descriptionEditText = findViewById<EditText>(R.id.ed_Description)
 
         projectNameEditText.setText("")
-        startDateEditText.setText("")
-        setColorEditText.setText("")
+        startDateEditText.setText("Select a date...")
+        setColorEditText.setText("Press to change project colour...")
         hourlyRateEditText.setText("")
         descriptionEditText.setText("")
     }
