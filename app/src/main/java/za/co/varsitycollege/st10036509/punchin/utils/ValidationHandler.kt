@@ -7,6 +7,7 @@ LAST MODIFIED: 27/04/2024
 package za.co.varsitycollege.st10036509.punchin.utils
 
 import androidx.lifecycle.ViewModel
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 
@@ -127,6 +128,49 @@ class ValidationHandler() : ViewModel() {
         return (name.isEmpty() || date.isEmpty() || color.isEmpty() || rate.isEmpty() || description.isEmpty())
     }
 
+
+    /**
+     * Method to check if either startDate or endDate is null
+     * @param startDate The start date of the project
+     * @param endDate The end date of the project
+     * @return Boolean true if either startDate or endDate is null, false otherwise
+     */
+    fun checkForNonNullInputs(startDate: Timestamp?, endDate: Timestamp?): Boolean {
+        return (startDate == null || endDate == null)
+    }
+
+    /**
+     * Method to check if the end date is before the start date
+     * @param startDate The start date of the project
+     * @param endDate The end date of the project
+     * @return Boolean true if endDate is before startDate, false otherwise
+     */
+
+
+    /**
+     * Method to check if the end date is before the start date
+     * @param startDate The start date of the project (nullable)
+     * @param endDate The end date of the project (nullable)
+     * @return Boolean true if endDate is before startDate, false otherwise
+     */
+    fun checkEndDateBeforeStartDate(startDate: Timestamp?, endDate: Timestamp?): Boolean {
+        // Check if either startDate or endDate is null
+        if (startDate == null || endDate == null) {
+            return false
+        }
+
+        // Convert Timestamps to milliseconds
+        val startMillis = startDate.seconds * 1000 + startDate.nanoseconds / 1000000
+        val endMillis = endDate.seconds * 1000 + endDate.nanoseconds / 1000000
+
+        // Check if endDate is before startDate
+        return endMillis < startMillis
+    }
+
+
+
+
+
 //__________________________________________________________________________________________________validateUsername
 
 
@@ -243,6 +287,25 @@ class ValidationHandler() : ViewModel() {
         // Otherwise, return false
         return hourlyRate != null
     }
+
+    /**
+     * Method to validate that the endDate is larger than the startDate
+     * @param startDate The start date of the project
+     * @param endDate The end date of the project
+     * @return Boolean true if endDate is larger than startDate, false otherwise
+     */
+    fun validateDateRange(startDate: Timestamp?, endDate: Timestamp?): Boolean {
+        // Check if startDate or endDate is null
+        if (startDate == null || endDate == null) {
+            return false
+        }
+
+        // Compare the timestamps
+        return endDate.seconds > startDate.seconds || (endDate.seconds == startDate.seconds && endDate.nanoseconds > startDate.nanoseconds)
+    }
+
+
+
 
 
 
