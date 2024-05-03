@@ -26,15 +26,19 @@ LAST MODIFIED: 25/04/2024
 
     <!-- FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddTimesheet"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/fab_add_timesheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="-20dp"
         android:clickable="true"
-        android:background="@drawable/fab_button"
+        android:foregroundTint="@color/indigo_900"
+        app:backgroundTint="@color/green_200"
         app:layout_constraintBottom_toTopOf="@id/include2"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:rippleColor="@color/indigo_900"
+        app:srcCompat="@drawable/plus_icon"
+        android:contentDescription="@string/fab_add_timesheet" />
 
     <!-- Weekly Selector -->
     <LinearLayout

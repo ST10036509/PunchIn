@@ -10,6 +10,7 @@ import java.util.*
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.forEach
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetCreationActivity
@@ -45,6 +48,7 @@ class TimesheetViewActivity : AppCompatActivity() {
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
     private val listOfUserTimesheets = mutableListOf<TimesheetModel>()
     private val filteredTimesheets = mutableListOf<TimesheetModel>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,15 +80,19 @@ class TimesheetViewActivity : AppCompatActivity() {
         binding.fabAddTimesheet.setOnClickListener {
             intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
         }
+        updateUI()
+    }
+
+    private fun updateUI(){
+        clearParentLayout()
         updateWeekDisplay()
+        filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
+        displayTimesheetsForWeek(filteredTimesheets)
     }
 
     private fun navPreviousWeek() {
         this.currentDate = currentDate.minusWeeks(1)
-        updateWeekDisplay()
-        clearDisplayedTimesheets()
-        filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
-        displayTimesheetsForWeek(filteredTimesheets)
+        updateUI()
     }
 
     private fun navNextWeek() {
@@ -101,15 +109,11 @@ class TimesheetViewActivity : AppCompatActivity() {
             // Do not update the current date or display
             return
         }
-        clearDisplayedTimesheets()
         // Update the current date and display
         currentDate = currentDate.plusWeeks(1)
-        updateWeekDisplay()
-        filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
-        displayTimesheetsForWeek(filteredTimesheets)
+        updateUI()
     }
     private fun searchTimesheetsForUser(currentUser: String) {
-        //listOfUserTimesheets.clear()
         // Reference to the collection of timesheets in Firestore
         val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
         val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", currentUser)
@@ -165,7 +169,6 @@ class TimesheetViewActivity : AppCompatActivity() {
         binding.tvWeeklySelector.text = "${startDay} - ${formatDate(displayEndDate)}"
         selectedDateStart = convertToDate(createdAt)
         selectedDateEnd = convertToDate(endDate)
-        //searchTimesheetsForUser(currentUser)
     }
 
     fun convertToDate(localDate: LocalDate): Date {
@@ -186,13 +189,13 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
-        val daysOfWeek =
-            listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
-        // Clear any existing views from the parent layout
-        parentLayout.removeAllViews()
+
+
+        val daysOfWeek =
+            listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
         // Iterate through each day of the week
         for (day in daysOfWeek) {
@@ -234,6 +237,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 dayTextView.text = day
                 dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
+                //dayTextView.fon
                 dayTextView.textSize = 20f
                 dayTextView.setPadding(20, 10, 20, 10)
                 dayLayout.addView(dayTextView)
@@ -272,7 +276,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         )
         llTimesheetView.orientation = LinearLayout.HORIZONTAL
         llTimesheetView.setPadding(45, 30, 45, 30)
-        llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners) // Change R.drawable.rectangle_wrapper_white_round_corners to your drawable resource
+        llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners)
         llTimesheetView.elevation = 2f
         llTimesheetContainer.addView(llTimesheetView)
 
@@ -294,7 +298,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         )
         tvStartTime.setPadding(30, 20, 0, 0)
         tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
-        tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
+        tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900))
         llStartStop.addView(tvStartTime)
 
         // Create the TextView for end time
@@ -305,7 +309,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         )
         tvEndTime.setPadding(30, 0, 0, 20)
         tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
-        tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
+        tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900))
         llStartStop.addView(tvEndTime)
 
         // Create the ImageView for the divider
@@ -315,7 +319,7 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         ivDivider.setPadding(0, 10, 0, 10)
-        ivDivider.setBackgroundColor(resources.getColor(R.color.divider_color)) // Change R.color.divider to your color resource
+        ivDivider.setBackgroundColor(resources.getColor(R.color.divider_color))
         llTimesheetView.addView(ivDivider)
 
         // Create the LinearLayout for timesheet info
@@ -365,9 +369,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         imageView.setImageBitmap(bitmap)
     }
 
-    private fun clearDisplayedTimesheets() {
+    private fun clearParentLayout() {
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
-        parentLayout.removeAllViews()
+        //parentLayout.removeAllViews()
+        // Alternatively, remove child views individually
+        parentLayout.forEach { view -> parentLayout.removeView(view) }
     }
 }
 
