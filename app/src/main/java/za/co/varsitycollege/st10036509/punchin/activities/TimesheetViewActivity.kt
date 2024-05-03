@@ -77,7 +77,7 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         currentUser = authModel.getCurrentUser()
 
-        searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
+        currentUser?.let { searchTimesheetsForUser(it) }
 
         setupListeners()
         updateUI()
@@ -91,11 +91,13 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         // Set onClickListener for the previous week button
         binding.btnPreviousWeek.setOnClickListener {
+            filteredTimesheets.clear()
             navPreviousWeek()
         }
 
         // Set onClickListener for the next week button
         binding.btnNextWeek.setOnClickListener {
+            filteredTimesheets.clear()
             navNextWeek()
         }
 
@@ -123,6 +125,7 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun updateUI(){
         clearParentLayout()
+        filteredTimesheets.clear()
         updateWeekDisplay()
         filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
         displayTimesheetsForWeek(filteredTimesheets)
@@ -152,10 +155,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         updateUI()
     }
 
-    private fun searchTimesheetsForUser(currentUser: String) {
+    private fun searchTimesheetsForUser(currentUser: FirebaseUser) {
+        val userId = currentUser.uid
         // Reference to the collection of timesheets in Firestore
         val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
-        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", currentUser)
+        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", userId)
 
         // Query to search for timesheets with the specified user ID
         timesheetsQuery.get().addOnSuccessListener { querySnapshot ->
@@ -234,7 +238,6 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
 
-
         val daysOfWeek =
             listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
@@ -278,7 +281,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 dayTextView.text = day
                 dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
-                //dayTextView.fon
+                //dayTextView.
                 dayTextView.textSize = 20f
                 dayTextView.setPadding(20, 10, 20, 10)
                 dayLayout.addView(dayTextView)
@@ -447,10 +450,7 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun clearParentLayout() {
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
-        //parentLayout.removeAllViews()
-        // Alternatively, remove child views individually
-        parentLayout.forEach { view -> parentLayout.removeView(view) }
-
+        parentLayout.removeAllViews()
     }
 
 
