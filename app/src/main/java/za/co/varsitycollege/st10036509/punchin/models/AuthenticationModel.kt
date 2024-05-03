@@ -288,12 +288,7 @@ class AuthenticationModel() {
     fun signOut(callback: (Boolean) -> Unit) {
 
         authInstance.signOut()//sign the user out
-
-        //return callback for handling
-        authInstance.addAuthStateListener { auth ->
-            val isSignedOut = auth.currentUser == null
-            callback(isSignedOut)
-        }
+        callback(true)
     }
 
 
