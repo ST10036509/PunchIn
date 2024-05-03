@@ -21,6 +21,12 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var authModel: AuthenticationModel//get the instance of the authentication model
     private lateinit var toaster: ToastHandler//create a ToastHandler to show toast messages
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+
+    private companion object {
+        const val MSG_SIGN_OUT_SUCCESS = "Signed Out Successfully!"
+        const val MSG_SIGN_OUT_FAILED = "Something Went Wrong... Try Again!"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)//inflate UI
@@ -62,9 +68,22 @@ class SettingsActivity : AppCompatActivity() {
     private fun signOutUser() {
 
         //sign the user out of their account
-        authModel.signOut()
-        //launch the register page
-        intentHandler.openActivityIntent(LoginActivity::class.java)
+        authModel.signOut() { success ->
+            if (success) {
+
+                //display success message
+                toaster.showToast(SettingsActivity.MSG_SIGN_OUT_SUCCESS)
+                //launch the register page
+                intentHandler.openActivityIntent(LoginActivity::class.java)
+
+            } else {
+
+                //display failure message
+                toaster.showToast(SettingsActivity.MSG_SIGN_OUT_FAILED)
+
+            }
+        }
+
 
     }
 

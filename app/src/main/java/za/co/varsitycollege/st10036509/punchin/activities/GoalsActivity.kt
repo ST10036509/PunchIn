@@ -54,7 +54,6 @@ class GoalsActivity : AppCompatActivity() {
         const val MSG_UPDATING_GOALS = "Updating your goals..."
         const val MSG_UPDATE_GOALS_ERROR = "Failed to update your goals. Please Try again..."
         const val DELAY_BEFORE_DISMISS_LOADING_DIALOG = 500L
-        const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
         const val MSG_NO_TIMESHEETS_ERROR = "No timesheets found for today!"
     }
 
@@ -80,7 +79,6 @@ class GoalsActivity : AppCompatActivity() {
         toaster = ToastHandler(this@GoalsActivity)//initialise the toast handler
         loadingDialogHandler = LoadDialogHandler(this@GoalsActivity, progressDialog)//initialise the loading dialog
         currentUser = authModel.getCurrentUser()//get current user form authentication model
-
         loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_PREPARING_PAGE)//show loading dialog
 
         //prepare page asynchronously
@@ -88,17 +86,6 @@ class GoalsActivity : AppCompatActivity() {
 
         //setup listeners for ui controls
         setupListeners()
-    }
-
-
-//__________________________________________________________________________________________________onStart
-
-
-    override fun onStart() {
-        super.onStart()
-
-        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel.minGoal}/-${UserModel.maxGoal}")
-
     }
 
 
@@ -370,8 +357,6 @@ class GoalsActivity : AppCompatActivity() {
         val hoursExcess = hoursWorked - min
 
         val percentage = (hoursExcess.toDouble() / range.toDouble()) * 100.0
-
-        toaster.showToast(percentage.toString())
 
         return percentage
     }

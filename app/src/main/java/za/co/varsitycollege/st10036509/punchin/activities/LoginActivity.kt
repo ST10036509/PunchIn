@@ -106,14 +106,22 @@ class LoginActivity : AppCompatActivity() {
                         } else {
 
                             toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
-                            authModel.signOut()
+                            authModel.signOut(){ success ->
+                                if (success) {
+                                    toaster.showToast("Signed Out...")
+                                }
+                            }
                             loadingDialogHandler.dismissLoadingDialog()
 
                         }
                     }
                 } else {
 
-                    authModel.signOut()
+                    authModel.signOut(){ success ->
+                        if (success) {
+                            toaster.showToast("Signed Out...")
+                        }
+                    }
                     loadingDialogHandler.dismissLoadingDialog()
 
                 }
