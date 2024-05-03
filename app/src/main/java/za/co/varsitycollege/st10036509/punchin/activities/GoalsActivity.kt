@@ -10,7 +10,6 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
@@ -23,13 +22,7 @@ import za.co.varsitycollege.st10036509.punchin.models.UserModel
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
-import java.lang.Math.round
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.Calendar
-import java.util.Date
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -42,7 +35,7 @@ class GoalsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGoalsBinding//bind the GoalsActivity KT and XML files
 
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
-    private var authModel= AuthenticationModel()//get the instance of the authentication model
+    private var authModel = AuthenticationModel()//get the instance of the authentication model
     private var firestoreInstance = FirestoreConnection.getDatabaseInstance()
     private lateinit var toaster: ToastHandler//create a ToastHandler to show toast messages
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
@@ -61,7 +54,6 @@ class GoalsActivity : AppCompatActivity() {
         const val MSG_UPDATING_GOALS = "Updating your goals..."
         const val MSG_UPDATE_GOALS_ERROR = "Failed to update your goals. Please Try again..."
         const val DELAY_BEFORE_DISMISS_LOADING_DIALOG = 500L
-        const val MSG_UNEXPECTED_ERROR = "Unexpected Error Occurred"
         const val MSG_NO_TIMESHEETS_ERROR = "No timesheets found for today!"
     }
 
@@ -87,7 +79,6 @@ class GoalsActivity : AppCompatActivity() {
         toaster = ToastHandler(this@GoalsActivity)//initialise the toast handler
         loadingDialogHandler = LoadDialogHandler(this@GoalsActivity, progressDialog)//initialise the loading dialog
         currentUser = authModel.getCurrentUser()//get current user form authentication model
-
         loadingDialogHandler.showLoadingDialog(GoalsActivity.MSG_PREPARING_PAGE)//show loading dialog
 
         //prepare page asynchronously
@@ -95,17 +86,6 @@ class GoalsActivity : AppCompatActivity() {
 
         //setup listeners for ui controls
         setupListeners()
-    }
-
-
-//__________________________________________________________________________________________________onStart
-
-
-    override fun onStart() {
-        super.onStart()
-
-        toaster.showToast("uid: ${currentUser?.uid.toString()}\nGoals: +${UserModel.minGoal}/-${UserModel.maxGoal}")
-
     }
 
 
@@ -377,8 +357,6 @@ class GoalsActivity : AppCompatActivity() {
         val hoursExcess = hoursWorked - min
 
         val percentage = (hoursExcess.toDouble() / range.toDouble()) * 100.0
-
-        toaster.showToast(percentage.toString())
 
         return percentage
     }

@@ -9,8 +9,6 @@ package za.co.varsitycollege.st10036509.punchin.activities
 import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -103,19 +101,27 @@ class LoginActivity : AppCompatActivity() {
 
                         if(success) {
 
-                            intentHandler.openActivityIntent(GoalsActivity::class.java)
+                            intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
 
                         } else {
 
                             toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
-                            authModel.signOut()
+                            authModel.signOut(){ success ->
+                                if (success) {
+                                    toaster.showToast("Signed Out...")
+                                }
+                            }
                             loadingDialogHandler.dismissLoadingDialog()
 
                         }
                     }
                 } else {
 
-                    authModel.signOut()
+                    authModel.signOut(){ success ->
+                        if (success) {
+                            toaster.showToast("Signed Out...")
+                        }
+                    }
                     loadingDialogHandler.dismissLoadingDialog()
 
                 }
@@ -212,7 +218,7 @@ class LoginActivity : AppCompatActivity() {
 
             loadingDialogHandler.dismissLoadingDialog()//close loading icon
             toaster.showToast(LoginActivity.MSG_LOGIN_SUCCESS)//show success message
-            intentHandler.openActivityIntent(GoalsActivity::class.java)//open goals page
+            intentHandler.openActivityIntent(TimesheetViewActivity::class.java)//open goals page
             clearInputs()//clear input boxes
 
         //if if there were no errors
