@@ -133,7 +133,7 @@ LAST MODIFIED: 25/04/2024
                 android:fontFamily="@font/staatliches"
                 android:textSize="18sp"
                 android:textColor="@color/dark_blue_900"
-                android:text="9HRS"/>
+                android:text="0HRS"/>
 
             <!-- Right Goals Indicator -->
             <TextView

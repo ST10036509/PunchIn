@@ -155,13 +155,7 @@ class GoalsActivity : AppCompatActivity() {
 
             updateGoalsProgressBarWithNewData()
 
-            tvMinimumGoalHours.text = UserModel.minGoal.toString()
-            tvMaximumGoalHours.text = UserModel.maxGoal.toString()
-            tvLeftGoalDisplay.text = "${UserModel.minGoal.toString()} HRS"
-            tvRightGoalDisplay.text = "${UserModel.maxGoal.toString()} HRS"
-
-            tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
-            tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+            setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS")
 
         }
 
@@ -178,13 +172,7 @@ class GoalsActivity : AppCompatActivity() {
 
             updateGoalsProgressBar()
 
-            tvMinimumGoalHours.text = UserModel.minGoal.toString()
-            tvMaximumGoalHours.text = UserModel.maxGoal.toString()
-            tvLeftGoalDisplay.text = "${UserModel.minGoal.toString()} HRS"
-            tvRightGoalDisplay.text = "${UserModel.maxGoal.toString()} HRS"
-
-            tvMinimumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
-            tvMaximumGoalHours.setTextColor(this@GoalsActivity.getColor(R.color.blue_gray_50))
+            setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS")
 
         }
 
@@ -321,7 +309,7 @@ class GoalsActivity : AppCompatActivity() {
 
     fun Double.roundToDecimalPlaces(decimalPlaces: Int): Double {
         val factor = 10.0.pow(decimalPlaces)
-        return (this * factor).roundToInt() / factor
+        return (this * factor) / factor
     }
 
 //__________________________________________________________________________________________________getProgressByHours
@@ -400,7 +388,8 @@ class GoalsActivity : AppCompatActivity() {
 
         binding.apply {
 
-            tvHoursWorked.text = "${(totalHours.toInt()).toString()} HRS"
+            val roundedHours = String.format("%.1f", totalHours) // Round to 1 decimal place
+            tvHoursWorked.text = "$roundedHours HRS"
 
             if (totalHours > maxGoal || totalHours < minGoal) {
 
@@ -449,6 +438,38 @@ class GoalsActivity : AppCompatActivity() {
             tvMinimumGoalHours.setTextColor(textColor)
             tvMaximumGoalHours.setTextColor(textColor)
 
+        }
+    }
+
+//__________________________________________________________________________________________________setMinimumGoalText
+
+    private fun setTexts(minGoal: String, maxGoal: String, leftBound: String, rightBound: String ) {
+
+        binding.apply {
+
+            if ((minGoal.toInt()+ maxGoal.toInt()) < 24) {
+
+                val textColor = this@GoalsActivity.getColor(R.color.blue_gray_50)
+
+                tvMinimumGoalHours.text = minGoal
+                tvMinimumGoalHours.setTextColor(textColor)
+                tvMaximumGoalHours.text = maxGoal
+                tvMaximumGoalHours.setTextColor(textColor)
+                tvLeftGoalDisplay.text = leftBound
+                tvRightGoalDisplay.text = rightBound
+
+            } else {
+
+                val textColor = this@GoalsActivity.getColor(R.color.red_300)
+
+                tvMinimumGoalHours.text = minGoal
+                tvMinimumGoalHours.setTextColor(textColor)
+                tvMaximumGoalHours.text = maxGoal
+                tvMaximumGoalHours.setTextColor(textColor)
+                tvLeftGoalDisplay.text = leftBound
+                    tvRightGoalDisplay.text = rightBound
+
+            }
         }
     }
 
