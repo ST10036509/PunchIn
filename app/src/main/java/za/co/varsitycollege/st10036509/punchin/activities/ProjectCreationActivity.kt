@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
@@ -23,7 +24,6 @@ import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class ProjectCreationActivity : AppCompatActivity() {
@@ -36,7 +36,7 @@ class ProjectCreationActivity : AppCompatActivity() {
     private lateinit var loadingDialogHandler: LoadDialogHandler
     private lateinit var toaster: ToastHandler
     private lateinit var intentHandler: IntentHandler
-    private var startDate: Date? = null
+    private var startDate: Timestamp? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,8 @@ class ProjectCreationActivity : AppCompatActivity() {
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, monthOfYear)
                 selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                startDate = selectedDate.time // Update the startDate variable with the selected date
+                val date = selectedDate.time
+                startDate = Timestamp(date)// Update the startDate variable with the selected date
                 // If you need to update the UI, you can do it here
                 binding.tvSelectDate.setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time))
             },

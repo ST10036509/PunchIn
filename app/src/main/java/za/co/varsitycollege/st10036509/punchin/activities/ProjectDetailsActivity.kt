@@ -41,16 +41,14 @@ class ProjectDetailsActivity : AppCompatActivity() {
 
 
         val recievedIntent = intent
-        // Retrieve data from intent extras
-        val projectName = intent.getStringExtra("projectName")
-        val startDate = intent.getStringExtra("startDate")
-        val setColor = intent.getStringExtra("setColor")
-        val hourlyRate = intent.getDoubleExtra("hourlyRate", 0.0)
-        val description = intent.getStringExtra("description")
-        val totalTimeSheets = intent.getIntExtra("totalTimeSheets", 0)
-        val totalHours = intent.getDoubleExtra("totalHours", 0.0)
-        val totalEarnings = intent.getDoubleExtra("totalEarnings", 0.0)
-        val userId = intent.getStringExtra("userId")
+        val projectName = recievedIntent.getStringExtra("projectName")
+        val setColor = recievedIntent.getStringExtra("setColor")
+        val hourlyRate = recievedIntent.getDoubleExtra("hourlyRate", 0.0)
+        val description = recievedIntent.getStringExtra("description")
+        val totalTimeSheets = recievedIntent.getLongExtra("totalTimeSheets", 0)
+        val totalHours = recievedIntent.getLongExtra("totalHours", 0)
+        val totalEarnings = recievedIntent.getDoubleExtra("totalEarnings", 0.0)
+        val userId = recievedIntent.getStringExtra("userId")
 
 
 
