@@ -115,10 +115,9 @@ LAST MODIFIED: 01/05/2024
                 android:id="@+id/tv_Set_Colour"
                 android:layout_width="290dp"
                 android:layout_height="match_parent"
-                android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
                 android:padding="12dp"
-                android:hint="@string/hint_set_colour"
+                android:text="@string/hint_set_colour"
                 android:textColor="@color/blue_gray_50"
                 android:textSize="18sp"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>

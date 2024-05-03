@@ -59,6 +59,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)

@@ -57,12 +57,12 @@
 
     <!-- Project Creation Page -->
     <string name="title_activity_project_creation">PROJECT ENTRY</string>
-    <string name="hint_project_name">Enter Project Name…</string>
+    <string name="hint_project_name">Enter project name…</string>
     <string name="hint_organization_name">Enter Organization Name…</string>
     <string name="hint_start_date">Enter Start Date…</string>
-    <string name="hint_set_colour">Set Colour…</string>
-    <string name="hint_enter_hourly_rate">Enter Hourly Rate…</string>
-    <string name="hint_enter_description">Enter Description…</string>
+    <string name="hint_set_colour">Set colour…</string>
+    <string name="hint_enter_hourly_rate">Enter hourly rate…</string>
+    <string name="hint_enter_description">Enter description…</string>
     <string name="button_project_return">RETURN</string>
     <string name="button_project_add">ADD</string>
     <string name="title_activity_projectcreation">Project Creation</string>
