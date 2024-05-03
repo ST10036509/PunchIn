@@ -238,6 +238,7 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
+        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
 
@@ -284,7 +285,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 dayTextView.text = day
                 dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
-                //dayTextView.
+                dayTextView.typeface = customFontReglo
                 dayTextView.textSize = 20f
                 dayTextView.setPadding(20, 10, 20, 10)
                 dayLayout.addView(dayTextView)
@@ -387,7 +388,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Create the TextView for timesheet description
         val tvTimesheetName = TextView(context)
         tvTimesheetName.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+            700,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvTimesheetName.setPadding(25, 20, 0, 0)
@@ -400,7 +401,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Create the TextView for project name
         val tvTimesheetDescription = TextView(context)
         tvTimesheetDescription.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+            700,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvTimesheetDescription.setPadding(25, 5, 0, 10)
