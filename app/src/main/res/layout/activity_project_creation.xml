@@ -71,6 +71,7 @@ LAST MODIFIED: 01/05/2024
         <!-- Start Date -->
 
         <LinearLayout
+            android:id="@+id/ll_date_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -102,6 +103,7 @@ LAST MODIFIED: 01/05/2024
 
 
         <LinearLayout
+            android:id="@+id/ll_colorholder"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
@@ -111,20 +113,21 @@ LAST MODIFIED: 01/05/2024
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <EditText
+            <TextView
                 android:id="@+id/tv_Set_Colour"
                 android:layout_width="290dp"
                 android:layout_height="match_parent"
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
                 android:padding="12dp"
-                android:hint="@string/hint_set_colour"
+                android:text="@string/hint_set_colour"
                 android:textColor="@color/blue_gray_50"
                 android:textSize="18sp"
                 android:background="@drawable/rectangle_wrapper_white_sharp_corners"/>
 
+
             <Button
-                android:id="@+id/btnColourSelect"
+                android:id="@+id/btn_Colour_Select"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:textAlignment="center"

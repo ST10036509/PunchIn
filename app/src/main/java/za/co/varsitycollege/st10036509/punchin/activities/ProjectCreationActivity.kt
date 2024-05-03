@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,6 +28,20 @@ import java.util.Calendar
 import java.util.Locale
 
 class ProjectCreationActivity : AppCompatActivity() {
+
+    // Declare colorIndex as a property of the class
+    private var colorIndex = 1
+
+    // Declare colors list as a property of the class
+    private val colors = listOf(
+        R.color.red_300,
+        R.color.Green,
+        R.color.Blue,
+        R.color.Purple,
+        R.color.Pink,
+        R.color.divider_color
+    )
+
 
     private lateinit var binding: ActivityProjectCreationBinding
     private lateinit var projectModel: ProjectsModel
@@ -56,7 +71,8 @@ class ProjectCreationActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         val addButton = findViewById<Button>(R.id.btn_Add)
         val returnButton = findViewById<Button>(R.id.btn_Return)
-        val addDateButton = binding.btnDatePicker
+        val addDateButton = binding.llDateHolder
+        val addColorButton = binding.llColorholder
 
         addButton.setOnClickListener {
             handleAddButtonClick()
@@ -69,6 +85,16 @@ class ProjectCreationActivity : AppCompatActivity() {
         addDateButton.setOnClickListener {
             showDatePicker()
         }
+
+        addColorButton.setOnClickListener {
+            changeColor()
+        }
+    }
+
+    private fun changeColor() {
+        val color = colors[colorIndex % colors.size]
+        binding.btnColourSelect.setBackgroundColor(ContextCompat.getColor(this, color))
+        colorIndex++
     }
 
     private fun showDatePicker() {
@@ -109,19 +135,24 @@ class ProjectCreationActivity : AppCompatActivity() {
     private fun handleAddButtonClick() {
         val projectNameEditText = binding.edProjectName
         val startDateEditText = binding.tvSelectDate
-        val setColorEditText = binding.tvSetColour
+        val setColorEditText = binding.btnColourSelect
         val hourlyRateEditText = binding.edHourlyRate
         val descriptionEditText = binding.edDescription
 
         val projectName = projectNameEditText.text.toString()
         val startDate = startDateEditText.text.toString()
-        val setColor = setColorEditText.text.toString()
+        val setColor = getHexColor() // Get the hexadecimal representation of the color
         val hourlyRateText = hourlyRateEditText.text.toString()
         val description = descriptionEditText.text.toString()
 
         validateNullInput(projectName, startDate, setColor, hourlyRateText, description)
     }
 
+    // Function to get the hexadecimal representation of the selected color
+    private fun getHexColor(): String {
+        val color = ContextCompat.getColor(this, colors[colorIndex % colors.size])
+        return String.format("#%06X", 0xFFFFFF and color)
+    }
 
     private fun validateNullInput(name: String, date: String, color: String, rate: String, description: String) {
         val checkForNull = validationHandler.checkForNullInputs(name, date, color, rate, description)
