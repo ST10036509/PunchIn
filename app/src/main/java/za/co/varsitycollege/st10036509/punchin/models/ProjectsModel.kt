@@ -10,15 +10,19 @@ Model of Projects designed to handle variables and data specific
 functions and variables
  */
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
-import java.util.Date
 import kotlin.math.absoluteValue
 
 
 class ProjectsModel (
     var projectName: String,
-    var startDate: Date? = null,
+    var startDate: Timestamp? = null,
     var setColor: String,
     var hourlyRate: Double,
     var description: String,
@@ -32,16 +36,19 @@ class ProjectsModel (
     private var firestore = FirestoreConnection.getDatabaseInstance()
 
     private var authInstance = AuthenticationModel()
-    private var timesheets: MutableList<TimesheetModel> = mutableListOf()//declare an array to hold user related timesheets
+    private var timesheets: MutableList<TimesheetModel> =
+        mutableListOf()//declare an array to hold user related timesheets
+    private val projects = mutableListOf<ProjectsModel>()
 
 
-    fun getProjectTotalHours():Long{
+    fun getProjectTotalHours(): Long {
 
         var totalHoursWorked = 0.0
 
         for (timesheet in timesheets) {
 
-            val durationMillis = (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
+            val durationMillis =
+                (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
             val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
             totalHoursWorked += hoursWorked
         }
@@ -49,39 +56,39 @@ class ProjectsModel (
         return totalHoursWorked.toLong()
     }
 
-    fun getTotalTimesheets():Long{
+    fun getTotalTimesheets(): Long {
 
         var total: Long = 0
 
-        for (timesheet in timesheets){
+        for (timesheet in timesheets) {
             total++
         }
 
         return total
     }
 
-fun getUserRelatedTimesheets(projectId: String, callback: (Boolean)-> Unit){
+    fun getUserRelatedTimesheets(projectId: String, callback: (Boolean) -> Unit) {
 
 
-    val timesheetRef = firestore.collection("timesheets")
-    timesheetRef.whereEqualTo("projectId", projectId)
-        .get()
-        .addOnSuccessListener{timesheetDocuments ->
-            if(!timesheetDocuments.isEmpty) {
-                for (timesheetDocument in timesheetDocuments) {
+        val timesheetRef = firestore.collection("timesheets")
+        timesheetRef.whereEqualTo("projectId", projectId)
+            .get()
+            .addOnSuccessListener { timesheetDocuments ->
+                if (!timesheetDocuments.isEmpty) {
+                    for (timesheetDocument in timesheetDocuments) {
 
-                    var newTimesheet = timesheetDocument.toObject(TimesheetModel::class.java)
-                    timesheets.add(newTimesheet)
+                        var newTimesheet = timesheetDocument.toObject(TimesheetModel::class.java)
+                        timesheets.add(newTimesheet)
+                    }
+                    callback(true)
+                } else {
+                    callback(false)
                 }
-                callback(true)
-            }else{
+            }
+            .addOnFailureListener {
                 callback(false)
             }
-        }
-        .addOnFailureListener{
-            callback(false)
-        }
-}
+    }
 
     // Method to get project data as a map
     fun getData(): Map<String, Any?> {
@@ -114,7 +121,10 @@ fun getUserRelatedTimesheets(projectId: String, callback: (Boolean)-> Unit){
         collection.add(projectData)
             .addOnSuccessListener { documentReference ->
                 // Data successfully stored in Firestore
-                Log.d("ProjectsModel", "Project data stored successfully. Document ID: ${documentReference.id}")
+                Log.d(
+                    "ProjectsModel",
+                    "Project data stored successfully. Document ID: ${documentReference.id}"
+                )
             }
             .addOnFailureListener { e ->
                 // Error storing data in Firestore
@@ -124,61 +134,78 @@ fun getUserRelatedTimesheets(projectId: String, callback: (Boolean)-> Unit){
 
 
     fun getProjectList(userId: String, callback: (List<ProjectsModel>) -> Unit) {
-
-
-        val currentUser = authInstance.getCurrentUser()
-
         val firestore = FirebaseFirestore.getInstance()
         val projectRef = firestore.collection("projects")
 
-        // Retrieve the project
-        projectRef.whereEqualTo("userId", currentUser?.uid.toString())
-            .get()
+        projectRef.get()
             .addOnSuccessListener { projectDoc ->
+                val projects = mutableListOf<ProjectsModel>()
+
                 if (!projectDoc.isEmpty) {
-
-                    val projects = mutableListOf<ProjectsModel>()
-
-                    for (document in projectDoc) {
+                    val deferredProjects = projectDoc.documents.map { document ->
                         val projectName = document.getString("projectName")
-                        val startDate = document.getDate("startDate")
+
+                        val startDate = document["startDate"] as? Timestamp // Retrieve startDate as Timestamp
                         val setColor = document.getString("setColor")
                         val hourlyRate = document.getDouble("hourlyRate")
                         val description = document.getString("description")
-                        var totalTimeSheets: Long = 0
-                        var totalHours: Long = 0
-                        getUserRelatedTimesheets(document.id) { success ->
-                            if (success) {
-                                totalTimeSheets = getTotalTimesheets()
-                                totalHours = getProjectTotalHours()
-                            }
-                        }
-                        val totalEarnings = 0.0
                         val userId = document.getString("userId")
 
-                        val newProject: ProjectsModel= ProjectsModel(
-                            projectName!!,
-                            startDate,
-                            setColor!!,
-                            hourlyRate!!,
-                            description!!,
-                            totalTimeSheets,
-                            totalHours,
-                            totalEarnings,
-                            userId!!
-                        )
-                        projects.add(newProject)
+                        if (userId == userId) { // Check if the document belongs to the requested user
+                            val deferredProject = CompletableDeferred<ProjectsModel?>()
+
+                            getUserRelatedTimesheets(document.id) { success ->
+                                if (success) {
+                                    val totalTimeSheets = getTotalTimesheets()
+                                    val totalHours = getProjectTotalHours()
+                                    val totalEarnings = 0.0
+
+                                    val newProject = ProjectsModel(
+                                        projectName!!,
+                                        startDate,
+                                        setColor!!,
+                                        hourlyRate!!,
+                                        description!!,
+                                        totalTimeSheets,
+                                        totalHours,
+                                        totalEarnings,
+                                        userId!!
+                                    )
+                                    deferredProject.complete(newProject)
+                                } else {
+                                    deferredProject.complete(null)
+                                }
+                            }
+
+                            deferredProject
+                        } else {
+                            null // Return null for projects not associated with the requested user
+                        }
+                    }.filterNotNull()
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        deferredProjects.forEach { deferredProject ->
+                            val project = deferredProject.await()
+                            if (project != null) {
+                                projects.add(project)
+                            }
+                        }
+                        callback(projects)
                     }
-                    callback(projects)
+                } else {
+                    callback(emptyList())
                 }
             }
-            .addOnFailureListener {e ->
+            .addOnFailureListener { e ->
                 // Error handling
                 Log.e("ProjectsModel", "Error counting projects: $e")
-                callback(emptyList()) // Return an empty list in case of failure
+                callback(emptyList())
             }
-        }
     }
+
+
+}
+
 
 
     /*

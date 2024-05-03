@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectViewBinding
@@ -24,7 +25,6 @@ import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import java.util.Calendar
-import java.util.Date
 
 class ProjectViewActivity : AppCompatActivity() {
 
@@ -37,8 +37,8 @@ class ProjectViewActivity : AppCompatActivity() {
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
     private var currentUser: FirebaseUser?= null
-    private var startDate: Date? = null
-    private var endDate: Date? = null
+    private var startDate: Timestamp? = null
+    private var endDate: Timestamp? = null
 
 
 
@@ -109,12 +109,13 @@ class ProjectViewActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this@ProjectViewActivity,
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                // Set the selected date in the startDate variable
+                // Set the selected date in the endDate variable
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, monthOfYear)
                 selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                endDate = selectedDate.time // Update the startDate variable with the selected date
+                val date = selectedDate.time // Convert Calendar to Date
+                endDate = Timestamp(date) // Convert Date to Timestamp and update endDate
             },
             year,
             month,
@@ -123,6 +124,7 @@ class ProjectViewActivity : AppCompatActivity() {
         // Show the DatePickerDialog
         datePickerDialog.show()
     }
+
 
     private fun showStartDatePicker() {
         // Get current date to set as default in the picker
@@ -140,7 +142,8 @@ class ProjectViewActivity : AppCompatActivity() {
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, monthOfYear)
                 selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                startDate = selectedDate.time // Update the startDate variable with the selected date
+                val date = selectedDate.time // Convert Calendar to Date
+                startDate = Timestamp(date) // Convert Date to Timestamp and update startDate
             },
             year,
             month,
@@ -149,6 +152,8 @@ class ProjectViewActivity : AppCompatActivity() {
         // Show the DatePickerDialog
         datePickerDialog.show()
     }
+
+
 
     private fun rearrangeComponentsAlphabetically() {
         // Remove all existing views from ll_holder
@@ -190,16 +195,16 @@ class ProjectViewActivity : AppCompatActivity() {
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
                     // Convert startDate and endDate to milliseconds since epoch
-                    val startMillis = startDate?.time ?: Long.MIN_VALUE
-                    val endMillis = endDate?.time ?: Long.MAX_VALUE
+                    val startMillis = startDate?.toDate()?.time ?: Long.MIN_VALUE
+                    val endMillis = endDate?.toDate()?.time ?: Long.MAX_VALUE
 
                     // Filter the projects based on the start date range
                     val filteredProjects = projects.filter { project ->
-                        project.startDate?.time ?: Long.MIN_VALUE in startMillis..endMillis
+                        project.startDate?.toDate()?.time ?: Long.MIN_VALUE in startMillis..endMillis
                     }
 
                     // Sort the filtered list of projects by start date
-                    val sortedProjects = filteredProjects.sortedByDescending { it.startDate?.time ?: 0 }
+                    val sortedProjects = filteredProjects.sortedByDescending { it.startDate?.toDate()?.time ?: 0 }
 
                     // Create and add XML components for each project to ll_holder
                     for (project in sortedProjects) {
@@ -217,6 +222,7 @@ class ProjectViewActivity : AppCompatActivity() {
             Log.e("ProjectViewActivity", "Current user is null")
         }
     }
+
 
 
 
