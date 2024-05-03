@@ -25,6 +25,7 @@ import androidx.core.view.isEmpty
 import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
+import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 import java.io.ByteArrayOutputStream
@@ -37,6 +38,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var intentHandler: IntentHandler
     private lateinit var timesheetModel: TimesheetModel
     private lateinit var validationHandler: ValidationHandler
+    private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
     private var progressDialog: ProgressDialog? = null//create a loading dialog instance
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var toaster: ToastHandler
@@ -45,7 +47,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
-    private lateinit var timesheetPhotoString : String
+    private var timesheetPhotoString : String? = null
 
 
     //strings to use
@@ -62,7 +64,9 @@ class TimesheetCreationActivity : AppCompatActivity() {
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        //initialize an instance of the NavBarHelper and pass in the current context and binding
+        navbarHelper = NavbarViewBindingHelper(this@TimesheetCreationActivity, binding)
+        intentHandler = IntentHandler(this@TimesheetCreationActivity)
         loadingDialogHandler = LoadDialogHandler(this@TimesheetCreationActivity, progressDialog)//initialise the loading dialog
         //initialise the validation handler
         validationHandler = ValidationHandler()
@@ -85,7 +89,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 base64String.append(String.format("%02X", byte))
             }
             timesheetPhotoString = base64String.toString()
-
 
         }
 
@@ -187,11 +190,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
-
-
-
-
-        intentHandler = IntentHandler(this@TimesheetCreationActivity)
         //setup listeners for ui controls
         setupListeners()
 
@@ -250,6 +248,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
      */
     private fun returnToView() {
 
+        loadingDialogHandler.showLoadingDialog("Loading...")
         intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
 
     }
@@ -257,7 +256,16 @@ class TimesheetCreationActivity : AppCompatActivity() {
     /**
      * Method to add new timesheet once fully entered
      */
-    private fun createTimesheet(timesheetPhotoString : String) {
+    private fun createTimesheet(timesheetPhotoString: String?) {
+        // Check if timesheetPhotoString is empty
+        if (timesheetPhotoString != null) {
+            if (timesheetPhotoString.isEmpty()) {
+                Toast.makeText(this, "Please add a photo", Toast.LENGTH_SHORT).show()
+                // Return without proceeding further
+                return
+            }
+        }
+
         // Ensure both start and end times are selected before proceeding
         if (timesheetStartTime != null && timesheetEndTime != null) {
             // Ensure timesheetStartDate is not null before proceeding
@@ -288,6 +296,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 // Check if the current user is not null
                 currentUser?.let { user ->
                     // Get user id
+                    loadingDialogHandler.showLoadingDialog("Loading...")
                     val userId = user.uid
                     timesheetModel.setData(
                         userId,
@@ -297,17 +306,22 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetStartTime!!,
                         timesheetEndTime!!,
                         timesheetDescription,
-                        timesheetPhotoString
+                        timesheetPhotoString!!
                     )
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
                 }
                 clearInputFields()
+                loadingDialogHandler.dismissLoadingDialog()
+                loadingDialogHandler.showLoadingDialog("Loading...")
+                intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
+
             }
         } else {
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun clearInputFields() {
 
