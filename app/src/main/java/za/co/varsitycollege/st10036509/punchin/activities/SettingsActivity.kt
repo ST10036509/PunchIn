@@ -71,10 +71,10 @@ class SettingsActivity : AppCompatActivity() {
         authModel.signOut() { success ->
             if (success) {
 
-                //display success message
-                toaster.showToast(SettingsActivity.MSG_SIGN_OUT_SUCCESS)
                 //launch the register page
                 intentHandler.openActivityIntent(LoginActivity::class.java)
+                toaster.showToast(SettingsActivity.MSG_SIGN_OUT_SUCCESS)
+                finish()
 
             } else {
 
@@ -83,8 +83,6 @@ class SettingsActivity : AppCompatActivity() {
 
             }
         }
-
-
     }
 
 
