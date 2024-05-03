@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Ethan Schoonbee
+CREATED: 23/04/2024
+LAST MODIFIED: 25/04/2024
+-->
+
+<!-- Page Layout -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.GoalsActivity">
+
+    <!-- Header NavBar -->
+    <include layout="@layout/header_navbar_with_settings_layout" />
+
+    <!-- Goals Title -->
+    <TextView
+        android:id="@+id/tv_GoalsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="110dp"
+        android:textAlignment="center"
+        android:fontFamily="@font/staatliches"
+        android:textSize="45sp"
+        android:textColor="@color/indigo_900"
+        android:text="@string/title_activity_goals"/>
+
+    <!-- Goals Wrapper Block -->
+    <LinearLayout
+        android:id="@+id/ll_GoalsWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_GoalsTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:elevation="2dp"
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
+
+        <!-- Points Display -->
+        <TextView
+            android:id="@+id/tv_PointsCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:maxHeight="105dp"
+            android:fontFamily="@font/staatliches"
+            android:textColor="@color/gold"
+            android:textSize="100sp"
+            android:text="0"/>
+
+        <!-- Points Tag -->
+        <TextView
+            android:id="@+id/tv_PointsTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:maxHeight="26dp"
+            android:fontFamily="@font/reglo_bold"
+            android:textColor="@color/dark_blue_900"
+            android:textSize="25sp"
+            android:text="@string/points"/>
+
+        <!-- Progress Bar -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_GoalsProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+
+            <!-- Left Goal Limiter -->
+            <ImageView
+                android:id="@+id/img_LeftGoalLimiter"
+                android:layout_width="65dp"
+                android:layout_height="28dp"
+                android:scaleType="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:src="@drawable/goals_progress_bar_bound_left" />
+
+            <!-- Right Goal Limiter -->
+            <ImageView
+                android:id="@+id/img_RightGoalLimiter"
+                android:layout_width="65dp"
+                android:layout_height="28dp"
+                android:scaleType="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:src="@drawable/goals_progress_bar_bound_right" />
+
+            <!-- Progress Bar Tracker -->
+            <ProgressBar
+                android:id="@+id/pb_ProgressBarTracker"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="28dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/img_LeftGoalLimiter"
+                app:layout_constraintRight_toLeftOf="@+id/img_RightGoalLimiter"
+                android:progressDrawable="@drawable/goals_progress_bar_style"
+                android:progress="60"/>
+
+            <!-- Left Goals Indicator -->
+            <TextView
+                android:id="@+id/tv_RightGoalDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/img_RightGoalLimiter"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/img_RightGoalLimiter"
+                android:fontFamily="@font/staatliches"
+                android:textSize="18sp"
+                android:textColor="@color/dark_blue_900"
+                android:text="9HRS"/>
+
+            <!-- Current Hours Worked Indicator -->
+            <TextView
+                android:id="@+id/tv_HoursWorked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/img_RightGoalLimiter"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:fontFamily="@font/staatliches"
+                android:textSize="18sp"
+                android:textColor="@color/dark_blue_900"
+                android:text="0HRS"/>
+
+            <!-- Right Goals Indicator -->
+            <TextView
+                android:id="@+id/tv_LeftGoalDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/img_LeftGoalLimiter"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@+id/img_LeftGoalLimiter"
+                android:fontFamily="@font/staatliches"
+                android:textSize="18sp"
+                android:textColor="@color/dark_blue_900"
+                android:text="2HRS"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Minimum Goal Input Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/reglo_bold"
+            android:textSize="20sp"
+            android:textColor="@color/dark_blue_900"
+            android:text="@string/min_goals_input_title"/>
+
+        <!-- Minimum Goal Selector -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
+
+            <!-- Button for Decrementing -->
+            <ImageButton
+                android:id="@+id/imgb_MinDecrement"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:background="@null"
+                android:src="@drawable/minus_icon" />
+
+            <!-- Minimum Goal Hours  -->
+
+            <!-- Button for Incrementing -->
+            <TextView
+                android:id="@+id/tv_MinimumGoalHours"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/staatliches"
+                android:inputType="number"
+                android:text="24"
+                android:editable="false"
+                android:textAlignment="center"
+                android:textSize="35sp" />
+
+            <ImageButton
+                android:id="@+id/imgb_MinIncrement"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:background="@null"
+                android:src="@drawable/plus_icon" />
+        </LinearLayout>
+
+        <!-- Maximum Goal Input Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/reglo_bold"
+            android:textSize="20sp"
+            android:textColor="@color/dark_blue_900"
+            android:text="@string/max_goals_input_title"/>
+
+        <!-- Maximum Goal Selector -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp">
+
+            <!-- Button for Decrementing -->
+            <ImageButton
+                android:id="@+id/imgb_MaxDecrement"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:background="@null"
+                android:src="@drawable/minus_icon" />
+
+            <!-- Minimum Goal Hours  -->
+            <TextView
+                android:id="@+id/tv_MaximumGoalHours"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:textSize="35sp"
+                android:editable="false"
+                android:fontFamily="@font/staatliches"
+                android:text="24"/>
+
+            <!-- Button for Incrementing -->
+            <ImageButton
+                android:id="@+id/imgb_MaxIncrement"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:background="@null"
+                android:src="@drawable/plus_icon" />
+        </LinearLayout>
+
+        <!-- Sign-In Button -->
+        <LinearLayout
+            android:id="@+id/ll_UpdateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:elevation="2dp">
+
+            <!-- Username Input -->
+            <TextView
+                android:id="@+id/tv_Update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:fontFamily="@font/reglo_bold"
+                android:pointerIcon="hand"
+                android:text="@string/update_button_text"
+                android:textColor="@color/white_A700"
+                android:textAlignment="center"
+                android:textSize="32sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Footer NavBar -->
+    <include layout="@layout/footer_navbar_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Cameron Brooks
+CREATED: 25/04/2024
+LAST MODIFIED: 25/04/2024
+-->
+
+<!-- Page Layout -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_50"
+    tools:context=".activities.TimesheetCreationActivity">
+
+    <!-- Timesheet Entry Title -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_TimesheetCreationTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/staatliches"
+        android:text="@string/title_activity_timesheet_creation"
+        android:textAlignment="center"
+        android:textColor="@color/indigo_900"
+        android:textSize="45sp"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_Timesheet_Entry_Group"
+        android:layout_width="370dp"
+        android:layout_height="560dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_TimesheetCreationTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="133dp">
+
+        <LinearLayout
+            android:id="@+id/ll_Photo_Add_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_Add_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/timesheet_add_image_text"
+                android:textAlignment="center"
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_Timesheet_Image"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/border_background"
+                android:elevation="2dp" />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/projectDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:fontFamily="@font/reglo_bold"
+            android:prompt="@color/blue_50"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/blue_gray_50" />
+
+        <EditText
+            android:id="@+id/et_Timesheet_Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:fontFamily="@font/reglo_bold"
+            android:hint="@string/hint_timesheet_name"
+            android:padding="12dp"
+            android:textColorHint="@color/blue_gray_50" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="290dp"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:fontFamily="@font/reglo_bold"
+                android:padding="12dp"
+                android:text="Select a date..."
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnDatePicker"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="38dp"
+                android:background="@drawable/calendar_lines" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_Timesheet_Start_End_Time"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/reglo_bold"
+            android:text="Start Time                        End Time"
+            android:textAlignment="center"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/blue_gray_50"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/ll_time_picker"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/btn_time_start"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minWidth="64dp"
+                android:minHeight="54dp"
+                android:text="@string/default_start_time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#6983BD"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/btn_time_end"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minWidth="64dp"
+                android:minHeight="54dp"
+                android:text="@string/default_end_time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#6983BD"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_Timesheet_Description"
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="4dp"
+            android:fontFamily="@font/reglo_bold"
+            android:gravity="top|start"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:hint="@string/hint_timesheet_description"
+            android:padding="12dp"
+            android:singleLine="false"
+            android:textColorHint="@color/blue_gray_50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_Timesheet_Button_Group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_Timesheet_Entry_Group">>
+
+        <!-- Return Button -->
+        <Button
+            android:id="@+id/btn_Return"
+            android:layout_width="133dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rectangle_wrapper_medium_blue"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_return"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/btn_Add"
+            android:layout_width="122dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_wrapper_light_green"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/button_timesheet_add"
+            android:textColor="@color/white_A700"
+            android:textSize="12pt" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->

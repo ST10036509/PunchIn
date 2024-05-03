@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Leonard Bester
+CREATED: 29/04/2024
+LAST MODIFIED: 02/05/2024
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.ProjectViewActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Header NavBar -->
+    <include
+        android:id="@+id/include"
+        layout="@layout/header_navbar_with_settings_layout" />
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_project"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="-20dp"
+        android:clickable="true"
+        android:foregroundTint="@color/indigo_900"
+        app:backgroundTint="@color/green_200"
+        app:layout_constraintBottom_toTopOf="@id/include2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:rippleColor="@color/indigo_900"
+        app:srcCompat="@drawable/plus_icon"
+        android:contentDescription="@string/fab_add_timesheet" />
+
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_Title"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="-14dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/staatliches"
+        android:text="@string/activity_project_view_title"
+        android:textAlignment="center"
+        android:textColor="@color/indigo_900"
+        android:textSize="45sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <!-- Search and filters -->
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="98dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/tv_Title"
+        tools:layout_editor_absoluteX="0dp">
+
+        <SearchView
+            android:id="@+id/sv_project_search"
+            android:layout_width="385dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_wrapper_white_round_corners"
+            android:elevation="2dp" />
+
+        <LinearLayout
+            android:layout_width="385dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rectangle_wrapper_light_blue"
+            android:elevation="2dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/settings_sliders" />
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="37dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:elevation="2dp"
+                android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_alphabet"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/activity_project_view_button_alphabet"
+                android:textColor="@color/indigo_300"
+                android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="37dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:elevation="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_start_date"
+                    android:layout_width="75dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:fontFamily="@font/reglo_bold"
+                    android:text="@string/activity_project_view_button_start"
+                    android:textColor="@color/indigo_300"
+                    android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/line"
+                    android:layout_width="15dp"
+                    android:layout_height="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:backgroundTint="#6983BD" />
+
+                <TextView
+                    android:id="@+id/btn_end_date"
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:fontFamily="@font/reglo_bold"
+                    android:text="@string/activity_project_view_button_end"
+                    android:textColor="@color/indigo_300"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_sort_date"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:backgroundTint="#6983BD"
+                android:fontFamily="@font/reglo_bold"
+                android:text="APPLY"
+                android:textColor="#F9F9F9"
+                android:textSize="14dp" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Scroll View -->
+
+    <!-- Footer NavBar -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="406dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <LinearLayout
+            android:id="@+id/ll_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"/>
+    </ScrollView>
+
+    <include
+        android:id="@+id/include2"
+        layout="@layout/footer_navbar_layout"
+        tools:layout_editor_absoluteY="619dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <!--//______________________....oooOO0_END_OF_FILE_0OOooo....______________________\\-->

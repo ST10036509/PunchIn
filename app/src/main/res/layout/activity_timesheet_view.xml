@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+AUTHOR: Cameron Brooks
+CREATED: 25/04/2024
+LAST MODIFIED: 25/04/2024
+-->
+
+<!-- Page Layout -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.TimesheetViewActivity">
+
+
+    <!-- Header NavBar -->
+    <include
+        android:id="@+id/include"
+        layout="@layout/header_navbar_with_settings_layout" />
+    <!-- Footer NavBar -->
+    <include
+        android:id="@+id/include2"
+        layout="@layout/footer_navbar_layout"
+        tools:layout_editor_absoluteY="619dp" />
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_timesheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="-20dp"
+        android:clickable="true"
+        android:foregroundTint="@color/indigo_900"
+        app:backgroundTint="@color/green_200"
+        app:layout_constraintBottom_toTopOf="@id/include2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:rippleColor="@color/indigo_900"
+        app:srcCompat="@drawable/plus_icon"
+        android:contentDescription="@string/fab_add_timesheet" />
+
+    <!-- Weekly Selector -->
+    <LinearLayout
+        android:id="@+id/ll_WeeklySelector"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/rectangle_wrapper_light_blue"
+        android:elevation="2dp"
+        android:minHeight="45dp"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include">
+
+        <Button
+            android:id="@+id/btnPreviousWeek"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/empty_navigation_button"
+            android:layout_marginEnd="10dp"/>
+
+        <TextView
+            android:id="@+id/tvWeeklySelector"
+            android:layout_width="167dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:fontFamily="@font/reglo_bold"
+            android:text="@string/weekly_selection_text"
+            android:textAlignment="center"
+            android:textColor="#14306A"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnNextWeek"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/empty_navigation_button"
+            android:scaleX="-1"
+            android:layout_marginStart="10dp"
+            />
+    </LinearLayout>
+
+    <!-- Timesheet Viewing -->
+    <ScrollView
+        android:id="@+id/sv_ScrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="85dp">
+
+        <LinearLayout
+            android:id="@+id/ll_ScrollContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,20 +2,76 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/punchin_logo_icon_square"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/punchin_logo_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PunchIn"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.SettingsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="true"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.GoalsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_goals"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.TimesheetCreationActivity"
+            android:exported="true"
+            android:label="@string/title_activity_timesheet_creation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.TimesheetViewActivity"
+            android:exported="true"
+            android:label="@string/title_activity_timesheet_view"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.CameraActivity"
+            android:exported="true"
+            android:label="Camera"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.ProjectViewActivity"
+            android:exported="true"
+            android:label="@string/title_activity_project_view"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.ProjectDetailsActivity"
+            android:exported="true"
+            android:label="@string/title_activity_project_details"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.ProjectCreationActivity"
+            android:exported="true"
+            android:label="@string/title_activity_projectcreation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
