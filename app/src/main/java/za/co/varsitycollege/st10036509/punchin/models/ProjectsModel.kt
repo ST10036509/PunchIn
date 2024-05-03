@@ -141,11 +141,6 @@ class ProjectsModel (
                 callback(emptyList()) // Return an empty list in case of failure
             }
     }
-
-
-
-
-
 }
 /*
 ___________           .___         _____  ___________.__.__

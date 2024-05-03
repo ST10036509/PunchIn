@@ -8,6 +8,8 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,35 +18,50 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetCreationActivity
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
+import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
 import za.co.varsitycollege.st10036509.punchin.models.TimesheetModel
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
+import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import java.time.LocalDate
 import java.time.LocalDate.ofInstant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class TimesheetViewActivity : AppCompatActivity() {
-    private lateinit var binding: za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
+    private var currentDate = LocalDate.now()
+    private var currentUser: FirebaseUser? = null
+    private var authModel = AuthenticationModel()
     private val firestoreInstance = FirestoreConnection.getDatabaseInstance()
+    private lateinit var binding: za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
     private lateinit var intentHandler: IntentHandler
     private lateinit var timesheetModel: TimesheetModel
-    private var currentDate = LocalDate.now()
-    private val listOfUserTimesheets = mutableListOf<TimesheetModel>()
     private lateinit var selectedDateStart: Date
     private lateinit var selectedDateEnd: Date
+    private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
+    private val listOfUserTimesheets = mutableListOf<TimesheetModel>()
     private val filteredTimesheets = mutableListOf<TimesheetModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "")
+        //initialize an instance of the NavBarHelper and pass in the current context and binding
+        navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
+        //setup listeners for NavBar onClick events
+        navbarHelper.setUpNavBarOnClickEvents()
 
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+
+        currentUser = authModel.getCurrentUser()
+
+        searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
 
         // Set onClickListener for the previous week button
         binding.btnPreviousWeek.setOnClickListener {
@@ -56,21 +73,16 @@ class TimesheetViewActivity : AppCompatActivity() {
             navNextWeek()
         }
 
-        binding.fabAddTimesheet.setOnClickListener{
+        binding.fabAddTimesheet.setOnClickListener {
             intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
         }
-
-        // Display the current week initially
         updateWeekDisplay()
-        //retrieveDataFromFirestore()
-        //displayData()
-
     }
 
     private fun navPreviousWeek() {
         this.currentDate = currentDate.minusWeeks(1)
         updateWeekDisplay()
-        searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
+        clearDisplayedTimesheets()
         filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
         displayTimesheetsForWeek(filteredTimesheets)
     }
@@ -89,37 +101,71 @@ class TimesheetViewActivity : AppCompatActivity() {
             // Do not update the current date or display
             return
         }
+        clearDisplayedTimesheets()
         // Update the current date and display
         currentDate = currentDate.plusWeeks(1)
         updateWeekDisplay()
         filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
-        searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
         displayTimesheetsForWeek(filteredTimesheets)
     }
+    private fun searchTimesheetsForUser(currentUser: String) {
+        //listOfUserTimesheets.clear()
+        // Reference to the collection of timesheets in Firestore
+        val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
+        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", currentUser)
 
-    // Function to update the current date and display the week
+        // Query to search for timesheets with the specified user ID
+        timesheetsQuery.get().addOnSuccessListener { querySnapshot ->
+            for (document in querySnapshot.documents) {
+                // Retrieve data from the document
+                timesheetModel = TimesheetModel(
+                    userId = document.getString("userId") ?: "",
+                    timesheetName = document.getString("timesheetName") ?: "",
+                    projectId = document.getString("projectId") ?: "",
+                    timesheetStartDate = document.getTimestamp("timesheetStartDate")?.toDate(),
+                    timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
+                    timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
+                    timesheetDescription = document.getString("timesheetDescription") ?: "",
+                    timesheetPhoto = null
+                )
+                listOfUserTimesheets.add(timesheetModel)
+            }
+        }
+    }
 
-
+    fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
+        // Iterate through the list of timesheets
+        for (timesheet in listOfUserTimesheets) {
+            // Check if the timesheet's start date is after or equal to the specified start date
+            // and if the timesheet's end date is before or equal to the specified end date
+            if (timesheet.timesheetStartDate!! in startDate..endDate) {
+                // Add the timesheet to the filtered list
+                filteredTimesheets.add(timesheet)
+            }
+        }
+    }
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
-        val createdAt = currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+        val createdAt =
+            currentDate.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
         val startDay = createdAt.dayOfMonth
 
         // Calculate the end date of the week
         val endDate = createdAt.plusDays(6)
 
         // Calculate the end date of the current week
-        val endOfWeek = LocalDate.now().with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY))
+        val endOfWeek = LocalDate.now()
+            .with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY))
 
         // Update UI with the new week time window using data binding or findViewById
         val displayEndDate = if (endOfWeek.isBefore(endDate)) endOfWeek else endDate
 
         // Update UI with the new week time window using data binding or findViewById
         binding.tvWeeklySelector.text = "${startDay} - ${formatDate(displayEndDate)}"
-        selectedDateStart = convertToDate(startDate)
+        selectedDateStart = convertToDate(createdAt)
         selectedDateEnd = convertToDate(endDate)
-        //searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
+        //searchTimesheetsForUser(currentUser)
     }
 
     fun convertToDate(localDate: LocalDate): Date {
@@ -131,86 +177,17 @@ class TimesheetViewActivity : AppCompatActivity() {
         return date.format(dateFormatter)
     }
 
-    private fun displayCurrentWeek(date: LocalDate?) {
-        // Calculate the start date of the week
-        val startDay = currentDate.minusDays(7).dayOfMonth
-        // Calculate the end date of the week
-        val endDate = currentDate
-        // Update UI with the new week time window using data binding
-        binding.tvWeeklySelector.text= "${startDay} - ${formatDate(endDate)}"
-    }
+    fun getHoursAndMinutesFromDate(date: Date): String {
+        // Create a SimpleDateFormat instance to format the date
+        val dateFormat = SimpleDateFormat("HH:mm")
 
-
-    fun getHourAndMinutes(date: Date): String {
-        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return sdf.format(date)
-    }
-
-    private fun searchTimesheetsForUser(userId: String) {
-        // Reference to the collection of timesheets in Firestore
-        val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
-        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", userId)
-
-        // Query to search for timesheets with the specified user ID
-        timesheetsQuery.get().addOnSuccessListener { querySnapshot ->
-                for (document in querySnapshot.documents) {
-                    // Retrieve data from the document
-                    val timesheetModel = TimesheetModel(
-                        userId = document.getString("userId") ?: "",
-                        timesheetName = document.getString("timesheetName") ?: "",
-                        projectId = document.getString("projectId") ?: "",
-                        timesheetStartDate = document.getTimestamp("timesheetStartDate")?.toDate(),
-                        timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
-                        timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
-                        timesheetDescription = document.getString("timesheetDescription") ?: ""
-
-    private fun retrieveDataFromFirestore(): TimesheetModel? {
-        var timesheetModel: TimesheetModel? = null
-        // Reference to the project document in Firestore
-        val timesheetRef = firestoreInstance.collection("timesheets").document("adminTimesheetTest")
-
-        // Retrieve data from Firestore
-        timesheetRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    // Parse and populate the TextViews with data
-                    timesheetModel = TimesheetModel(
-                        userId = documentSnapshot.getString("userUid") ?:"",
-                        timesheetName = documentSnapshot.getString("timesheetName") ?:"",
-                        projectId = documentSnapshot.getString("projectId") ?:"",
-                        timesheetStartDate = documentSnapshot.getDate("timesheetStartDate"),
-                        timesheetStartTime = documentSnapshot.getDate("timesheetStartTime"),
-                        timesheetEndTime = documentSnapshot.getDate("timesheetEndTime"),
-                        timesheetDescription = documentSnapshot.getString("timesheetDescription") ?:"",
-                        timesheetPhoto = null
-                    )
-
-                    // Add the TimesheetModel object to the list
-                    listOfUserTimesheets.add(timesheetModel)
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Handle any errors that occur while retrieving timesheets
-                Log.e("Timesheets", "Error searching for timesheets: $exception")
-                exception.printStackTrace()
-            }
-    }
-
-
-    fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
-        // Iterate through the list of timesheets
-        for (timesheet in listOfUserTimesheets) {
-            // Check if the timesheet's start date is after or equal to the specified start date
-            // and if the timesheet's end date is before or equal to the specified end date
-            if (timesheet.timesheetStartDate!! in startDate..endDate ) {
-                // Add the timesheet to the filtered list
-                filteredTimesheets.add(timesheet)
-            }
-        }
+        // Format the date to get the hours and minutes as a string
+        return dateFormat.format(date)
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
-        val daysOfWeek = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        val daysOfWeek =
+            listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
@@ -219,32 +196,9 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         // Iterate through each day of the week
         for (day in daysOfWeek) {
-            // Create a new linear layout for the day
-            val dayLayout = LinearLayout(this)
-            dayLayout.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            dayLayout.orientation = LinearLayout.HORIZONTAL
-
-            // Add a TextView to display the day of the week
-            val dayTextView = TextView(this)
-            dayTextView.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            dayTextView.text = day
-            dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
-            dayTextView.textSize = 20f
-            dayTextView.setPadding(20, 10, 20, 10)
-            dayLayout.addView(dayTextView)
-
-            val llTimesheetReport = LinearLayout(this)
-            llTimesheetReport.layoutParams
-
             // Get the timesheets for the current day
-            val timesheetsForDay = timesheets.filter {
-                it.timesheetStartDate?.let { startDate ->
+            val timesheetsForDay = timesheets.filter { timesheet ->
+                timesheet.timesheetStartDate?.let { startDate ->
                     val calendar = Calendar.getInstance()
                     calendar.time = startDate
                     val dayNumberOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
@@ -258,50 +212,74 @@ class TimesheetViewActivity : AppCompatActivity() {
                         1 -> "SUNDAY"
                         else -> "Invalid number" // Default value if the dayNumber is not recognized
                     }
-                    dayOfWeek.toString() == day.toUpperCase()
+                    dayOfWeek == day.toUpperCase()
                 } ?: false
             }
 
-            // Iterate through the timesheets for the current day
-            for (timesheet in timesheetsForDay) {
-                createLayout(timesheet, llTimesheetReport)
-            }
+            // If there are timesheets for the current day, create a layout and add it to the parent layout
+            if (timesheetsForDay.isNotEmpty()) {
+                // Create a new linear layout for the day
+                val dayLayout = LinearLayout(this)
+                dayLayout.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                dayLayout.orientation = LinearLayout.HORIZONTAL
 
-            // Add the day layout to the parent layout
-            parentLayout.addView(dayLayout)
+                // Add a TextView to display the day of the week
+                val dayTextView = TextView(this)
+                dayTextView.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                dayTextView.text = day
+                dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
+                dayTextView.textSize = 20f
+                dayTextView.setPadding(20, 10, 20, 10)
+                dayLayout.addView(dayTextView)
+
+                // Add the day layout to the parent layout
+                parentLayout.addView(dayLayout)
+
+                // Iterate through the timesheets for the current day and add them to the parent layout
+                for (timesheet in timesheetsForDay) {
+                    val timesheetLayout = createLayout(timesheet)
+                    parentLayout.addView(timesheetLayout)
+                }
+            }
         }
     }
 
-    private fun createLayout(timesheet: TimesheetModel, layout: LinearLayout){
+
+    private fun createLayout(timesheet: TimesheetModel): LinearLayout {
+
+        val context = this
         // Create the parent LinearLayout
-        // Create the LinearLayout for recent views
-        val llTimesheetContainer = LinearLayout(this)
+        val llTimesheetContainer = LinearLayout(context)
         llTimesheetContainer.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         llTimesheetContainer.orientation = LinearLayout.VERTICAL
         llTimesheetContainer.setPadding(20, 0, 20, 0)
-        //llTimesheetContainer.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners) // Change R.drawable.rectangle_wrapper_white_round_corners to your drawable resource
         llTimesheetContainer.elevation = 2f
-        layout.addView(llTimesheetContainer)
 
         // Create the LinearLayout for timesheet view
         val llTimesheetView = LinearLayout(this)
         llTimesheetView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            70
+            200
         )
         llTimesheetView.orientation = LinearLayout.HORIZONTAL
-        llTimesheetView.setPadding(15, 10, 15, 10)
-        //llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners) // Change R.drawable.rectangle_wrapper_white_round_corners to your drawable resource
+        llTimesheetView.setPadding(45, 30, 45, 30)
+        llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners) // Change R.drawable.rectangle_wrapper_white_round_corners to your drawable resource
         llTimesheetView.elevation = 2f
         llTimesheetContainer.addView(llTimesheetView)
 
         // Create the LinearLayout for start and stop times
         val llStartStop = LinearLayout(this)
         llStartStop.layoutParams = LinearLayout.LayoutParams(
-            75,
+            200,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
         llStartStop.orientation = LinearLayout.VERTICAL
@@ -314,8 +292,8 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvStartTime.setPadding(27, 10, 0, 0)
-        tvStartTime.text = "16:00"
+        tvStartTime.setPadding(30, 20, 0, 0)
+        tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
         tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
         llStartStop.addView(tvStartTime)
 
@@ -325,8 +303,8 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvEndTime.setPadding(27, 5, 0, 0)
-        tvEndTime.setText("18:30")
+        tvEndTime.setPadding(30, 0, 0, 20)
+        tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
         tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
         llStartStop.addView(tvEndTime)
 
@@ -351,16 +329,16 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetView.addView(llTimesheetInfo)
 
         // Create the TextView for timesheet description
-        val tvTimesheetDescription = TextView(this)
-        tvTimesheetDescription.layoutParams = LinearLayout.LayoutParams(
+        val tvTimesheetName = TextView(this)
+        tvTimesheetName.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvTimesheetDescription.setPadding(10, 10, 0, 0)
-        tvTimesheetDescription.text = "Create Settings page in figma"
-        tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
-        tvTimesheetDescription.textSize = 16f
-        llTimesheetInfo.addView(tvTimesheetDescription)
+        tvTimesheetName.setPadding(10, 10, 0, 0)
+        tvTimesheetName.text = timesheet.timesheetName
+        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
+        tvTimesheetName.textSize = 16f
+        llTimesheetInfo.addView(tvTimesheetName)
 
         // Create the TextView for project name
         val tvProjectName = TextView(this)
@@ -369,27 +347,28 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvProjectName.setPadding(15, 5, 0, 0)
-        tvProjectName.text = "OPSC7311_POE"
+        tvProjectName.text = timesheetModel.projectId
         tvProjectName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
         tvProjectName.textSize = 16f
         llTimesheetInfo.addView(tvProjectName)
 
-        // Create the ImageView for the timesheet divider
-        val ivTimesheetDivider = ImageView(this)
-        ivTimesheetDivider.layoutParams = LinearLayout.LayoutParams(
-            30,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        ivTimesheetDivider.setPadding(10, 0, 0, 0)
-        ivTimesheetDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
-        llTimesheetView.addView(ivTimesheetDivider)
+        return llTimesheetContainer
+    }
 
-    //leonards code
-    private fun displayData(timesheetModel: TimesheetModel){
-        binding.tvStartTime.text = timesheetModel.timesheetStartTime.toString()
-        binding.tvEndTime.text = timesheetModel.timesheetEndTime.toString()
-        binding.tvTimesheetDescription.text = timesheetModel.timesheetDescription.toString()
+    fun decodeBase64ToBitmap(base64String: String): Bitmap? {
+        val decodedBytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    }
 
+    fun displayImageFromBase64(base64String: String, imageView: ImageView) {
+        val bitmap = decodeBase64ToBitmap(base64String)
+        imageView.setImageBitmap(bitmap)
+    }
+
+    private fun clearDisplayedTimesheets() {
+        val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
+        parentLayout.removeAllViews()
     }
 }
+
 

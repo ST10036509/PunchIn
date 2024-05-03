@@ -29,7 +29,6 @@ class TimesheetModel(
     constructor() : this("", "", "", null, null, null, "", null)
 
 
-
     fun setData(
         userId: String,
         timesheetName: String,
