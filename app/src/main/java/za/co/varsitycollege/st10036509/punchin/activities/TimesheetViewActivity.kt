@@ -313,7 +313,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         )
         llTimesheetContainer.orientation = LinearLayout.VERTICAL
         llTimesheetContainer.setPadding(20, 20, 20, 20)
-        llTimesheetContainer.elevation = 2f
+        llTimesheetContainer.elevation = 4f
 
         // Create the LinearLayout for timesheet view
         val llTimesheetView = LinearLayout(context)
@@ -324,7 +324,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetView.orientation = LinearLayout.HORIZONTAL
         llTimesheetView.setPadding(45, 30, 45, 30)
         llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners)
-        llTimesheetView.elevation = 2f
+        llTimesheetView.elevation = 4f
         llTimesheetContainer.addView(llTimesheetView)
 
         // Create the LinearLayout for start and stop times
@@ -364,11 +364,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Create the ImageView for the divider
         val ivDivider = ImageView(context)
         ivDivider.layoutParams = LinearLayout.LayoutParams(
-            1,
+            2,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        ivDivider.setPadding(0, 10, 0, 10)
-        ivDivider.setBackgroundColor(resources.getColor(R.color.divider_color))
+        ivDivider.setPadding(0, 10, 5, 10)
+        ivDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900))
         llTimesheetView.addView(ivDivider)
 
         // Create the LinearLayout for timesheet info
@@ -378,7 +378,7 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         llTimesheetInfo.orientation = LinearLayout.VERTICAL
-        llTimesheetInfo.setPadding(10, 0, 25, 0)
+        llTimesheetInfo.setPadding(20, 0, 25, 0)
         llTimesheetView.addView(llTimesheetInfo)
 
         // Create the TextView for timesheet description
@@ -387,7 +387,7 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvTimesheetName.setPadding(10, 10, 0, 0)
+        tvTimesheetName.setPadding(25, 20, 0, 0)
         tvTimesheetName.text = timesheet.timesheetName
         tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900))
         tvTimesheetName.textSize = 16f
@@ -400,7 +400,7 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvTimesheetDescription.setPadding(15, 5, 0, 0)
+        tvTimesheetDescription.setPadding(25, 5, 0, 10)
         tvTimesheetDescription.text = timesheet.timesheetDescription // Here was the issue: changed timesheetModel to timesheet
         tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900))
         tvTimesheetDescription.textSize = 16f
