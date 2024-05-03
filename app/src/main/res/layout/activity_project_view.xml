@@ -94,17 +94,19 @@ LAST MODIFIED: 02/05/2024
                 android:elevation="2dp"
                 android:orientation="horizontal">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_alphabet"
                 android:layout_width="50dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="10dp"
                 android:layout_gravity="center"
+                android:gravity="center"
+                android:textAlignment="center"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
                 android:fontFamily="@font/reglo_bold"
                 android:text="@string/activity_project_view_button_alphabet"
                 android:textColor="@color/indigo_300"
-                android:textSize="14dp" />
+                android:textSize="16dp" />
 
             </LinearLayout>
 
@@ -117,17 +119,19 @@ LAST MODIFIED: 02/05/2024
                 android:elevation="2dp"
                 android:orientation="horizontal">
 
-                <Button
+                <TextView
                     android:id="@+id/btn_start_date"
                     android:layout_width="75dp"
                     android:layout_height="25dp"
                     android:layout_marginStart="5dp"
                     android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
                     android:background="@drawable/rectangle_wrapper_white_round_corners"
                     android:fontFamily="@font/reglo_bold"
                     android:text="@string/activity_project_view_button_start"
                     android:textColor="@color/indigo_300"
-                    android:textSize="12dp" />
+                    android:textSize="16dp" />
 
                 <Button
                     android:id="@+id/line"
@@ -136,19 +140,21 @@ LAST MODIFIED: 02/05/2024
                     android:layout_gravity="center"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/rectangle_wrapper_white_round_corners"
-                    android:backgroundTint="@color/indigo_900" />
+                    android:backgroundTint="#6983BD" />
 
-                <Button
+                <TextView
                     android:id="@+id/btn_end_date"
                     android:layout_width="70dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textAlignment="center"
                     android:layout_marginStart="5dp"
                     android:background="@drawable/rectangle_wrapper_white_round_corners"
                     android:fontFamily="@font/reglo_bold"
                     android:text="@string/activity_project_view_button_end"
                     android:textColor="@color/indigo_300"
-                    android:textSize="12dp" />
+                    android:textSize="16dp" />
 
             </LinearLayout>
 
@@ -156,13 +162,13 @@ LAST MODIFIED: 02/05/2024
                 android:id="@+id/btn_sort_date"
                 android:layout_width="60dp"
                 android:layout_height="25dp"
-                android:layout_marginStart="8dp"
                 android:layout_gravity="center"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:backgroundTint="#6983BD"
                 android:fontFamily="@font/reglo_bold"
                 android:text="APPLY"
-                android:backgroundTint="@color/green_200"
-                android:textColor="@color/indigo_900"
+                android:textColor="#F9F9F9"
                 android:textSize="14dp" />
 
 
