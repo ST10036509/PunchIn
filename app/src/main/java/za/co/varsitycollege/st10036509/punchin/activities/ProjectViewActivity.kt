@@ -67,7 +67,7 @@ class ProjectViewActivity : AppCompatActivity() {
         val fabAddProject: FloatingActionButton = findViewById(R.id.fab_add_project)
         // Set OnClickListener to FAB
         fabAddProject.setOnClickListener {
-            toaster.showToast("Opening project creation page")
+
             // Start the activity for project creation
             intentHandler.openActivityIntent(ProjectCreationActivity::class.java)
         }
@@ -289,19 +289,24 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun createXmlComponent(project: ProjectsModel) {
         val linearLayout = LinearLayout(this)
-        linearLayout.layoutParams = LinearLayout.LayoutParams(
+        val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            70.dpToPx()
+            LinearLayout.LayoutParams.WRAP_CONTENT // Change height to WRAP_CONTENT
         )
+        val paddingPx = 5.dpToPx()
+        layoutParams.setMargins(paddingPx, 0, paddingPx, 16.dpToPx()) // Add margin bottom and set left and right padding
+        linearLayout.layoutParams = layoutParams
         linearLayout.orientation = LinearLayout.HORIZONTAL
         linearLayout.setBackgroundResource(R.drawable.rectangle_wrapper_white_round_corners)
         linearLayout.elevation = 2.dpToPx().toFloat()
 
         val textView = TextView(this)
-        textView.layoutParams = LinearLayout.LayoutParams(
+        val textViewLayoutParams = LinearLayout.LayoutParams(
             227.dpToPx(),
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+        textViewLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        textView.layoutParams = textViewLayoutParams
         textView.gravity = android.view.Gravity.CENTER
         textView.setBackgroundResource(R.drawable.rectangle_wrapper_white_round_corners)
         textView.text = project.projectName
@@ -309,40 +314,50 @@ class ProjectViewActivity : AppCompatActivity() {
         textView.setTextColor(getColor(R.color.dark_blue_900))
 
         val imageView = ImageView(this)
-        imageView.layoutParams = LinearLayout.LayoutParams(
+        val imageViewLayoutParams = LinearLayout.LayoutParams(
             2.dpToPx(),
             65.dpToPx()
         )
+        imageViewLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        imageView.layoutParams = imageViewLayoutParams
         imageView.setBackgroundColor(getColor(android.R.color.darker_gray))
 
         val nestedLinearLayout = LinearLayout(this)
-        nestedLinearLayout.layoutParams = LinearLayout.LayoutParams(
+        val nestedLayoutParams = LinearLayout.LayoutParams(
             152.dpToPx(),
-            LinearLayout.LayoutParams.MATCH_PARENT
+            LinearLayout.LayoutParams.WRAP_CONTENT // Change height to WRAP_CONTENT
         )
+        nestedLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        nestedLinearLayout.layoutParams = nestedLayoutParams
         nestedLinearLayout.orientation = LinearLayout.VERTICAL
 
         val textTimesheets = TextView(this)
-        textTimesheets.layoutParams = LinearLayout.LayoutParams(
+        val textTimesheetsLayoutParams = LinearLayout.LayoutParams(
             88.dpToPx(),
-            28.dpToPx()
+            LinearLayout.LayoutParams.WRAP_CONTENT // Change height to WRAP_CONTENT
         )
+        textTimesheetsLayoutParams.setMargins(0, 0, 0, 8.dpToPx()) // Add margin bottom
+        textTimesheets.layoutParams = textTimesheetsLayoutParams
         textTimesheets.gravity = android.view.Gravity.CENTER
         textTimesheets.text = "TimeSheets: " + project.totalTimeSheets.toString()
         textTimesheets.setTextColor(getColor(R.color.dark_blue_900))
 
         val imageSeparator = ImageView(this)
-        imageSeparator.layoutParams = LinearLayout.LayoutParams(
+        val imageSeparatorLayoutParams = LinearLayout.LayoutParams(
             122.dpToPx(),
             2.dpToPx()
         )
+        imageSeparatorLayoutParams.setMargins(0, 0, 0, 8.dpToPx()) // Add margin bottom
+        imageSeparator.layoutParams = imageSeparatorLayoutParams
         imageSeparator.setBackgroundColor(getColor(android.R.color.darker_gray))
 
         val textHrsLogged = TextView(this)
-        textHrsLogged.layoutParams = LinearLayout.LayoutParams(
+        val textHrsLoggedLayoutParams = LinearLayout.LayoutParams(
             94.dpToPx(),
-            27.dpToPx()
+            LinearLayout.LayoutParams.WRAP_CONTENT // Change height to WRAP_CONTENT
         )
+        textHrsLoggedLayoutParams.setMargins(0, 0, 0, 8.dpToPx()) // Add margin bottom
+        textHrsLogged.layoutParams = textHrsLoggedLayoutParams
         textHrsLogged.gravity = android.view.Gravity.CENTER_HORIZONTAL
         textHrsLogged.text = "Hrs Logged: " + project.totalHours.toString()
         textHrsLogged.setTextColor(getColor(R.color.dark_blue_900))
@@ -365,6 +380,7 @@ class ProjectViewActivity : AppCompatActivity() {
         // Add linearLayout to sv_projects ScrollView using binding
         binding.llHolder.addView(linearLayout)
     }
+
 
     private fun handleProjectClick(project: ProjectsModel){
 

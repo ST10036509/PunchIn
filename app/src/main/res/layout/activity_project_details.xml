@@ -308,7 +308,7 @@ LAST MODIFIED: 01/05/2024
 
             <TextView
                 android:id="@+id/tv_description"
-                android:layout_width="380dp"
+                android:layout_width="365dp"
                 android:layout_height="84dp"
                 android:layout_gravity="center"
                 android:fontFamily="@font/reglo_bold"

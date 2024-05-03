@@ -60,7 +60,6 @@ class ProjectDetailsActivity : AppCompatActivity() {
         loadingDialogHandler.dismissLoadingDialog()
 
         binding.btnReturn.setOnClickListener {
-            toaster.showToast("Returning")
             intentHandler.openActivityIntent(ProjectViewActivity::class.java)
         }
     }
