@@ -159,6 +159,20 @@ LAST MODIFIED: 02/05/2024
     <!-- Scroll View -->
 
     <!-- Footer NavBar -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="406dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <LinearLayout
+            android:id="@+id/ll_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"/>
+    </ScrollView>
+
     <include
         android:id="@+id/include2"
         layout="@layout/footer_navbar_layout"
