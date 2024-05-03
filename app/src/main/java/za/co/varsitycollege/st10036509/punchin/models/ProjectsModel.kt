@@ -2,7 +2,7 @@ package za.co.varsitycollege.st10036509.punchin.models
 /*
 AUTHOR: Leonard Bester
 CREATED: 30/04/2024
-LAST MODIFIED: 02/05/2024
+LAST MODIFIED: 03/05/2024
  */
 
 /*
@@ -27,11 +27,11 @@ class ProjectsModel (
     var hourlyRate: Double,
     var description: String,
     var totalTimeSheets: Long = 0,
-    var totalHours: Long = 0,
+    var totalHours: Double = 0.0,
     var totalEarnings:Double = 0.0,
     var userId: String
 ) {
-    constructor() : this("", null, "", 0.0, "", 0, 0, 0.0, "")
+    constructor() : this("", null, "", 0.0, "", 0, 0.0, 0.0, "")
 
     private var firestore = FirestoreConnection.getDatabaseInstance()
 
@@ -41,20 +41,24 @@ class ProjectsModel (
     private val projects = mutableListOf<ProjectsModel>()
 
 
-    fun getProjectTotalHours(): Long {
-
+    fun getProjectTotalHours(): Double {
         var totalHoursWorked = 0.0
 
         for (timesheet in timesheets) {
-
             val durationMillis =
                 (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
             val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
             totalHoursWorked += hoursWorked
         }
 
-        return totalHoursWorked.toLong()
+        // Round to the second decimal place
+        return totalHoursWorked.round(2)
     }
+
+    // Extension function to round a Double to a specified number of decimal places
+    fun Double.round(decimals: Int): Double = "%.${decimals}f".format(this).toDouble()
+
+
 
     fun getTotalTimesheets(): Long {
 
@@ -175,7 +179,7 @@ class ProjectsModel (
                                     deferredProject.complete(newProject)
                                 } else {
                                     val totalTimeSheets: Long = 0
-                                    val totalHours: Long = 0
+                                    val totalHours: Double = 0.0
                                     val totalEarnings = 0.0
 
                                     val newProjectWithNoTimeSheets = ProjectsModel(
@@ -224,37 +228,6 @@ class ProjectsModel (
 
 
 
-    /*
-
-     */
-
-        /*
-        val firestore = FirebaseFirestore.getInstance()
-        val projectsCollectionRef = firestore.collection("projects")
-
-        // Query projects where userId field equals the passed userId
-        val query = projectsCollectionRef.whereEqualTo("userId", userId)
-
-        // Get the projects matching the query
-        query.get()
-            .addOnSuccessListener { querySnapshot ->
-                val projects = mutableListOf<ProjectsModel>()
-                for (doc in querySnapshot.documents) {
-                    val project = doc.toObject(ProjectsModel::class.java)
-                    project?.let {
-                        projects.add(it)
-                    }
-                }
-                callback(projects)
-            }
-            .addOnFailureListener { e ->
-                // Error handling
-                Log.e("ProjectsModel", "Error counting projects: $e")
-                callback(emptyList()) // Return an empty list in case of failure
-            }
-
-
-         */
 
 /*
 ░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
@@ -264,7 +237,6 @@ class ProjectsModel (
 ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
 ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
 ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
-
 
 
 */
