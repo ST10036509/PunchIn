@@ -19,11 +19,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Toast
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetCreationActivity
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
@@ -66,6 +68,8 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         intentHandler = IntentHandler(this@TimesheetViewActivity)
 
+        setupListeners()
+
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
         //setup listeners for NavBar onClick events
@@ -75,10 +79,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         currentUser = authModel.getCurrentUser()
 
+        // Check if currentUser is not null before calling searchTimesheetsForUser
         currentUser?.let { searchTimesheetsForUser(it) }
 
-        setupListeners()
-        updateUI()
+        // Update UI after getting the timesheets
+        //updateUI()
     }
 
 
@@ -100,11 +105,26 @@ class TimesheetViewActivity : AppCompatActivity() {
         }
 
         binding.fabAddTimesheet.setOnClickListener {
-            loadingDialogHandler.showLoadingDialog("Loading...")
-            intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
+            goToTimesheetCreation()
         }
 
     }
+
+    private fun goToTimesheetCreation() {
+        // Fetch projects associated with the current user
+        fetchUserProjects { projects ->
+            // Check if the user has any projects
+            if (projects.isEmpty()) {
+                // User does not have any projects, display a toast message
+                Toast.makeText(this, "You need to create a project first", Toast.LENGTH_LONG).show()
+            } else {
+                // User has projects, proceed to timesheet creation activity
+                loadingDialogHandler.showLoadingDialog("Loading...")
+                intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
+            }
+        }
+    }
+
 
     private fun updateUI(){
         clearParentLayout()
@@ -160,6 +180,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
+            updateUI()
         }
     }
 
@@ -435,6 +456,42 @@ class TimesheetViewActivity : AppCompatActivity() {
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
         parentLayout.removeAllViews()
     }
+
+
+    // Function to fetch project names and IDs for the current user
+    fun fetchUserProjects(completion: (List<Pair<String, String>>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        currentUser = authModel.getCurrentUser()
+
+        // Check if user is logged in
+        currentUser?.let { user ->
+            // Query Firestore for projects created by the current user
+            db.collection("projects")
+                .whereEqualTo("userId", user.uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val projectData = mutableListOf<Pair<String, String>>()
+                    for (document in documents) {
+                        val projectName = document.getString("projectName")
+                        val projectId = document.id // Assuming the document ID is the project ID
+                        projectName?.let {
+                            projectData.add(it to projectId)
+                        }
+                    }
+                    completion(projectData)
+                }
+                .addOnFailureListener { exception ->
+                    // Handle failure
+                    completion(emptyList()) // Return empty list on failure
+                }
+        } ?: run {
+            // User is not logged in
+            completion(emptyList()) // Return empty list if user is not logged in
+        }
+    }
+
+
 }
 
 
