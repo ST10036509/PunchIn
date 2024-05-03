@@ -52,6 +52,57 @@ LAST MODIFIED: 25/04/2024
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="133dp">
 
+        <LinearLayout
+            android:id="@+id/ll_Photo_Add_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_Add_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/timesheet_add_image_text"
+                android:textAlignment="center"
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/iv_Timesheet_Image"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/border_background"
+                android:elevation="2dp" />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/projectDropdown"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:fontFamily="@font/reglo_bold"
+            android:prompt="@color/blue_50"
+            android:spinnerMode="dropdown"
+            android:textColor="@color/blue_gray_50" />
+
         <EditText
             android:id="@+id/et_Timesheet_Name"
             android:layout_width="match_parent"
@@ -66,20 +117,6 @@ LAST MODIFIED: 25/04/2024
             android:hint="@string/hint_timesheet_name"
             android:padding="12dp"
             android:textColorHint="@color/blue_gray_50" />
-
-        <Spinner
-            android:id="@+id/projectDropdown"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp"
-            android:prompt="@color/blue_50"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:spinnerMode="dropdown"
-            android:fontFamily="@font/reglo_bold"
-            android:textColor="@color/blue_gray_50" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -161,43 +198,6 @@ LAST MODIFIED: 25/04/2024
                 android:textColor="#6983BD"
                 android:textSize="20sp" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_Photo_Add_Layout"
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="2dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_Add_Image"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/reglo_bold"
-                android:text="@string/timesheet_add_image_text"
-                android:textAlignment="center"
-                android:textColor="@color/blue_gray_50"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/iv_Timesheet_Image"
-                android:layout_width="200dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_height="150dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:elevation="2dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/border_background"
-                android:layout_marginBottom="15dp" />
         </LinearLayout>
 
         <EditText
