@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources>>
     <color name="black">#FF000000</color>
     <color name="white_A700">#ffffff</color>
     <color name="blue_50">#e4edff</color>
@@ -11,6 +11,10 @@
     <color name="gold">#FDC537</color>
     <color name="opacity_blue_gray_50">#C7C9D0</color>
     <color name="red_300">#DA6B6B</color>
+    <color name="Green">#7ebd60</color>
+    <color name="Blue">#607cbd</color>
+    <color name="Purple">#8b60bd</color>
+    <color name="Pink">#bd60a7</color>
     <color name="divider_color">#73798a</color>
 
 </resources>

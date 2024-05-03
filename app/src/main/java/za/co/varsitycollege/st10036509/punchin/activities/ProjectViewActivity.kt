@@ -370,10 +370,10 @@ class ProjectViewActivity : AppCompatActivity() {
 
         //val jsonString = Json.encodeToString(project)
 
-        var intent = Intent(this@ProjectViewActivity,ProjectDetailsActivity::class.java)
+        var intent = Intent(this@ProjectViewActivity, ProjectDetailsActivity::class.java)
         intent.putExtra("projectName", project.projectName)
         intent.putExtra("startDate", project.startDate)
-        intent.putExtra("setColor", project.setColor)
+        intent.putExtra("setColor", project.setColor) // Pass the color resource name as a string
         intent.putExtra("hourlyRate", project.hourlyRate)
         intent.putExtra("description", project.description)
         intent.putExtra("totalTimeSheets", project.totalTimeSheets)
@@ -381,6 +381,7 @@ class ProjectViewActivity : AppCompatActivity() {
         intent.putExtra("totalEarnings", project.totalEarnings)
         intent.putExtra("userId", project.userId)
         startActivity(intent)
+
        // val projectId = project.
 
         // Create an Intent to start the ProjectsDetailActivity

@@ -1,11 +1,7 @@
 package za.co.varsitycollege.st10036509.punchin.activities
-/*
-AUTHOR: Leonard Bester
-CREATED: 23/04/2024
-LAST MODIFIED: 30/04/2024
- */
 
 import android.app.ProgressDialog
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,82 +17,74 @@ class ProjectDetailsActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var projectModel: ProjectsModel
     private lateinit var toaster: ToastHandler
-    private var progressDialog: ProgressDialog? = null//create a loading dialog instance
-    private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
-    private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+    private var progressDialog: ProgressDialog? = null
+    private lateinit var loadingDialogHandler: LoadDialogHandler
+    private lateinit var intentHandler: IntentHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProjectDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadingDialogHandler = LoadDialogHandler(this@ProjectDetailsActivity, progressDialog)//initialise the loading dialog
-        intentHandler = IntentHandler(this@ProjectDetailsActivity)//setup an intent handler for navigating pages
-        // Initialize FirebaseFirestore instance
+        loadingDialogHandler = LoadDialogHandler(this@ProjectDetailsActivity, progressDialog)
+        intentHandler = IntentHandler(this@ProjectDetailsActivity)
         firestore = FirebaseFirestore.getInstance()
-
 
         toaster = ToastHandler(this@ProjectDetailsActivity)
 
+        val receivedIntent = intent
+        val projectName = receivedIntent.getStringExtra("projectName")
+        val hourlyRate = receivedIntent.getDoubleExtra("hourlyRate", 0.0)
+        val description = receivedIntent.getStringExtra("description")
+        val colorHashId = receivedIntent.getStringExtra("setColor")
+        val totalTimeSheets = receivedIntent.getLongExtra("totalTimeSheets", 0)
+        val totalHours = receivedIntent.getLongExtra("totalHours", 0)
+        val totalEarnings = receivedIntent.getDoubleExtra("totalEarnings", 0.0)
+        val userId = receivedIntent.getStringExtra("userId")
 
-
-        val recievedIntent = intent
-        val projectName = recievedIntent.getStringExtra("projectName")
-        val setColor = recievedIntent.getStringExtra("setColor")
-        val hourlyRate = recievedIntent.getDoubleExtra("hourlyRate", 0.0)
-        val description = recievedIntent.getStringExtra("description")
-        val totalTimeSheets = recievedIntent.getLongExtra("totalTimeSheets", 0)
-        val totalHours = recievedIntent.getLongExtra("totalHours", 0)
-        val totalEarnings = recievedIntent.getDoubleExtra("totalEarnings", 0.0)
-        val userId = recievedIntent.getStringExtra("userId")
-
-
-
+        loadingDialogHandler.showLoadingDialog("Loading Data...")
         binding.apply {
+            tvProjectName.setTextColor(getTextColorFromHash(colorHashId))
             tvProjectName.text = projectName
-            tvColour.text = setColor
-            tvProjectName.text =projectName
+            tvColour.text = colorHashId
             tvRate.text = hourlyRate.toString()
             tvEarnings.text = totalEarnings.toString()
-            tvTimeSheets.text =totalTimeSheets.toString()
+            tvTimeSheets.text = totalTimeSheets.toString()
             tvHours.text = totalHours.toString()
             tvDescription.text = description
         }
-        // Initialize ProjectsModel
-       // projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
-
-        loadingDialogHandler.showLoadingDialog("Loading Data...")
-                binding.apply {
-                    tvProjectName.text = projectName
-                    tvColour.text = setColor
-                    tvRate.text = hourlyRate.toString()
-                    tvTimeSheets.text = totalTimeSheets.toString()
-                    tvHours.text = totalHours.toString()
-                    tvDescription.text = description
-                }
         loadingDialogHandler.dismissLoadingDialog()
 
-
-        // Find the return button and set OnClickListener
         binding.btnReturn.setOnClickListener {
             toaster.showToast("Returning")
             intentHandler.openActivityIntent(ProjectViewActivity::class.java)
         }
+    }
 
+    private fun getTextColorFromHash(hash: String?): Int {
+        // Check if the hash is null or empty
+        if (hash.isNullOrEmpty()) {
+            return Color.BLACK // Return black color as default
+        }
 
+        // Remove any leading '#' character
+        val colorString = if (hash.startsWith("#")) {
+            hash.substring(1)
+        } else {
+            hash
+        }
+
+        // Add alpha channel if the color string is short (e.g., "#RGB")
+        val fullColorString = if (colorString.length == 3) {
+            // Convert short color string to full format (e.g., "#RRGGBB")
+            colorString.map { "$it$it" }.joinToString("")
+        } else {
+            colorString
+        }
+
+        // Parse the color string
+        return Color.parseColor("#$fullColorString")
     }
 
 
 }
-
-/*
-░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
-
-
-*/
