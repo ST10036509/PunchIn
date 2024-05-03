@@ -58,7 +58,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     private val filteredTimesheets = mutableListOf<TimesheetModel>()
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
