@@ -58,7 +58,7 @@ object UserModel{
                            data["email"] as? String ?: "",
                            (data["points"] as? Long)?.toInt() ?: 0,
                            (data["minGoal"] as? Long)?.toInt() ?: 0,
-                           (data["maxGoal"] as? Long)?.toInt() ?: 0,
+                           (data["maxGoal"] as? Long)?.toInt() ?: 24,
                        )
 
                         callback(true)
