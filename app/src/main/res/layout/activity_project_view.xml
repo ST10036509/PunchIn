@@ -95,15 +95,39 @@ LAST MODIFIED: 02/05/2024
                 android:textSize="22dp" />
 
             <Button
-                android:id="@+id/btn_date"
-                android:layout_width="104dp"
-                android:layout_height="25dp"
+                android:id="@+id/btn_start_date"
+                android:layout_width="70dp"
+                android:layout_height="23dp"
                 android:layout_gravity="center"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
                 android:fontFamily="@font/reglo_bold"
-                android:text="@string/activity_project_view_button_date"
+                android:text="@string/activity_project_view_button_start"
+                android:textColor="@color/indigo_300"
+                android:textSize="12dp" />
+
+            <Button
+                android:id="@+id/btn_end_date"
+                android:layout_width="70dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/activity_project_view_button_end"
+                android:textColor="@color/indigo_300"
+                android:textSize="12dp" />
+
+            <Button
+                android:id="@+id/btn_sort_date"
+                android:layout_width="70dp"
+                android:layout_height="23dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_wrapper_white_round_corners"
+                android:fontFamily="@font/reglo_bold"
+                android:text="@string/activity_project_view_button_sort"
                 android:textColor="@color/indigo_300"
                 android:textSize="22dp" />
+
+
         </LinearLayout>
     </LinearLayout>
 

@@ -86,6 +86,12 @@
     <string name="activity_project_view_button_date">Date</string>
     <string name="title_activity_project_view">Project view</string>
 
+    <string name="activity_project_view_button_start">Start Date</string>
+    <string name="activity_project_view_button_end">End Date</string>
+    <string name="activity_project_view_button_sort">Sort</string>
+  
+
+
     <!-- Analytics Page -->
     <string name="title_analytics">ANALYTICS</string>
     <string name="title_hours">HOURS RECORD</string>
