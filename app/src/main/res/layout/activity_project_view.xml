@@ -39,7 +39,7 @@ LAST MODIFIED: 02/05/2024
         android:id="@+id/tv_Title"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="-14dp"
         android:background="@android:color/transparent"
         android:fontFamily="@font/staatliches"
         android:text="@string/activity_project_view_title"
@@ -55,108 +55,108 @@ LAST MODIFIED: 02/05/2024
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="78dp"
+        android:layout_height="98dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/tv_Title"
         tools:layout_editor_absoluteX="0dp">
 
         <SearchView
             android:id="@+id/sv_project_search"
-            android:layout_width="395dp"
+            android:layout_width="385dp"
             android:layout_height="38dp"
             android:layout_gravity="center"
             android:background="@drawable/rectangle_wrapper_white_round_corners"
             android:elevation="2dp" />
 
         <LinearLayout
-            android:layout_width="395dp"
-            android:layout_height="38dp"
+            android:layout_width="385dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:background="@drawable/rectangle_wrapper_light_blue"
             android:elevation="2dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="32dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center"
-                android:paddingLeft="8dp"
                 android:src="@drawable/settings_sliders" />
 
             <Button
                 android:id="@+id/btn_alphabet"
-                android:layout_width="104dp"
+                android:layout_width="70dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
                 android:fontFamily="@font/reglo_bold"
                 android:text="@string/activity_project_view_button_alphabet"
                 android:textColor="@color/indigo_300"
-                android:textSize="22dp" />
+                android:textSize="14dp" />
 
-            <Button
-                android:id="@+id/btn_start_date"
-                android:layout_width="70dp"
-                android:layout_height="23dp"
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="37dp"
+                android:layout_marginStart="8dp"
                 android:layout_gravity="center"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
-                android:fontFamily="@font/reglo_bold"
-                android:text="@string/activity_project_view_button_start"
-                android:textColor="@color/indigo_300"
-                android:textSize="12dp" />
+                android:elevation="2dp"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_end_date"
-                android:layout_width="70dp"
-                android:layout_height="23dp"
-                android:layout_gravity="center"
-                android:background="@drawable/rectangle_wrapper_white_round_corners"
-                android:fontFamily="@font/reglo_bold"
-                android:text="@string/activity_project_view_button_end"
-                android:textColor="@color/indigo_300"
-                android:textSize="12dp" />
+                <Button
+                    android:id="@+id/btn_start_date"
+                    android:layout_width="75dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:fontFamily="@font/reglo_bold"
+                    android:text="@string/activity_project_view_button_start"
+                    android:textColor="@color/indigo_300"
+                    android:textSize="12dp" />
+
+                <Button
+                    android:id="@+id/line"
+                    android:layout_width="15dp"
+                    android:layout_height="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:backgroundTint="@color/indigo_900" />
+
+                <Button
+                    android:id="@+id/btn_end_date"
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/rectangle_wrapper_white_round_corners"
+                    android:fontFamily="@font/reglo_bold"
+                    android:text="@string/activity_project_view_button_end"
+                    android:textColor="@color/indigo_300"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_sort_date"
                 android:layout_width="70dp"
-                android:layout_height="23dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="8dp"
                 android:layout_gravity="center"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
                 android:fontFamily="@font/reglo_bold"
-                android:text="@string/activity_project_view_button_sort"
+                android:text="APPLY"
                 android:textColor="@color/indigo_300"
-                android:textSize="22dp" />
+                android:textSize="14dp" />
 
 
         </LinearLayout>
     </LinearLayout>
 
     <!-- Scroll View -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/rectangle_wrapper_white_round_corners"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <ScrollView
-            android:id="@+id/sv_projects"
-            android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:id="@+id/ll_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
-    </LinearLayout>
 
     <!-- Footer NavBar -->
     <include
