@@ -24,6 +24,7 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
+import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 import java.util.Calendar
 
 class ProjectViewActivity : AppCompatActivity() {
@@ -39,6 +40,7 @@ class ProjectViewActivity : AppCompatActivity() {
     private var currentUser: FirebaseUser?= null
     private var startDate: Timestamp? = null
     private var endDate: Timestamp? = null
+    private lateinit var validationHandler: ValidationHandler
 
 
 
@@ -53,11 +55,12 @@ class ProjectViewActivity : AppCompatActivity() {
         navbarHelper = NavbarViewBindingHelper(this@ProjectViewActivity, binding)
         //setup listeners for NavBar onClick events
         navbarHelper.setUpNavBarOnClickEvents()
-
+        validationHandler = ValidationHandler()
 
         authModel = AuthenticationModel()
         currentUser = authModel.getCurrentUser()
-
+        endDate = null
+        startDate = null
         loadingDialogHandler = LoadDialogHandler(this@ProjectViewActivity, progressDialog)//initialise the loading dialog
 
         // Initialize FAB
@@ -83,8 +86,10 @@ class ProjectViewActivity : AppCompatActivity() {
 
         val btnSort = binding.btnSortDate
         btnSort.setOnClickListener {
-            rearrangeComponentsByDateRange()
+            validateNullInput()
         }
+
+
 
 
 
@@ -96,6 +101,28 @@ class ProjectViewActivity : AppCompatActivity() {
         initializePopulate()
     }
 
+    private fun validateNullInput() {
+
+        val check = validationHandler.checkForNonNullInputs(startDate, endDate)
+
+        if (!check) {
+            validateDateComparison()
+
+        } else {
+            toaster.showToast("Please enter the start and end date")
+        }
+    }
+
+    private fun validateDateComparison(){
+        val check = validationHandler.checkEndDateBeforeStartDate(startDate,endDate)
+
+        if (check){
+            toaster.showToast("End date can not be before start date")
+        }else{
+            rearrangeComponentsByDateRange()
+        }
+
+    }
 
 
     private fun showEndDatePicker() {
@@ -229,9 +256,8 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun initializePopulate(){
 
-        val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
-            projectModel.getProjectList(currentUser.uid) { projects ->
+            projectModel.getProjectList(currentUser?.uid.toString()) { projects ->
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
                     populateHolder(projects)

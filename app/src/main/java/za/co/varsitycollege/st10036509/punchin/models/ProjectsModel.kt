@@ -133,11 +133,12 @@ class ProjectsModel (
     }
 
 
-    fun getProjectList(userId: String, callback: (List<ProjectsModel>) -> Unit) {
+    fun getProjectList(userUid: String, callback: (List<ProjectsModel>) -> Unit) {
         val firestore = FirebaseFirestore.getInstance()
         val projectRef = firestore.collection("projects")
 
-        projectRef.get()
+        projectRef.whereEqualTo("userId",userUid)
+            .get()
             .addOnSuccessListener { projectDoc ->
                 val projects = mutableListOf<ProjectsModel>()
 
@@ -151,7 +152,7 @@ class ProjectsModel (
                         val description = document.getString("description")
                         val userId = document.getString("userId")
 
-                        if (userId == userId) { // Check if the document belongs to the requested user
+                        if (userId == userUid) { // Check if the document belongs to the requested user
                             val deferredProject = CompletableDeferred<ProjectsModel?>()
 
                             getUserRelatedTimesheets(document.id) { success ->
@@ -173,7 +174,22 @@ class ProjectsModel (
                                     )
                                     deferredProject.complete(newProject)
                                 } else {
-                                    deferredProject.complete(null)
+                                    val totalTimeSheets: Long = 0
+                                    val totalHours: Long = 0
+                                    val totalEarnings = 0.0
+
+                                    val newProjectWithNoTimeSheets = ProjectsModel(
+                                        projectName!!,
+                                        startDate,
+                                        setColor!!,
+                                        hourlyRate!!,
+                                        description!!,
+                                        totalTimeSheets,
+                                        totalHours,
+                                        totalEarnings,
+                                        userId!!
+                                    )
+                                    deferredProject.complete(newProjectWithNoTimeSheets)
                                 }
                             }
 
