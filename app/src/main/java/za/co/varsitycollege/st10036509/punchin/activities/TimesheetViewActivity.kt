@@ -58,7 +58,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     private val filteredTimesheets = mutableListOf<TimesheetModel>()
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
@@ -67,6 +66,8 @@ class TimesheetViewActivity : AppCompatActivity() {
         loadingDialogHandler = LoadDialogHandler(this@TimesheetViewActivity, progressDialog)//initialise the loading dialog
 
         intentHandler = IntentHandler(this@TimesheetViewActivity)
+
+        setupListeners()
 
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
@@ -77,10 +78,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         currentUser = authModel.getCurrentUser()
 
+        // Check if currentUser is not null before calling searchTimesheetsForUser
         currentUser?.let { searchTimesheetsForUser(it) }
 
-        setupListeners()
-        updateUI()
+        // Update UI after getting the timesheets
+        //updateUI()
     }
 
 
@@ -177,6 +179,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
+            updateUI()
         }
     }
 
