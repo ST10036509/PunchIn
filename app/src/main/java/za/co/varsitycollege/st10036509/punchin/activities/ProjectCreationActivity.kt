@@ -186,7 +186,7 @@ class ProjectCreationActivity : AppCompatActivity() {
             val userId = user.uid
 
             loadingDialogHandler.showLoadingDialog("Saving your project")
-            projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0, 0, 0.0, userId)
+            projectModel = ProjectsModel(projectName, startDate, setColor, hourlyRate, description, 0, 0.0, 0.0, userId)
             projectModel.writeDataToFirestore()
             loadingDialogHandler.dismissLoadingDialog()
             toaster.showToast("Project added!")

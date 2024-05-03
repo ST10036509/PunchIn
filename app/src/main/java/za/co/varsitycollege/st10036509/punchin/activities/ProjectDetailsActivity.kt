@@ -1,5 +1,9 @@
 package za.co.varsitycollege.st10036509.punchin.activities
-
+/*
+AUTHOR: Leonard Bester
+CREATED: 29/04/2024
+LAST MODIFIED: 03/05/2024
+*/
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
@@ -38,7 +42,7 @@ class ProjectDetailsActivity : AppCompatActivity() {
         val description = receivedIntent.getStringExtra("description")
         val colorHashId = receivedIntent.getStringExtra("setColor")
         val totalTimeSheets = receivedIntent.getLongExtra("totalTimeSheets", 0)
-        val totalHours = receivedIntent.getLongExtra("totalHours", 0)
+        val totalHours = receivedIntent.getDoubleExtra("totalHours", 0.0)
         val totalEarnings = receivedIntent.getDoubleExtra("totalEarnings", 0.0)
         val userId = receivedIntent.getStringExtra("userId")
 
@@ -88,3 +92,14 @@ class ProjectDetailsActivity : AppCompatActivity() {
 
 
 }
+/*
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
+*/

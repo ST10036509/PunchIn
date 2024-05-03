@@ -2,7 +2,7 @@ package za.co.varsitycollege.st10036509.punchin.activities
 /*
 AUTHOR: Leonard Bester
 CREATED: 29/04/2024
-LAST MODIFIED: 02/04/2024
+LAST MODIFIED: 03/05/2024
 */
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
@@ -94,7 +94,7 @@ class ProjectViewActivity : AppCompatActivity() {
 
 
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
+        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0.0,0.0,"")
         toaster = ToastHandler(this@ProjectViewActivity)
 
         loadingDialogHandler.showLoadingDialog("Loading Projects...")
@@ -382,10 +382,7 @@ class ProjectViewActivity : AppCompatActivity() {
         intent.putExtra("userId", project.userId)
         startActivity(intent)
 
-       // val projectId = project.
 
-        // Create an Intent to start the ProjectsDetailActivity
-        //intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
     }
 
     // Extension function to convert dp to pixels
