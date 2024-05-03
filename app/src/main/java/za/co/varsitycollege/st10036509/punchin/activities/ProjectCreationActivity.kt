@@ -30,7 +30,7 @@ import java.util.Locale
 class ProjectCreationActivity : AppCompatActivity() {
 
     // Declare colorIndex as a property of the class
-    private var colorIndex = 1
+    private var colorIndex = 0
 
     // Declare colors list as a property of the class
     private val colors = listOf(
@@ -39,7 +39,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         R.color.Blue,
         R.color.Purple,
         R.color.Pink,
-        R.color.divider_color
+
     )
 
 
