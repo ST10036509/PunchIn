@@ -11,10 +11,20 @@ LAST MODIFIED: 25/04/2024
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_A700"
+    android:background="@color/blue_50"
     tools:context=".activities.TimesheetCreationActivity">
 
     <!-- Timesheet Entry Title -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rectangle_wrapper_white_round_corners">
+    </FrameLayout>
+
     <TextView
         android:id="@+id/tv_TimesheetCreationTitle"
         android:layout_width="wrap_content"
@@ -48,8 +58,10 @@ LAST MODIFIED: 25/04/2024
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
-            android:elevation="4dp"
+            android:elevation="2dp"
             android:fontFamily="@font/reglo_bold"
             android:hint="@string/hint_timesheet_name"
             android:padding="12dp"
@@ -58,48 +70,55 @@ LAST MODIFIED: 25/04/2024
         <Spinner
             android:id="@+id/projectDropdown"
             android:layout_width="match_parent"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:prompt="@color/blue_50"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:spinnerMode="dropdown"
+            android:fontFamily="@font/reglo_bold"
+            android:textColor="@color/blue_gray_50" />
 
         <LinearLayout
-            android:id="@+id/ll_Date_Selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/et_Timesheet_StartDate"
-                android:layout_width="325dp"
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="290dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/rectangle_wrapper_white_sharp_corners"
                 android:elevation="4dp"
                 android:fontFamily="@font/reglo_bold"
-                android:hint="@string/hint_timesheet_start_date"
                 android:padding="12dp"
-                android:textColorHint="@color/blue_gray_50" />
+                android:text="Select a date..."
+                android:textColor="@color/blue_gray_50"
+                android:textSize="18sp" />
 
             <Button
-                android:id="@+id/btn_date_picker"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:background="@drawable/calendar_lines"
-                android:textSize="8sp" />
-
+                android:id="@+id/btnDatePicker"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="38dp"
+                android:background="@drawable/calendar_lines" />
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/tv_Timesheet_Start_End_Time"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
+            android:layout_height="40dp"
             android:fontFamily="@font/reglo_bold"
-            android:paddingTop="12dp"
             android:text="Start Time                        End Time"
             android:textAlignment="center"
+            android:layout_marginTop="10dp"
             android:textColor="@color/blue_gray_50"
             android:textSize="18sp" />
 
@@ -107,7 +126,12 @@ LAST MODIFIED: 25/04/2024
             android:id="@+id/ll_time_picker"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:elevation="4dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
 
@@ -143,6 +167,11 @@ LAST MODIFIED: 25/04/2024
             android:id="@+id/ll_Photo_Add_Layout"
             android:layout_width="match_parent"
             android:layout_height="210dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rectangle_wrapper_white_sharp_corners"
+            android:elevation="2dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -165,6 +194,7 @@ LAST MODIFIED: 25/04/2024
                 android:layout_height="150dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
+                android:elevation="2dp"
                 android:layout_marginEnd="15dp"
                 android:background="@drawable/border_background"
                 android:layout_marginBottom="15dp" />
@@ -173,12 +203,14 @@ LAST MODIFIED: 25/04/2024
         <EditText
             android:id="@+id/et_Timesheet_Description"
             android:layout_width="match_parent"
-            android:layout_height="116dp"
+            android:layout_height="86dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rectangle_wrapper_white_sharp_corners"
             android:elevation="4dp"
             android:fontFamily="@font/reglo_bold"
             android:gravity="top|start"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:hint="@string/hint_timesheet_description"
             android:padding="12dp"
             android:singleLine="false"

@@ -221,7 +221,7 @@ class AuthenticationModel() {
                 } else {
 
                     //return callback with the unhandled error message
-                    callback(Pair(false, MSG_INVALID_CREDENTIALS ?: AuthenticationModel.MSG_UNEXPECTED_ERROR))
+                    callback(Pair(false, MSG_INVALID_CREDENTIALS))
 
                 }
             }
@@ -285,10 +285,15 @@ class AuthenticationModel() {
     /**
      * Method to sign a logged in user from the app
      */
-    fun signOut() {
+    fun signOut(callback: (Boolean) -> Unit) {
 
         authInstance.signOut()//sign the user out
 
+        //return callback for handling
+        authInstance.addAuthStateListener { auth ->
+            val isSignedOut = auth.currentUser == null
+            callback(isSignedOut)
+        }
     }
 
 

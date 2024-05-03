@@ -4,7 +4,9 @@ AUTHOR: Leonard Bester
 CREATED: 29/04/2024
 LAST MODIFIED: 02/04/2024
 */
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -12,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseUser
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityProjectViewBinding
 import za.co.varsitycollege.st10036509.punchin.models.AuthenticationModel
@@ -20,6 +23,8 @@ import za.co.varsitycollege.st10036509.punchin.utils.IntentHandler
 import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.NavbarViewBindingHelper
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
+import java.util.Calendar
+import java.util.Date
 
 class ProjectViewActivity : AppCompatActivity() {
 
@@ -31,6 +36,9 @@ class ProjectViewActivity : AppCompatActivity() {
     private lateinit var loadingDialogHandler: LoadDialogHandler//setup an intent handler for navigating pages
     private lateinit var navbarHelper: NavbarViewBindingHelper//create a NavBarViewBindingsHelper class object
     private lateinit var intentHandler: IntentHandler//setup an intent handler for navigating pages
+    private var currentUser: FirebaseUser?= null
+    private var startDate: Date? = null
+    private var endDate: Date? = null
 
 
 
@@ -48,6 +56,7 @@ class ProjectViewActivity : AppCompatActivity() {
 
 
         authModel = AuthenticationModel()
+        currentUser = authModel.getCurrentUser()
 
         loadingDialogHandler = LoadDialogHandler(this@ProjectViewActivity, progressDialog)//initialise the loading dialog
 
@@ -59,11 +68,25 @@ class ProjectViewActivity : AppCompatActivity() {
             // Start the activity for project creation
             intentHandler.openActivityIntent(ProjectCreationActivity::class.java)
         }
-        val btnDate =binding.btnAlphabet
-        btnDate.setOnClickListener{
-            // Rearrange components alphabetically
+        val btnAlpha =binding.btnAlphabet
+        btnAlpha.setOnClickListener{
             rearrangeComponentsAlphabetically()
         }
+        val btnStartDate = binding.btnStartDate
+        btnStartDate.setOnClickListener {
+            showStartDatePicker()
+        }
+        val btnEndDate = binding.btnEndDate
+        btnEndDate.setOnClickListener {
+            showEndDatePicker()
+        }
+
+        val btnSort = binding.btnSortDate
+        btnSort.setOnClickListener {
+            rearrangeComponentsByDateRange()
+        }
+
+
 
         // Initialize ProjectsModel
         projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
@@ -73,13 +96,67 @@ class ProjectViewActivity : AppCompatActivity() {
         initializePopulate()
     }
 
+
+
+    private fun showEndDatePicker() {
+        // Get current date to set as default in the picker
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Create a DatePickerDialog instance with current date as default
+        val datePickerDialog = DatePickerDialog(
+            this@ProjectViewActivity,
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                // Set the selected date in the startDate variable
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, monthOfYear)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                endDate = selectedDate.time // Update the startDate variable with the selected date
+            },
+            year,
+            month,
+            day
+        )
+        // Show the DatePickerDialog
+        datePickerDialog.show()
+    }
+
+    private fun showStartDatePicker() {
+        // Get current date to set as default in the picker
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Create a DatePickerDialog instance with current date as default
+        val datePickerDialog = DatePickerDialog(
+            this@ProjectViewActivity,
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                // Set the selected date in the startDate variable
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, monthOfYear)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                startDate = selectedDate.time // Update the startDate variable with the selected date
+            },
+            year,
+            month,
+            day
+        )
+        // Show the DatePickerDialog
+        datePickerDialog.show()
+    }
+
     private fun rearrangeComponentsAlphabetically() {
         // Remove all existing views from ll_holder
         binding.llHolder.removeAllViews()
 
         val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
-            projectModel.countProjects(currentUser.uid) { projects ->
+            projectModel.getProjectList(currentUser.uid) { projects ->
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
                     // Sort the list of projects alphabetically regardless of capitalization
@@ -103,18 +180,33 @@ class ProjectViewActivity : AppCompatActivity() {
     }
 
 
-
-
-    private fun initializePopulate(){
+    private fun rearrangeComponentsByDateRange() {
+        // Remove all existing views from ll_holder
+        binding.llHolder.removeAllViews()
 
         val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
-            projectModel.countProjects(currentUser.uid) { projects ->
+            projectModel.getProjectList(currentUser.uid) { projects ->
                 // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
-                    populateHolder(projects)
-                    loadingDialogHandler.dismissLoadingDialog()
-                    toaster.showToast("Projects Loaded")
+                    // Convert startDate and endDate to milliseconds since epoch
+                    val startMillis = startDate?.time ?: Long.MIN_VALUE
+                    val endMillis = endDate?.time ?: Long.MAX_VALUE
+
+                    // Filter the projects based on the start date range
+                    val filteredProjects = projects.filter { project ->
+                        project.startDate?.time ?: Long.MIN_VALUE in startMillis..endMillis
+                    }
+
+                    // Sort the filtered list of projects by start date
+                    val sortedProjects = filteredProjects.sortedByDescending { it.startDate?.time ?: 0 }
+
+                    // Create and add XML components for each project to ll_holder
+                    for (project in sortedProjects) {
+                        createXmlComponent(project)
+                    }
+
+                    toaster.showToast("Projects Loaded and rearranged by date range")
                 } else {
                     toaster.showToast("No projects found")
                     Log.e("ProjectViewActivity", "No projects found for current user")
@@ -122,6 +214,32 @@ class ProjectViewActivity : AppCompatActivity() {
             }
         } else {
             toaster.showToast("No projects found")
+            Log.e("ProjectViewActivity", "Current user is null")
+        }
+    }
+
+
+
+
+    private fun initializePopulate(){
+
+        val currentUser = authModel.getCurrentUser()
+        if (currentUser != null) {
+            projectModel.getProjectList(currentUser.uid) { projects ->
+                // Now projects contains the list of projects
+                if (projects.isNotEmpty()) {
+                    populateHolder(projects)
+                    loadingDialogHandler.dismissLoadingDialog()
+
+                } else {
+                    toaster.showToast("No projects found")
+                    loadingDialogHandler.dismissLoadingDialog()
+                    Log.e("ProjectViewActivity", "No projects found for current user")
+                }
+            }
+        } else {
+            toaster.showToast("No projects found")
+            loadingDialogHandler.dismissLoadingDialog()
             Log.e("ProjectViewActivity", "Current user is null")
         }
     }
@@ -218,9 +336,23 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun handleProjectClick(project: ProjectsModel){
 
+        //val jsonString = Json.encodeToString(project)
+
+        var intent = Intent(this@ProjectViewActivity,ProjectDetailsActivity::class.java)
+        intent.putExtra("projectName", project.projectName)
+        intent.putExtra("startDate", project.startDate)
+        intent.putExtra("setColor", project.setColor)
+        intent.putExtra("hourlyRate", project.hourlyRate)
+        intent.putExtra("description", project.description)
+        intent.putExtra("totalTimeSheets", project.totalTimeSheets)
+        intent.putExtra("totalHours", project.totalHours)
+        intent.putExtra("totalEarnings", project.totalEarnings)
+        intent.putExtra("userId", project.userId)
+        startActivity(intent)
+       // val projectId = project.
 
         // Create an Intent to start the ProjectsDetailActivity
-        intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
+        //intentHandler.openActivityIntent(ProjectDetailsActivity::class.java)
     }
 
     // Extension function to convert dp to pixels
@@ -232,10 +364,13 @@ class ProjectViewActivity : AppCompatActivity() {
 }
 
 /*
-___________           .___         _____  ___________.__.__
-\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
- |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
- |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
-/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
-        \/     \/      \/                      \/                 \/
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
 */

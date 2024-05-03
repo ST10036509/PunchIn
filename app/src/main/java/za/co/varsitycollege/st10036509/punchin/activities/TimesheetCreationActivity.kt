@@ -28,7 +28,9 @@ import za.co.varsitycollege.st10036509.punchin.utils.LoadDialogHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ToastHandler
 import za.co.varsitycollege.st10036509.punchin.utils.ValidationHandler
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
 import java.util.Base64
+import java.util.Locale
 
 class TimesheetCreationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTimesheetCreationBinding //binds the ActivityTimesheetCreation
@@ -43,7 +45,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
     private var timesheetStartTime: Date? = null
     private var timesheetEndTime: Date? = null
     private var authModel = AuthenticationModel()
-    private var image : ByteArray? = null
     private lateinit var timesheetPhotoString : String
 
 
@@ -72,13 +73,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
         val imageView: ImageView = binding.ivTimesheetImage
         capturedPhoto?.let {
             imageView.setImageBitmap(it)
-
-            /**
-            // Convert Bitmap to byte array
-            val stream = ByteArrayOutputStream()
-            it.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            image = stream.toByteArray()
-            */
 
             // Convert Bitmap to byte array
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -137,14 +131,22 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-
-                    timesheetStartTime =  Calendar.getInstance().apply {
+                    timesheetStartTime = Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, selectedHour)
                         set(Calendar.MINUTE, selectedMinute)
                         set(Calendar.SECOND, 0)
                         set(Calendar.MILLISECOND, 0)
                     }.time
 
+                    // Update button text
+                    val formattedTime =
+                        timesheetStartTime?.let { it1 ->
+                            SimpleDateFormat(
+                                "HH:mm",
+                                Locale.getDefault()
+                            ).format(it1)
+                        }
+                    startTimePickerButton.text = formattedTime
                 },
                 hour,
                 minute,
@@ -154,7 +156,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
             timePickerDialog.show()
         }
 
-
         endTimePickerButton.setOnClickListener {
             val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -163,7 +164,6 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-
                     timesheetEndTime = Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, selectedHour)
                         set(Calendar.MINUTE, selectedMinute)
@@ -171,6 +171,14 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         set(Calendar.MILLISECOND, 0)
                     }.time
 
+                    // Update button text
+                    val formattedTime =
+                        timesheetEndTime?.let { it1 ->
+                            SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+                                it1
+                            )
+                        }
+                    endTimePickerButton.text = formattedTime
                 },
                 hour,
                 minute,
@@ -221,6 +229,11 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(selectedYear, selectedMonth, selectedDay)
                 callback(selectedDate.time)
+
+                // Update the TextView with the selected date
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val formattedDate = dateFormat.format(selectedDate.time)
+                binding.textView.text = formattedDate
             },
             year,
             month,
@@ -230,6 +243,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         // Show the Date Picker dialog
         datePickerDialog.show()
     }
+
 
     /**
      * Method to return to the View page and cancel adding a new timesheet

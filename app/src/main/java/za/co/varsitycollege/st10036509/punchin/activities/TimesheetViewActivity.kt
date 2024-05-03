@@ -56,6 +56,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
         //setup listeners for NavBar onClick events
@@ -66,6 +67,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         currentUser = authModel.getCurrentUser()
 
         searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
+
 
         // Set onClickListener for the previous week button
         binding.btnPreviousWeek.setOnClickListener {
@@ -137,6 +139,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         }
     }
 
+
     fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
         // Iterate through the list of timesheets
         for (timesheet in listOfUserTimesheets) {
@@ -148,6 +151,7 @@ class TimesheetViewActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
@@ -180,6 +184,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         return date.format(dateFormatter)
     }
 
+
     fun getHoursAndMinutesFromDate(date: Date): String {
         // Create a SimpleDateFormat instance to format the date
         val dateFormat = SimpleDateFormat("HH:mm")
@@ -189,7 +194,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
-
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
 
@@ -255,9 +259,11 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
 
+
     private fun createLayout(timesheet: TimesheetModel): LinearLayout {
 
         val context = this
+
         // Create the parent LinearLayout
         val llTimesheetContainer = LinearLayout(context)
         llTimesheetContainer.layoutParams = LinearLayout.LayoutParams(
@@ -359,6 +365,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         return llTimesheetContainer
     }
 
+
     fun decodeBase64ToBitmap(base64String: String): Bitmap? {
         val decodedBytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -374,6 +381,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         //parentLayout.removeAllViews()
         // Alternatively, remove child views individually
         parentLayout.forEach { view -> parentLayout.removeView(view) }
+
     }
 }
 

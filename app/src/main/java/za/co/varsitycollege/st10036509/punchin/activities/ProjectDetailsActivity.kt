@@ -38,42 +38,57 @@ class ProjectDetailsActivity : AppCompatActivity() {
 
         toaster = ToastHandler(this@ProjectDetailsActivity)
 
+
+
+        val recievedIntent = intent
+        // Retrieve data from intent extras
+        val projectName = intent.getStringExtra("projectName")
+        val startDate = intent.getStringExtra("startDate")
+        val setColor = intent.getStringExtra("setColor")
+        val hourlyRate = intent.getDoubleExtra("hourlyRate", 0.0)
+        val description = intent.getStringExtra("description")
+        val totalTimeSheets = intent.getIntExtra("totalTimeSheets", 0)
+        val totalHours = intent.getDoubleExtra("totalHours", 0.0)
+        val totalEarnings = intent.getDoubleExtra("totalEarnings", 0.0)
+        val userId = intent.getStringExtra("userId")
+
+
+
+        binding.apply {
+            tvProjectName.text = projectName
+            tvColour.text = setColor
+            tvProjectName.text =projectName
+            tvRate.text = hourlyRate.toString()
+            tvEarnings.text = totalEarnings.toString()
+            tvTimeSheets.text =totalTimeSheets.toString()
+            tvHours.text = totalHours.toString()
+            tvDescription.text = description
+        }
         // Initialize ProjectsModel
-        projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
+       // projectModel = ProjectsModel("", null, "", 0.0, "", 0,0,0.0,"")
 
         loadingDialogHandler.showLoadingDialog("Loading Data...")
-        // Call method to retrieve data from Firestore
-        projectModel.readProjectData("7gKLKJNLe8kVyuKUQwhp") { project, timesheets ->
-            // Handle the received project and timesheets objects here
-            if (project != null) {
-
                 binding.apply {
-                    tvProjectName.text = project.projectName
-                    tvColour.text = project.setColor
-                    tvProjectName.text =project.projectName
-                    tvRate.text = project.hourlyRate.toString()
-                    tvEarnings.text = project.totalEarnings.toString()
-                    tvTimeSheets.text =project.totalTimeSheets.toString()
-                    tvHours.text = project.totalHours.toString()
-                    tvDescription.text = project.description
+                    tvProjectName.text = projectName
+                    tvColour.text = setColor
+                    tvRate.text = hourlyRate.toString()
+                    tvTimeSheets.text = totalTimeSheets.toString()
+                    tvHours.text = totalHours.toString()
+                    tvDescription.text = description
                 }
+        loadingDialogHandler.dismissLoadingDialog()
 
-                for (timesheet in timesheets){
-                    binding.tvList.append("${timesheet.timesheetName}\n")
-                }
-                loadingDialogHandler.dismissLoadingDialog()
-            } else {
-                // Handle case where project is null (e.g., project not found)
-                toaster.showToast("No project found...")
-            }
-        }
 
         // Find the return button and set OnClickListener
         binding.btnReturn.setOnClickListener {
             toaster.showToast("Returning")
             intentHandler.openActivityIntent(ProjectViewActivity::class.java)
         }
+
+
     }
+
+
 }
 
 /*

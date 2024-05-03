@@ -11,7 +11,10 @@ functions and variables
  */
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import java.util.Date
+import kotlin.math.absoluteValue
+
 
 class ProjectsModel (
     var projectName: String,
@@ -26,55 +29,59 @@ class ProjectsModel (
 ) {
     constructor() : this("", null, "", 0.0, "", 0, 0, 0.0, "")
 
-    private lateinit var firestore: FirebaseFirestore
+    private var firestore = FirestoreConnection.getDatabaseInstance()
 
-    fun readProjectData(projectid: String, callback: (ProjectsModel?, List<TimesheetModel>) -> Unit) {
+    private var authInstance = AuthenticationModel()
+    private var timesheets: MutableList<TimesheetModel> = mutableListOf()//declare an array to hold user related timesheets
 
-        val projectId: String = projectid
 
-        val firestore = FirebaseFirestore.getInstance()
-        val projectRef = firestore.collection("projects").document(projectId)
+    fun getProjectTotalHours():Long{
 
-        // Retrieve the project
-        projectRef.get()
-            .addOnSuccessListener { projectDoc ->
-                if (projectDoc.exists()) {
-                    val projectData = projectDoc.toObject(ProjectsModel::class.java)
-                    projectData?.let { project ->
-                        Log.d("ProjectsModel", "Project Data: $project")
+        var totalHoursWorked = 0.0
 
-                        // Now, retrieve timesheets associated with this project
-                        val timesheetsCollectionRef = firestore.collection("timesheets")
-                        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("projectId", projectId)
+        for (timesheet in timesheets) {
 
-                        timesheetsQuery.get()
-                            .addOnSuccessListener { timesheetsSnapshot ->
-                                val timesheets = mutableListOf<TimesheetModel>()  // Corrected type here
-                                for (timesheetDoc in timesheetsSnapshot.documents) {
-                                    val timesheetData = timesheetDoc.toObject(TimesheetModel::class.java)
-                                    timesheetData?.let { timesheet ->
-                                        timesheets.add(timesheet)
-                                    }
-                                }
+            val durationMillis = (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
+            val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
+            totalHoursWorked += hoursWorked
+        }
 
-                                // Return the project and its associated timesheets
-                                callback(project, timesheets)
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("ProjectsModel", "Error reading timesheets data: $e")
-                                callback(null, emptyList())
-                            }
-                    }
-                } else {
-                    Log.d("ProjectsModel", "No project found with ID: $projectId")
-                    callback(null, emptyList())
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e("ProjectsModel", "Error reading project data: $e")
-                callback(null, emptyList())
-            }
+        return totalHoursWorked.toLong()
     }
+
+    fun getTotalTimesheets():Long{
+
+        var total: Long = 0
+
+        for (timesheet in timesheets){
+            total++
+        }
+
+        return total
+    }
+
+fun getUserRelatedTimesheets(projectId: String, callback: (Boolean)-> Unit){
+
+
+    val timesheetRef = firestore.collection("timesheets")
+    timesheetRef.whereEqualTo("projectId", projectId)
+        .get()
+        .addOnSuccessListener{timesheetDocuments ->
+            if(!timesheetDocuments.isEmpty) {
+                for (timesheetDocument in timesheetDocuments) {
+
+                    var newTimesheet = timesheetDocument.toObject(TimesheetModel::class.java)
+                    timesheets.add(newTimesheet)
+                }
+                callback(true)
+            }else{
+                callback(false)
+            }
+        }
+        .addOnFailureListener{
+            callback(false)
+        }
+}
 
     // Method to get project data as a map
     fun getData(): Map<String, Any?> {
@@ -116,7 +123,69 @@ class ProjectsModel (
     }
 
 
-    fun countProjects(userId: String, callback: (List<ProjectsModel>) -> Unit) {
+    fun getProjectList(userId: String, callback: (List<ProjectsModel>) -> Unit) {
+
+
+        val currentUser = authInstance.getCurrentUser()
+
+        val firestore = FirebaseFirestore.getInstance()
+        val projectRef = firestore.collection("projects")
+
+        // Retrieve the project
+        projectRef.whereEqualTo("userId", currentUser?.uid.toString())
+            .get()
+            .addOnSuccessListener { projectDoc ->
+                if (!projectDoc.isEmpty) {
+
+                    val projects = mutableListOf<ProjectsModel>()
+
+                    for (document in projectDoc) {
+                        val projectName = document.getString("projectName")
+                        val startDate = document.getDate("startDate")
+                        val setColor = document.getString("setColor")
+                        val hourlyRate = document.getDouble("hourlyRate")
+                        val description = document.getString("description")
+                        var totalTimeSheets: Long = 0
+                        var totalHours: Long = 0
+                        getUserRelatedTimesheets(document.id) { success ->
+                            if (success) {
+                                totalTimeSheets = getTotalTimesheets()
+                                totalHours = getProjectTotalHours()
+                            }
+                        }
+                        val totalEarnings = 0.0
+                        val userId = document.getString("userId")
+
+                        val newProject: ProjectsModel= ProjectsModel(
+                            projectName!!,
+                            startDate,
+                            setColor!!,
+                            hourlyRate!!,
+                            description!!,
+                            totalTimeSheets,
+                            totalHours,
+                            totalEarnings,
+                            userId!!
+                        )
+                        projects.add(newProject)
+                    }
+                    callback(projects)
+                }
+            }
+            .addOnFailureListener {e ->
+                // Error handling
+                Log.e("ProjectsModel", "Error counting projects: $e")
+                callback(emptyList()) // Return an empty list in case of failure
+            }
+        }
+    }
+
+
+    /*
+
+     */
+
+        /*
         val firestore = FirebaseFirestore.getInstance()
         val projectsCollectionRef = firestore.collection("projects")
 
@@ -140,13 +209,19 @@ class ProjectsModel (
                 Log.e("ProjectsModel", "Error counting projects: $e")
                 callback(emptyList()) // Return an empty list in case of failure
             }
-    }
-}
+
+
+         */
+
 /*
-___________           .___         _____  ___________.__.__
-\_   _____/ ____    __| _/   _____/ ____\ \_   _____/|__|  |   ____
- |    __)_ /    \  / __ |   /  _ \   __\   |    __)  |  |  | _/ __ \
- |        \   |  \/ /_/ |  (  <_> )  |     |     \   |  |  |_\  ___/
-/_______  /___|  /\____ |   \____/|__|     \___  /   |__|____/\___  >
-        \/     \/      \/                      \/                 \/
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
+
+
+
 */
