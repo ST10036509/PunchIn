@@ -105,24 +105,13 @@ class LoginActivity : AppCompatActivity() {
 
                         } else {
 
-                            toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
-                            authModel.signOut(){ success ->
-                                if (success) {
-                                    toaster.showToast("Signed Out...")
-                                }
-                            }
-                            loadingDialogHandler.dismissLoadingDialog()
+                            handleAccountCorruption()
 
                         }
                     }
                 } else {
 
-                    authModel.signOut(){ success ->
-                        if (success) {
-                            toaster.showToast("Signed Out...")
-                        }
-                    }
-                    loadingDialogHandler.dismissLoadingDialog()
+                    handleTokenExpiration()
 
                 }
             }
@@ -132,6 +121,35 @@ class LoginActivity : AppCompatActivity() {
 
         }
     }
+
+
+    fun handleAccountCorruption() {
+
+        toaster.showToast(LoginActivity.MSG_CORRUPT_ACCOUNT_DATA)
+        authModel.signOut(){ success ->
+            if (success) {
+                toaster.showToast(LoginActivity.MSG_NULL)
+            }
+        }
+        loadingDialogHandler.dismissLoadingDialog()
+
+    }
+
+
+//__________________________________________________________________________________________________setupListeners
+
+
+    fun handleTokenExpiration() {
+
+        authModel.signOut(){ success ->
+            if (success) {
+                toaster.showToast(LoginActivity.MSG_NULL)
+            }
+        }
+        loadingDialogHandler.dismissLoadingDialog()
+
+    }
+
 
 //__________________________________________________________________________________________________setupListeners
 

@@ -13,16 +13,19 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Toast
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.forEach
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import za.co.varsitycollege.st10036509.punchin.R
 import za.co.varsitycollege.st10036509.punchin.activities.TimesheetCreationActivity
 import za.co.varsitycollege.st10036509.punchin.databinding.ActivityTimesheetViewBinding
@@ -55,7 +58,6 @@ class TimesheetViewActivity : AppCompatActivity() {
     private val filteredTimesheets = mutableListOf<TimesheetModel>()
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetViewBinding.inflate(layoutInflater)
@@ -64,6 +66,8 @@ class TimesheetViewActivity : AppCompatActivity() {
         loadingDialogHandler = LoadDialogHandler(this@TimesheetViewActivity, progressDialog)//initialise the loading dialog
 
         intentHandler = IntentHandler(this@TimesheetViewActivity)
+
+        setupListeners()
 
         //initialize an instance of the NavBarHelper and pass in the current context and binding
         navbarHelper = NavbarViewBindingHelper(this@TimesheetViewActivity, binding)
@@ -74,10 +78,11 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         currentUser = authModel.getCurrentUser()
 
-        searchTimesheetsForUser("sadZ5nWIjNORFcfaZipx8fTBDj32")
+        // Check if currentUser is not null before calling searchTimesheetsForUser
+        currentUser?.let { searchTimesheetsForUser(it) }
 
-        setupListeners()
-        updateUI()
+        // Update UI after getting the timesheets
+        //updateUI()
     }
 
 
@@ -88,23 +93,41 @@ class TimesheetViewActivity : AppCompatActivity() {
 
         // Set onClickListener for the previous week button
         binding.btnPreviousWeek.setOnClickListener {
+            filteredTimesheets.clear()
             navPreviousWeek()
         }
 
         // Set onClickListener for the next week button
         binding.btnNextWeek.setOnClickListener {
+            filteredTimesheets.clear()
             navNextWeek()
         }
 
         binding.fabAddTimesheet.setOnClickListener {
-            loadingDialogHandler.showLoadingDialog("Loading...")
-            intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
+            goToTimesheetCreation()
         }
 
     }
 
+    private fun goToTimesheetCreation() {
+        // Fetch projects associated with the current user
+        fetchUserProjects { projects ->
+            // Check if the user has any projects
+            if (projects.isEmpty()) {
+                // User does not have any projects, display a toast message
+                Toast.makeText(this, "You need to create a project first", Toast.LENGTH_LONG).show()
+            } else {
+                // User has projects, proceed to timesheet creation activity
+                loadingDialogHandler.showLoadingDialog("Loading...")
+                intentHandler.openActivityIntent(TimesheetCreationActivity::class.java)
+            }
+        }
+    }
+
+
     private fun updateUI(){
         clearParentLayout()
+        filteredTimesheets.clear()
         updateWeekDisplay()
         filterTimesheetsByTimePeriod(selectedDateStart, selectedDateEnd)
         displayTimesheetsForWeek(filteredTimesheets)
@@ -134,10 +157,11 @@ class TimesheetViewActivity : AppCompatActivity() {
         updateUI()
     }
 
-    private fun searchTimesheetsForUser(currentUser: String) {
+    private fun searchTimesheetsForUser(currentUser: FirebaseUser) {
+        val userId = currentUser.uid
         // Reference to the collection of timesheets in Firestore
         val timesheetsCollectionRef = firestoreInstance.collection("timesheets")
-        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", currentUser)
+        val timesheetsQuery = timesheetsCollectionRef.whereEqualTo("userId", userId)
 
         // Query to search for timesheets with the specified user ID
         timesheetsQuery.get().addOnSuccessListener { querySnapshot ->
@@ -155,6 +179,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
+            updateUI()
         }
     }
 
@@ -213,9 +238,9 @@ class TimesheetViewActivity : AppCompatActivity() {
     }
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
+        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
         // Get a reference to the parent layout where the day linear layouts will be added
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
-
 
         val daysOfWeek =
             listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -260,7 +285,7 @@ class TimesheetViewActivity : AppCompatActivity() {
                 )
                 dayTextView.text = day
                 dayTextView.setTextColor(ContextCompat.getColor(this, R.color.indigo_900))
-                //dayTextView.fon
+                dayTextView.typeface = customFontReglo
                 dayTextView.textSize = 20f
                 dayTextView.setPadding(20, 10, 20, 10)
                 dayLayout.addView(dayTextView)
@@ -280,7 +305,8 @@ class TimesheetViewActivity : AppCompatActivity() {
 
 
     private fun createLayout(timesheet: TimesheetModel): LinearLayout {
-
+        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
+        val customFontStaatliches: Typeface? = ResourcesCompat.getFont(this, R.font.staatliches)
         val context = this
 
         // Create the parent LinearLayout
@@ -290,23 +316,23 @@ class TimesheetViewActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         llTimesheetContainer.orientation = LinearLayout.VERTICAL
-        llTimesheetContainer.setPadding(20, 0, 20, 0)
-        llTimesheetContainer.elevation = 2f
+        llTimesheetContainer.setPadding(20, 20, 20, 20)
+        llTimesheetContainer.elevation = 4f
 
         // Create the LinearLayout for timesheet view
-        val llTimesheetView = LinearLayout(this)
+        val llTimesheetView = LinearLayout(context)
         llTimesheetView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            200
+            250
         )
         llTimesheetView.orientation = LinearLayout.HORIZONTAL
         llTimesheetView.setPadding(45, 30, 45, 30)
         llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners)
-        llTimesheetView.elevation = 2f
+        llTimesheetView.elevation = 4f
         llTimesheetContainer.addView(llTimesheetView)
 
         // Create the LinearLayout for start and stop times
-        val llStartStop = LinearLayout(this)
+        val llStartStop = LinearLayout(context)
         llStartStop.layoutParams = LinearLayout.LayoutParams(
             200,
             LinearLayout.LayoutParams.MATCH_PARENT
@@ -316,7 +342,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         llTimesheetView.addView(llStartStop)
 
         // Create the TextView for start time
-        val tvStartTime = TextView(this)
+        val tvStartTime = TextView(context)
         tvStartTime.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -324,73 +350,89 @@ class TimesheetViewActivity : AppCompatActivity() {
         tvStartTime.setPadding(30, 20, 0, 0)
         tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
         tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvStartTime.typeface = customFontStaatliches
         llStartStop.addView(tvStartTime)
 
         // Create the TextView for end time
-        val tvEndTime = TextView(this)
+        val tvEndTime = TextView(context)
         tvEndTime.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvEndTime.setPadding(30, 0, 0, 20)
         tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
         tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvEndTime.typeface = customFontStaatliches
         llStartStop.addView(tvEndTime)
 
         // Create the ImageView for the divider
-        val ivDivider = ImageView(this)
+        val ivDivider = ImageView(context)
         ivDivider.layoutParams = LinearLayout.LayoutParams(
-            1,
+            2,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        ivDivider.setPadding(0, 10, 0, 10)
-        ivDivider.setBackgroundColor(resources.getColor(R.color.divider_color))
+        ivDivider.setPadding(0, 10, 5, 10)
+        ivDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900))
         llTimesheetView.addView(ivDivider)
 
         // Create the LinearLayout for timesheet info
-        val llTimesheetInfo = LinearLayout(this)
+        val llTimesheetInfo = LinearLayout(context)
         llTimesheetInfo.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
         )
         llTimesheetInfo.orientation = LinearLayout.VERTICAL
-        llTimesheetInfo.setPadding(10, 0, 25, 0)
+        llTimesheetInfo.setPadding(20, 0, 25, 0)
         llTimesheetView.addView(llTimesheetInfo)
 
         // Create the TextView for timesheet description
-        val tvTimesheetName = TextView(this)
+        val tvTimesheetName = TextView(context)
         tvTimesheetName.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+            700,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvTimesheetName.setPadding(10, 10, 0, 0)
+        tvTimesheetName.setPadding(25, 20, 0, 0)
         tvTimesheetName.text = timesheet.timesheetName
-        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
+        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900))
         tvTimesheetName.textSize = 16f
+        tvTimesheetName.typeface = customFontReglo
         llTimesheetInfo.addView(tvTimesheetName)
 
         // Create the TextView for project name
-        val tvProjectName = TextView(this)
-        tvProjectName.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+        val tvTimesheetDescription = TextView(context)
+        tvTimesheetDescription.layoutParams = LinearLayout.LayoutParams(
+            700,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        tvProjectName.setPadding(15, 5, 0, 0)
-        tvProjectName.text = timesheetModel.projectId
-        tvProjectName.setTextColor(resources.getColor(R.color.dark_blue_900)) // Change R.color.dark_blue_900 to your color resource
-        tvProjectName.textSize = 16f
-        llTimesheetInfo.addView(tvProjectName)
+        tvTimesheetDescription.setPadding(25, 5, 0, 10)
+        tvTimesheetDescription.text = timesheet.timesheetDescription // Here was the issue: changed timesheetModel to timesheet
+        tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvTimesheetDescription.textSize = 16f
+        tvTimesheetDescription.typeface = customFontReglo
+        llTimesheetInfo.addView(tvTimesheetDescription)
 
-        // Create the ImageView for the image on the right
-        val timesheetImage = ImageView(this)
+        val llTimesheetImage = LinearLayout(context)
+        llTimesheetImage.layoutParams = LinearLayout.LayoutParams( // Fixed the layout params here
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        llTimesheetImage.orientation = LinearLayout.VERTICAL
+        llTimesheetImage.setPadding(0, 0, 25, 0)
+
+        llTimesheetView.addView(llTimesheetImage)
+
+        // Create a new ImageView instance for the timesheet photo
+        val timesheetImage = ImageView(context)
         timesheetImage.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
+            250,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val timesheetString = timesheetModel.timesheetPhoto
-        // Decode the base64 string to Bitmap
+        (timesheetImage.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.END
+        // Decode the base64 string to Bitmap and set it to the ImageView
+        val timesheetString = timesheet.timesheetPhoto
         val timesheetBitmap = timesheetString?.let { decodeBase64ToBitmap(it) }
         timesheetImage.setImageBitmap(timesheetBitmap)
+        llTimesheetImage.addView(timesheetImage)
 
         return llTimesheetContainer
     }
@@ -412,11 +454,44 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     private fun clearParentLayout() {
         val parentLayout = findViewById<LinearLayout>(R.id.ll_ScrollContainer)
-        //parentLayout.removeAllViews()
-        // Alternatively, remove child views individually
-        parentLayout.forEach { view -> parentLayout.removeView(view) }
-
+        parentLayout.removeAllViews()
     }
+
+
+    // Function to fetch project names and IDs for the current user
+    fun fetchUserProjects(completion: (List<Pair<String, String>>) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+
+        currentUser = authModel.getCurrentUser()
+
+        // Check if user is logged in
+        currentUser?.let { user ->
+            // Query Firestore for projects created by the current user
+            db.collection("projects")
+                .whereEqualTo("userId", user.uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val projectData = mutableListOf<Pair<String, String>>()
+                    for (document in documents) {
+                        val projectName = document.getString("projectName")
+                        val projectId = document.id // Assuming the document ID is the project ID
+                        projectName?.let {
+                            projectData.add(it to projectId)
+                        }
+                    }
+                    completion(projectData)
+                }
+                .addOnFailureListener { exception ->
+                    // Handle failure
+                    completion(emptyList()) // Return empty list on failure
+                }
+        } ?: run {
+            // User is not logged in
+            completion(emptyList()) // Return empty list if user is not logged in
+        }
+    }
+
+
 }
 
 

@@ -1,5 +1,6 @@
 package za.co.varsitycollege.st10036509.punchin.activities
 //
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.os.Bundle
@@ -59,6 +60,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTimesheetCreationBinding.inflate(layoutInflater)
@@ -72,6 +74,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
         validationHandler = ValidationHandler()
         // Initialize FirebaseAuth
         toaster = ToastHandler(this@TimesheetCreationActivity)
+
 
         val capturedPhoto = intent.getParcelableExtra<Bitmap>("capturedPhoto")
         val imageView: ImageView = binding.ivTimesheetImage
@@ -167,21 +170,30 @@ class TimesheetCreationActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _, selectedHour, selectedMinute ->
-                    timesheetEndTime = Calendar.getInstance().apply {
+                    val selectedEndTime = Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, selectedHour)
                         set(Calendar.MINUTE, selectedMinute)
                         set(Calendar.SECOND, 0)
                         set(Calendar.MILLISECOND, 0)
                     }.time
 
-                    // Update button text
-                    val formattedTime =
-                        timesheetEndTime?.let { it1 ->
-                            SimpleDateFormat("HH:mm", Locale.getDefault()).format(
-                                it1
-                            )
-                        }
-                    endTimePickerButton.text = formattedTime
+                    // Check if end time is earlier than start time
+                    if (timesheetStartTime != null && selectedEndTime.before(timesheetStartTime)) {
+                        // Show toast indicating end time cannot be earlier than start time
+                        Toast.makeText(
+                            this@TimesheetCreationActivity,
+                            "End time cannot be earlier than start time",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        // Clear the saved value for end time
+                        endTimePickerButton.text = "00:00"
+                        timesheetEndTime = null
+                    } else {
+                        // Update button text if end time is valid
+                        val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(selectedEndTime)
+                        endTimePickerButton.text = formattedTime
+                        timesheetEndTime = selectedEndTime
+                    }
                 },
                 hour,
                 minute,
@@ -190,6 +202,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
             timePickerDialog.show()
         }
+
         //setup listeners for ui controls
         setupListeners()
 
