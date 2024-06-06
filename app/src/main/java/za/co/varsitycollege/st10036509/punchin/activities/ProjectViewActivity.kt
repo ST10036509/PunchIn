@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +42,7 @@ class ProjectViewActivity : AppCompatActivity() {
     private var startDate: Timestamp? = null
     private var endDate: Timestamp? = null
     private lateinit var validationHandler: ValidationHandler
+
 
 
 
@@ -90,7 +92,20 @@ class ProjectViewActivity : AppCompatActivity() {
         }
 
 
+        val searchView = findViewById<SearchView>(R.id.sv_project_search)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search query submission if needed
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    filterAndSortProjectsByName(newText)
+                }
+                return true
+            }
+        })
 
 
         // Initialize ProjectsModel
@@ -100,6 +115,40 @@ class ProjectViewActivity : AppCompatActivity() {
         loadingDialogHandler.showLoadingDialog("Loading Projects...")
         initializePopulate()
     }
+
+    private fun filterAndSortProjectsByName(filterString: String) {
+        // Remove all existing views from ll_holder
+        binding.llHolder.removeAllViews()
+
+        val currentUser = authModel.getCurrentUser()
+        if (currentUser != null) {
+            projectModel.getProjectList(currentUser.uid) { projects ->
+                // Now projects contains the list of projects
+                if (projects.isNotEmpty()) {
+                    // Filter projects based on the filterString
+                    val filteredProjects = projects.filter { project ->
+                        project.projectName.contains(filterString, ignoreCase = true)
+                    }
+
+                    if (filteredProjects.isNotEmpty()) {
+                        // Sort the filtered list of projects alphabetically regardless of capitalization
+                        val sortedProjects = filteredProjects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.projectName })
+
+                        // Create and add XML components for each project to ll_holder
+                        for (project in sortedProjects) {
+                            createXmlComponent(project)
+                        }
+                    } else {
+                        toaster.showToast("No projects found matching the filter")
+                        Log.e("ProjectViewActivity", "No projects found matching the filter")
+                    }
+                } else {
+                }
+            }
+        } else {
+        }
+    }
+
 
     private fun validateNullInput() {
 
