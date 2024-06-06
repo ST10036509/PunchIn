@@ -123,7 +123,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 }
         }
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null, false)
 
         currentUser = authModel.getCurrentUser()
 
@@ -319,7 +319,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         timesheetStartTime!!,
                         timesheetEndTime!!,
                         timesheetDescription,
-                        timesheetPhotoString!!
+                        timesheetPhotoString!!,
+                        false
                     )
                     // Call the method to write project data to Firestore
                     timesheetModel.writeDataToFirestore()
