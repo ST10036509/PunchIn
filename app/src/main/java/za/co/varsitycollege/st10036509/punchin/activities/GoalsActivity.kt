@@ -228,6 +228,7 @@ class GoalsActivity : AppCompatActivity() {
 
             } else {
 
+                binding.pbProgressBarTracker.progress = 0
                 toaster.showToast(GoalsActivity.MSG_NO_TIMESHEETS_ERROR)
 
             }
