@@ -141,7 +141,7 @@ class ProjectsModel (
         val firestore = FirebaseFirestore.getInstance()
         val projectRef = firestore.collection("projects")
 
-        projectRef.whereEqualTo("userId",userUid)
+        projectRef.whereEqualTo("userId", userUid)
             .get()
             .addOnSuccessListener { projectDoc ->
                 val projects = mutableListOf<ProjectsModel>()
@@ -149,20 +149,20 @@ class ProjectsModel (
                 if (!projectDoc.isEmpty) {
                     val deferredProjects = projectDoc.documents.map { document ->
                         val projectName = document.getString("projectName")
-
-                        val startDate = document["startDate"] as? Timestamp // Retrieve startDate as Timestamp
+                        val startDate = document["startDate"] as? Timestamp
                         val setColor = document.getString("setColor")
                         val hourlyRate = document.getDouble("hourlyRate")
                         val description = document.getString("description")
                         val userId = document.getString("userId")
 
-                        if (userId == userUid) { // Check if the document belongs to the requested user
+                        if (userId == userUid) {
                             val deferredProject = CompletableDeferred<ProjectsModel?>()
 
-                            getUserRelatedTimesheets(document.id) { success ->
-                                if (success) {
-                                    val totalTimeSheets = getTotalTimesheets()
-                                    val totalHours = getProjectTotalHours()
+                            // Load timesheets before creating the project
+                            loadTimesheets(document.id) { timesheets ->
+                                if (timesheets.isNotEmpty()) {
+                                    val totalTimeSheets = timesheets.size.toLong()
+                                    val totalHours = calculateTotalHours(timesheets)
                                     val totalEarnings = 0.0
 
                                     val newProject = ProjectsModel(
@@ -199,7 +199,7 @@ class ProjectsModel (
 
                             deferredProject
                         } else {
-                            null // Return null for projects not associated with the requested user
+                            null
                         }
                     }.filterNotNull()
 
@@ -217,11 +217,38 @@ class ProjectsModel (
                 }
             }
             .addOnFailureListener { e ->
-                // Error handling
                 Log.e("ProjectsModel", "Error counting projects: $e")
                 callback(emptyList())
             }
     }
+
+    private fun loadTimesheets(projectId: String, callback: (List<TimesheetModel>) -> Unit) {
+        val timesheetRef = firestore.collection("timesheets")
+        timesheetRef.whereEqualTo("projectId", projectId)
+            .get()
+            .addOnSuccessListener { timesheetDocuments ->
+                if (!timesheetDocuments.isEmpty) {
+                    val timesheets = timesheetDocuments.map { it.toObject(TimesheetModel::class.java) }
+                    callback(timesheets)
+                } else {
+                    callback(emptyList())
+                }
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    private fun calculateTotalHours(timesheets: List<TimesheetModel>): Double {
+        var totalHoursWorked = 0.0
+        for (timesheet in timesheets) {
+            val durationMillis = (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
+            val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
+            totalHoursWorked += hoursWorked
+        }
+        return totalHoursWorked.round(2)
+    }
+
 
 
 }
