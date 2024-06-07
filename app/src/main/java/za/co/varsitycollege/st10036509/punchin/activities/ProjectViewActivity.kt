@@ -117,37 +117,45 @@ class ProjectViewActivity : AppCompatActivity() {
     }
 
     private fun filterAndSortProjectsByName(filterString: String) {
-        // Remove all existing views from ll_holder
+        // Clear the holder to avoid any leftover data
         binding.llHolder.removeAllViews()
+
+        // Check if the filter string is empty
+        if (filterString.isEmpty()) {
+            // If the search query is empty, repopulate the holder with all projects
+            initializePopulate()
+            return
+        }
 
         val currentUser = authModel.getCurrentUser()
         if (currentUser != null) {
             projectModel.getProjectList(currentUser.uid) { projects ->
-                // Now projects contains the list of projects
                 if (projects.isNotEmpty()) {
-                    // Filter projects based on the filterString
                     val filteredProjects = projects.filter { project ->
                         project.projectName.contains(filterString, ignoreCase = true)
                     }
 
                     if (filteredProjects.isNotEmpty()) {
-                        // Sort the filtered list of projects alphabetically regardless of capitalization
                         val sortedProjects = filteredProjects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.projectName })
-
-                        // Create and add XML components for each project to ll_holder
-                        for (project in sortedProjects) {
-                            createXmlComponent(project)
-                        }
+                        val project = sortedProjects.first()
+                        binding.llHolder.removeAllViews() // Clear any existing project views
+                        createXmlComponent(project) // Add the new filtered project view
                     } else {
                         toaster.showToast("No projects found matching the filter")
                         Log.e("ProjectViewActivity", "No projects found matching the filter")
                     }
                 } else {
+                    Log.e("ProjectViewActivity", "No projects found for current user")
                 }
             }
         } else {
+            Log.e("ProjectViewActivity", "Current user is null")
         }
     }
+
+
+
+
 
 
     private fun validateNullInput() {
