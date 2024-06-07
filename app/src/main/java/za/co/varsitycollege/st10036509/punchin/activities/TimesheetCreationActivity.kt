@@ -129,7 +129,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 }
         }
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null, false)
 
         currentUser = authModel.getCurrentUser()
 
@@ -329,7 +329,8 @@ class TimesheetCreationActivity : AppCompatActivity() {
                                 timesheetStartTime!!,
                                 timesheetEndTime!!,
                                 timesheetDescription,
-                                timesheetPhotoString!!
+                                timesheetPhotoString!!,
+                                false
                             )
                             // Call the method to write project data to Firestore
                             timesheetModel.writeDataToFirestore()
@@ -392,11 +393,5 @@ class TimesheetCreationActivity : AppCompatActivity() {
             completion(emptyList()) // Return empty list if user is not logged in
         }
     }
-
-
-
-
-    // Function to fetch project names and IDs for the current user
-
 
 }

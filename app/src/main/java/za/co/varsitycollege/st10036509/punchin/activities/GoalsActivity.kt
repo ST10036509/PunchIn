@@ -155,11 +155,46 @@ class GoalsActivity : AppCompatActivity() {
 
             updateGoalsProgressBarWithNewData()
 
-            setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS")
-
+            fetchUserPoints() { userPoints: Int ->
+                    setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS", userPoints)
+            }
         }
 
         loadingDialogHandler.dismissLoadingDialog()
+    }
+
+
+//__________________________________________________________________________________________________fetchUserPoints
+
+
+    private fun fetchUserPoints(callback: (Int) -> Unit) {
+        // Ensure currentUser is not null
+        val currentUid = currentUser?.uid
+        if (currentUid == null) {
+            callback(0)
+            return
+        }
+
+        // Reference to the user's document in Firestore
+        val userRef = firestoreInstance.collection("users").document(currentUid)
+
+        // Fetch the document
+        userRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // Retrieve the points from the document
+                    val points = documentSnapshot.getLong("points")?.toInt() ?: 0
+                    callback(points)
+                } else {
+                    // Document does not exist
+                    callback(0)
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Log the error and return 0 points as a fallback
+                exception.printStackTrace()
+                callback(0)
+            }
     }
 
 
@@ -172,7 +207,7 @@ class GoalsActivity : AppCompatActivity() {
 
             updateGoalsProgressBar()
 
-            setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS")
+            setTexts(UserModel.minGoal.toString(), UserModel.maxGoal.toString(), "${UserModel.minGoal.toString()} HRS", "${UserModel.maxGoal.toString()} HRS", UserModel.points)
 
         }
 
@@ -193,6 +228,7 @@ class GoalsActivity : AppCompatActivity() {
 
             } else {
 
+                binding.pbProgressBarTracker.progress = 0
                 toaster.showToast(GoalsActivity.MSG_NO_TIMESHEETS_ERROR)
 
             }
@@ -264,7 +300,8 @@ class GoalsActivity : AppCompatActivity() {
                             timesheetStartTime,
                             timesheetEndTime,
                             timesheetDescription,
-                            timesheetPhoto = null
+                            timesheetPhoto = null,
+                            checkSum = false
                         )
 
                         timesheets.add(newTimesheet)
@@ -407,7 +444,6 @@ class GoalsActivity : AppCompatActivity() {
                 tvHoursWorked.setTextColor(textColor)
 
             }
-
         }
     }
 
@@ -443,9 +479,11 @@ class GoalsActivity : AppCompatActivity() {
 
 //__________________________________________________________________________________________________setMinimumGoalText
 
-    private fun setTexts(minGoal: String, maxGoal: String, leftBound: String, rightBound: String ) {
+    private fun setTexts(minGoal: String, maxGoal: String, leftBound: String, rightBound: String, points: Int) {
 
         binding.apply {
+
+            tvPointsCounter.text = points.toString()
 
             if ((minGoal.toInt()+ maxGoal.toInt()) < 24) {
 
@@ -467,7 +505,7 @@ class GoalsActivity : AppCompatActivity() {
                 tvMaximumGoalHours.text = maxGoal
                 tvMaximumGoalHours.setTextColor(textColor)
                 tvLeftGoalDisplay.text = leftBound
-                    tvRightGoalDisplay.text = rightBound
+                tvRightGoalDisplay.text = rightBound
 
             }
         }

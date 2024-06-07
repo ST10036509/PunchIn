@@ -74,7 +74,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         //setup listeners for NavBar onClick events
         navbarHelper.setUpNavBarOnClickEvents()
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null, false)
 
         currentUser = authModel.getCurrentUser()
 
@@ -175,7 +175,8 @@ class TimesheetViewActivity : AppCompatActivity() {
                     timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
                     timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
                     timesheetDescription = document.getString("timesheetDescription") ?: "",
-                    timesheetPhoto = document.getString("timesheetPhoto") ?: ""
+                    timesheetPhoto = document.getString("timesheetPhoto") ?: "",
+                    checkSum = false
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
