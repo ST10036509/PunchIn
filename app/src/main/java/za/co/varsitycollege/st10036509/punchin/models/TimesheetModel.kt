@@ -22,11 +22,12 @@ class TimesheetModel(
     var timesheetStartTime: Date? = null,
     var timesheetEndTime: Date? = null,
     var timesheetDescription: String,
-    var timesheetPhoto: String?
+    var timesheetPhoto: String?,
+    var checkSum: Boolean
 
 ){
     // Add no-argument constructor
-    constructor() : this("", "", "", null, null, null, "", null)
+    constructor() : this("", "", "", null, null, null, "", null, false)
 
 
     fun setData(
@@ -37,7 +38,8 @@ class TimesheetModel(
         timesheetStartTime: Date,
         timesheetEndTime: Date,
         timesheetDescription: String,
-        timesheetPhoto: String
+        timesheetPhoto: String,
+        checkSum: Boolean
 
     ) {
         this.userId = userId
@@ -48,6 +50,7 @@ class TimesheetModel(
         this.timesheetEndTime = timesheetEndTime
         this.timesheetDescription = timesheetDescription
         this.timesheetPhoto = timesheetPhoto
+        this.checkSum = checkSum
     }
     fun getData(): Map<String, Any?> {
         return mapOf(
@@ -58,7 +61,8 @@ class TimesheetModel(
             "timesheetStartTime" to timesheetStartTime,
             "timesheetEndTime" to timesheetEndTime,
             "timesheetDescription" to timesheetDescription,
-            "timesheetPhoto" to timesheetPhoto
+            "timesheetPhoto" to timesheetPhoto,
+            "checkSum" to checkSum
         )
     }
 
