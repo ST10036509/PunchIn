@@ -1,9 +1,11 @@
 package za.co.varsitycollege.st10036509.punchin.activities
+
 /*
 AUTHOR: Leonard Bester
 CREATED: 29/04/2024
 LAST MODIFIED: 03/05/2024
 */
+
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
@@ -45,19 +47,31 @@ class ProjectDetailsActivity : AppCompatActivity() {
         val totalHours = receivedIntent.getDoubleExtra("totalHours", 0.0)
         val totalEarnings = receivedIntent.getDoubleExtra("totalEarnings", 0.0)
         val userId = receivedIntent.getStringExtra("userId")
+        val sheetNames = receivedIntent.getStringArrayListExtra("sheetNames") // Retrieve the list of timesheet names
 
         loadingDialogHandler.showLoadingDialog("Loading Data...")
         binding.apply {
             tvProjectName.setTextColor(getTextColorFromHash(colorHashId))
             tvProjectName.text = projectName
             tvColour.text = colorHashId
+            tvColour.setTextColor(getTextColorFromHash(colorHashId))
             tvRate.text = hourlyRate.toString()
             tvEarnings.text = totalEarnings.toString()
             tvTimeSheets.text = totalTimeSheets.toString()
             tvHours.text = totalHours.toString()
             tvDescription.text = description
+            // Populate tvList with the contents of sheetNames in bullet form
+            tvList.text = sheetNames?.joinToString(separator = "\n") { "• $it" }
         }
         loadingDialogHandler.dismissLoadingDialog()
+
+        // Example usage of the retrieved sheet names
+        sheetNames?.let {
+            // Do something with the sheet names, e.g., display them in a ListView or RecyclerView
+            for (name in it) {
+                println("Timesheet Name: $name")
+            }
+        }
 
         binding.btnReturn.setOnClickListener {
             intentHandler.openActivityIntent(ProjectViewActivity::class.java)
@@ -88,9 +102,8 @@ class ProjectDetailsActivity : AppCompatActivity() {
         // Parse the color string
         return Color.parseColor("#$fullColorString")
     }
-
-
 }
+
 /*
 ░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
 ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░

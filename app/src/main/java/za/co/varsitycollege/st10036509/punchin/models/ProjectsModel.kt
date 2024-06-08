@@ -1,14 +1,5 @@
 package za.co.varsitycollege.st10036509.punchin.models
-/*
-AUTHOR: Leonard Bester
-CREATED: 30/04/2024
-LAST MODIFIED: 03/05/2024
- */
 
-/*
-Model of Projects designed to handle variables and data specific
-functions and variables
- */
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,8 +10,7 @@ import kotlinx.coroutines.launch
 import za.co.varsitycollege.st10036509.punchin.utils.FirestoreConnection
 import kotlin.math.absoluteValue
 
-
-class ProjectsModel (
+class ProjectsModel(
     var projectName: String,
     var startDate: Timestamp? = null,
     var setColor: String,
@@ -28,25 +18,22 @@ class ProjectsModel (
     var description: String,
     var totalTimeSheets: Long = 0,
     var totalHours: Double = 0.0,
-    var totalEarnings:Double = 0.0,
-    var userId: String
+    var totalEarnings: Double = 0.0,
+    var userId: String,
+    var sheetNames: MutableList<String> = mutableListOf() // Add sheetNames list
 ) {
-    constructor() : this("", null, "", 0.0, "", 0, 0.0, 0.0, "")
+    constructor() : this("", null, "", 0.0, "", 0, 0.0, 0.0, "", mutableListOf())
 
     private var firestore = FirestoreConnection.getDatabaseInstance()
-
     private var authInstance = AuthenticationModel()
-    private var timesheets: MutableList<TimesheetModel> =
-        mutableListOf()//declare an array to hold user related timesheets
+    private var timesheets: MutableList<TimesheetModel> = mutableListOf()
     private val projects = mutableListOf<ProjectsModel>()
-
 
     fun getProjectTotalHours(): Double {
         var totalHoursWorked = 0.0
 
         for (timesheet in timesheets) {
-            val durationMillis =
-                (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
+            val durationMillis = (timesheet.timesheetEndTime!!.time - timesheet.timesheetStartTime!!.time).absoluteValue
             val hoursWorked = durationMillis.toDouble() / (1000 * 60 * 60)
             totalHoursWorked += hoursWorked
         }
@@ -58,30 +45,22 @@ class ProjectsModel (
     // Extension function to round a Double to a specified number of decimal places
     fun Double.round(decimals: Int): Double = "%.${decimals}f".format(this).toDouble()
 
-
-
     fun getTotalTimesheets(): Long {
-
         var total: Long = 0
-
         for (timesheet in timesheets) {
             total++
         }
-
         return total
     }
 
     fun getUserRelatedTimesheets(projectId: String, callback: (Boolean) -> Unit) {
-
-
         val timesheetRef = firestore.collection("timesheets")
         timesheetRef.whereEqualTo("projectId", projectId)
             .get()
             .addOnSuccessListener { timesheetDocuments ->
                 if (!timesheetDocuments.isEmpty) {
                     for (timesheetDocument in timesheetDocuments) {
-
-                        var newTimesheet = timesheetDocument.toObject(TimesheetModel::class.java)
+                        val newTimesheet = timesheetDocument.toObject(TimesheetModel::class.java)
                         timesheets.add(newTimesheet)
                     }
                     callback(true)
@@ -111,31 +90,18 @@ class ProjectsModel (
 
     // Method to write project data to Firestore
     fun writeDataToFirestore() {
-
-        // Access Firestore instance
         val firestore = FirebaseFirestore.getInstance()
-
-        // Define the Firestore collection
         val collection = firestore.collection("projects")
-
-        // Get project data as a map
         val projectData = getData()
 
-        // Add the project data to Firestore
         collection.add(projectData)
             .addOnSuccessListener { documentReference ->
-                // Data successfully stored in Firestore
-                Log.d(
-                    "ProjectsModel",
-                    "Project data stored successfully. Document ID: ${documentReference.id}"
-                )
+                Log.d("ProjectsModel", "Project data stored successfully. Document ID: ${documentReference.id}")
             }
             .addOnFailureListener { e ->
-                // Error storing data in Firestore
                 Log.e("ProjectsModel", "Error storing project data: $e")
             }
     }
-
 
     fun getProjectList(userUid: String, callback: (List<ProjectsModel>) -> Unit) {
         val firestore = FirebaseFirestore.getInstance()
@@ -160,6 +126,8 @@ class ProjectsModel (
 
                             // Load timesheets before creating the project
                             loadTimesheets(document.id) { timesheets ->
+                                val sheetNames = timesheets.map { it.timesheetName }.filterNotNull().toMutableList()
+
                                 if (timesheets.isNotEmpty()) {
                                     val totalTimeSheets = timesheets.size.toLong()
                                     val totalHours = calculateTotalHours(timesheets)
@@ -174,7 +142,8 @@ class ProjectsModel (
                                         totalTimeSheets,
                                         totalHours,
                                         totalEarnings,
-                                        userId!!
+                                        userId!!,
+                                        sheetNames // Add sheet names to project
                                     )
                                     deferredProject.complete(newProject)
                                 } else {
@@ -191,7 +160,8 @@ class ProjectsModel (
                                         totalTimeSheets,
                                         totalHours,
                                         totalEarnings,
-                                        userId!!
+                                        userId!!,
+                                        sheetNames // Add sheet names to project
                                     )
                                     deferredProject.complete(newProjectWithNoTimeSheets)
                                 }
@@ -248,22 +218,4 @@ class ProjectsModel (
         }
         return totalHoursWorked.round(2)
     }
-
-
-
 }
-
-
-
-
-/*
-░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓█▓▒░▒▓█▓▒░      ░▒▓██████▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░
-░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░        ░▒▓██████▓▒░░▒▓█▓▒░             ░▒▓█▓▒░      ░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░
-
-
-*/
