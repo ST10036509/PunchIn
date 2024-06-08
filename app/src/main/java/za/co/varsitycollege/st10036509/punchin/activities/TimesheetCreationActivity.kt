@@ -320,7 +320,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 // Fetch user projects and get project ID
                 fetchUserProjects { projectData ->
                     val projectId = projectData.firstOrNull { it.first == selectedProject }?.second
-                    if (projectId != null) {
+                    if ((projectId != null) && (timesheetPhotoString != null)) {
                         Log.d("CreateTimesheet", "Selected Project: $selectedProject, Project ID: $projectId")
                         // Check if the current user is not null
                         currentUser?.let { user ->
@@ -349,7 +349,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
                     } else {
                         Log.e("CreateTimesheet", "Project ID not found for selected project: $selectedProject")
-                        Toast.makeText(this, "Project not found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Fill in all data correctly, or enter photo first", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
