@@ -231,10 +231,8 @@ class LoginActivity : AppCompatActivity() {
                         toaster.showToast(LoginActivity.MSG_NULL_INPUTS_ERROR)//display error message
                     }
                 }
-
             }
         }
-
     }
 
 

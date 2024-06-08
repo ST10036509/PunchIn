@@ -70,7 +70,7 @@ class AuthenticationModel() {
                     user?.let {
 
                         //create user context and assign default values
-                        UserModel.populateUserModel(username, email, 0, 6, 8)
+                        UserModel.populateUserModel(username, email, 0, 0, 24)
 
                         //save the user data to the database
                         saveAdditionalUserDataToFirestore(user.uid) { success ->
