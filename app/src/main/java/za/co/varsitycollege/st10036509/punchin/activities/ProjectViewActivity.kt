@@ -375,7 +375,8 @@ class ProjectViewActivity : AppCompatActivity() {
             2.dpToPx(),
             65.dpToPx()
         )
-        imageViewLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        imageViewLayoutParams.setMargins(16.dpToPx(), 8.dpToPx(), 0, 0) // Add top margin
+        imageViewLayoutParams.gravity = android.view.Gravity.CENTER_VERTICAL // Center the vertical line vertically
         imageView.layoutParams = imageViewLayoutParams
         imageView.setBackgroundColor(getColor(android.R.color.darker_gray))
 
@@ -437,6 +438,8 @@ class ProjectViewActivity : AppCompatActivity() {
         // Add linearLayout to sv_projects ScrollView using binding
         binding.llHolder.addView(linearLayout)
     }
+
+
 
 
     private fun handleProjectClick(project: ProjectsModel){
