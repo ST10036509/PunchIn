@@ -7,6 +7,7 @@ LAST MODIFIED: 03/05/2024
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
@@ -371,7 +372,8 @@ class ProjectViewActivity : AppCompatActivity() {
         textView.setBackgroundResource(R.drawable.rectangle_wrapper_white_round_corners)
         textView.text = project.projectName
         textView.textSize = 27f
-        textView.setTextColor(getColor(R.color.dark_blue_900))
+        // Set the text color based on the project's color
+        textView.setTextColor(Color.parseColor(project.setColor))
 
         val imageView = ImageView(this)
         val imageViewLayoutParams = LinearLayout.LayoutParams(
