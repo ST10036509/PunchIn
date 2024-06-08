@@ -336,6 +336,9 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun populateHolder(projects: List<ProjectsModel>){
 
+        // Clear the holder to remove any existing views
+        binding.llHolder.removeAllViews()
+
         for (project in projects) {
             // Here you can create the XML components and add them to the layout using the data from each project
             // For example:
@@ -375,7 +378,7 @@ class ProjectViewActivity : AppCompatActivity() {
             2.dpToPx(),
             65.dpToPx()
         )
-        imageViewLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        imageViewLayoutParams.setMargins(16.dpToPx(), 8.dpToPx(), 0, 0) // Add top margin to lower the line
         imageView.layoutParams = imageViewLayoutParams
         imageView.setBackgroundColor(getColor(android.R.color.darker_gray))
 
@@ -437,6 +440,7 @@ class ProjectViewActivity : AppCompatActivity() {
         // Add linearLayout to sv_projects ScrollView using binding
         binding.llHolder.addView(linearLayout)
     }
+
 
 
     private fun handleProjectClick(project: ProjectsModel){
