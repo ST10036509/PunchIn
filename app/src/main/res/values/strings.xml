@@ -73,7 +73,7 @@
     <string name="title_activity_project_details">PROJECT DETAILS</string>
     <string name="project_name_activity_project_details">PROJECT NAME INSERT</string>
     <string name="project_details_hours">HOURS</string>
-    <string name="project_details_time_sheets">TIME SHEETS</string>
+    <string name="project_details_time_sheets">TIMESHEETS</string>
     <string name="project_details_rate">RATE</string>
     <string name="project_details_earnings">EARNINGS</string>
     <string name="project_details_colour">COLOUR</string>

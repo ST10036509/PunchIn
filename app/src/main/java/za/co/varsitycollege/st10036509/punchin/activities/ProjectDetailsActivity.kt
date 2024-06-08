@@ -56,7 +56,6 @@ class ProjectDetailsActivity : AppCompatActivity() {
             tvColour.text = colorHashId
             tvColour.setTextColor(getTextColorFromHash(colorHashId))
             tvRate.text = hourlyRate.toString()
-            tvEarnings.text = totalEarnings.toString()
             tvTimeSheets.text = totalTimeSheets.toString()
             tvHours.text = totalHours.toString()
             tvDescription.text = description
