@@ -453,6 +453,7 @@ class ProjectViewActivity : AppCompatActivity() {
         intent.putExtra("totalHours", project.totalHours)
         intent.putExtra("totalEarnings", project.totalEarnings)
         intent.putExtra("userId", project.userId)
+        intent.putStringArrayListExtra("sheetNames", ArrayList(project.sheetNames)) // Pass the list of timesheet names as an ArrayList
         startActivity(intent)
 
 
