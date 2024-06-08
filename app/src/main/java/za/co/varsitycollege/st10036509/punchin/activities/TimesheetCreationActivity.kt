@@ -304,6 +304,13 @@ class TimesheetCreationActivity : AppCompatActivity() {
                     return
                 }
 
+                // Check if project description is not more than 32 characters
+                if (timesheetDescription.length > 32) {
+                    Toast.makeText(this, "Project description must be 32 characters or less", Toast.LENGTH_SHORT).show()
+                    // Return without proceeding further
+                    return
+                }
+
                 val selectedProject = binding.projectDropdown.selectedItem.toString()
                 if (binding.projectDropdown.isEmpty()) {
                     Toast.makeText(this, "Please create a project first", Toast.LENGTH_SHORT).show()
