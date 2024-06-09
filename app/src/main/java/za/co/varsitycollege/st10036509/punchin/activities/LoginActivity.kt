@@ -438,10 +438,6 @@ class LoginActivity : AppCompatActivity() {
                     // Combine the new hours with the current hours
                     val combinedTotalHoursWorked = newTotalHoursWorked + currentTotalHoursWorked
 
-                    toaster.showToast("pre: " + currentTotalHoursWorked.toString())
-                    toaster.showToast("post: " + newTotalHoursWorked.toString())
-                    toaster.showToast("combined: " + combinedTotalHoursWorked.toString())
-
                     val dailyPoints = if (combinedTotalHoursWorked in minGoal..maxGoal) {
                         allocatePoints(combinedTotalHoursWorked, minGoal, maxGoal)
                     } else {
@@ -513,7 +509,7 @@ class LoginActivity : AppCompatActivity() {
         //exponential decay function to calculate points based on a maximum and a decay rate
         var points = (MAX_POINTS * exp(-DECAY_VALUE * distance)).roundToInt()
 
-        toaster.showToast(points.toString())
+        toaster.showToast("You've gotten $points points while you were away!")
 
         return points
     }
@@ -564,7 +560,6 @@ class LoginActivity : AppCompatActivity() {
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {
-                        toaster.showToast(document.id.toString())
                         batch.update(document.reference, "checkSum", true)
                     }
                     tasksCompleted++
@@ -593,7 +588,6 @@ class LoginActivity : AppCompatActivity() {
 
         batch.commit()
             .addOnSuccessListener {
-                toaster.showToast("Batch updated successfully")
             }
             .addOnFailureListener { exception ->
                 exception.printStackTrace()
