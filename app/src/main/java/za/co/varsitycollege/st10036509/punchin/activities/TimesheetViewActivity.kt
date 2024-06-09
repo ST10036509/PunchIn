@@ -12,6 +12,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,6 +20,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.Toast
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
@@ -74,7 +77,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         //setup listeners for NavBar onClick events
         navbarHelper.setUpNavBarOnClickEvents()
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null, false)
 
         currentUser = authModel.getCurrentUser()
 
@@ -175,7 +178,8 @@ class TimesheetViewActivity : AppCompatActivity() {
                     timesheetStartTime = document.getTimestamp("timesheetStartTime")?.toDate(),
                     timesheetEndTime = document.getTimestamp("timesheetEndTime")?.toDate(),
                     timesheetDescription = document.getString("timesheetDescription") ?: "",
-                    timesheetPhoto = document.getString("timesheetPhoto") ?: ""
+                    timesheetPhoto = document.getString("timesheetPhoto") ?: "",
+                    checkSum = false
                 )
                 listOfUserTimesheets.add(timesheetModel)
             }
@@ -186,16 +190,23 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
         // Iterate through the list of timesheets
+        var tempDate =  addOneDay(endDate)
         for (timesheet in listOfUserTimesheets) {
             // Check if the timesheet's start date is after or equal to the specified start date
             // and if the timesheet's end date is before or equal to the specified end date
-            if (timesheet.timesheetStartDate!! in startDate..endDate) {
+            if (timesheet.timesheetStartDate!! in startDate..tempDate) {
                 // Add the timesheet to the filtered list
                 filteredTimesheets.add(timesheet)
             }
         }
     }
 
+    fun addOneDay(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        return calendar.time
+    }
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
@@ -228,6 +239,144 @@ class TimesheetViewActivity : AppCompatActivity() {
         return date.format(dateFormatter)
     }
 
+    private fun createLayout(timesheet: TimesheetModel): TableLayout {
+        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
+        val customFontStaatliches: Typeface? = ResourcesCompat.getFont(this, R.font.staatliches)
+        val context = this
+
+        // Create the parent TableLayout
+        val tableLayout = TableLayout(context)
+        tableLayout.layoutParams = TableLayout.LayoutParams(
+            TableLayout.LayoutParams.MATCH_PARENT,
+            TableLayout.LayoutParams.WRAP_CONTENT
+        )
+        tableLayout.setPadding(20, 20, 20, 20)
+        tableLayout.elevation = 4f
+
+        // Create the TableRow for timesheet view
+        val tableRow = TableRow(context)
+        tableRow.layoutParams = TableLayout.LayoutParams(
+            TableLayout.LayoutParams.MATCH_PARENT,
+            TableLayout.LayoutParams.WRAP_CONTENT
+        )
+        tableRow.setPadding(45, 30, 45, 30)
+        tableRow.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners)
+        tableRow.elevation = 4f
+        tableLayout.addView(tableRow)
+
+        // Create the LinearLayout for start and stop times
+        val startStopCell = LinearLayout(context)
+        startStopCell.layoutParams = TableRow.LayoutParams(
+            0,
+            TableRow.LayoutParams.MATCH_PARENT,
+            1f
+        )
+        startStopCell.orientation = LinearLayout.VERTICAL
+        startStopCell.setPadding(10, 0, 10, 0)
+        tableRow.addView(startStopCell)
+
+        // Create the TextView for start time
+        val tvStartTime = TextView(context)
+        tvStartTime.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+        tvStartTime.setPadding(30, 20, 0, 0)
+        tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
+        tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvStartTime.typeface = customFontStaatliches
+        startStopCell.addView(tvStartTime)
+
+        // Create the TextView for end time
+        val tvEndTime = TextView(context)
+        tvEndTime.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+        tvEndTime.setPadding(30, 0, 0, 20)
+        tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
+        tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvEndTime.typeface = customFontStaatliches
+        startStopCell.addView(tvEndTime)
+
+        // Create the ImageView for the divider
+        val ivDivider = ImageView(context)
+        ivDivider.layoutParams = TableRow.LayoutParams(
+            2,
+            TableRow.LayoutParams.MATCH_PARENT
+        )
+        ivDivider.setPadding(10, 0, 10, 0)  // Adjust padding to position it on the right side of the start and end times
+        ivDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900))
+        tableRow.addView(ivDivider)
+
+        // Create the LinearLayout for timesheet info
+        val timesheetInfoCell = LinearLayout(context)
+        timesheetInfoCell.layoutParams = TableRow.LayoutParams(
+            0,
+            TableRow.LayoutParams.WRAP_CONTENT,
+            3f
+        )
+        timesheetInfoCell.orientation = LinearLayout.VERTICAL
+        timesheetInfoCell.setPadding(20, 0, 25, 0)
+        tableRow.addView(timesheetInfoCell)
+
+        // Create the TextView for timesheet name
+        val tvTimesheetName = TextView(context)
+        tvTimesheetName.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+        tvTimesheetName.setPadding(25, 20, 0, 0)
+        tvTimesheetName.text = timesheet.timesheetName
+        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvTimesheetName.textSize = 12f
+        tvTimesheetName.typeface = customFontReglo
+        tvTimesheetName.ellipsize = TextUtils.TruncateAt.END
+        tvTimesheetName.maxLines = 1
+        timesheetInfoCell.addView(tvTimesheetName)
+
+        // Create the TextView for project name
+        val tvTimesheetDescription = TextView(context)
+        tvTimesheetDescription.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+        tvTimesheetDescription.setPadding(25, 5, 0, 10)
+        tvTimesheetDescription.text = timesheet.timesheetDescription
+        tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900))
+        tvTimesheetDescription.textSize = 12f
+        tvTimesheetDescription.typeface = customFontReglo
+        tvTimesheetDescription.ellipsize = TextUtils.TruncateAt.END
+        tvTimesheetDescription.maxLines = 1
+        timesheetInfoCell.addView(tvTimesheetDescription)
+
+        // Create the TableRow for the timesheet image
+        val timesheetImageCell = LinearLayout(context)
+        timesheetImageCell.layoutParams = TableRow.LayoutParams(
+            0,
+            TableRow.LayoutParams.WRAP_CONTENT,
+            1f
+        )
+        timesheetImageCell.orientation = LinearLayout.VERTICAL
+        timesheetImageCell.setPadding(0, 0, 25, 0)
+        tableRow.addView(timesheetImageCell)
+
+        // Create a new ImageView instance for the timesheet photo
+        val timesheetImage = ImageView(context)
+        timesheetImage.layoutParams = TableRow.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT
+        )
+        timesheetImage.scaleType = ImageView.ScaleType.CENTER_CROP
+        timesheetImage.adjustViewBounds = true
+        // Decode the base64 string to Bitmap and set it to the ImageView
+        val timesheetString = timesheet.timesheetPhoto
+        val timesheetBitmap = timesheetString?.let { decodeBase64ToBitmap(it) }
+        timesheetImage.setImageBitmap(timesheetBitmap)
+        timesheetImageCell.addView(timesheetImage)
+
+        return tableLayout
+    }
 
     fun getHoursAndMinutesFromDate(date: Date): String {
         // Create a SimpleDateFormat instance to format the date
@@ -236,6 +385,7 @@ class TimesheetViewActivity : AppCompatActivity() {
         // Format the date to get the hours and minutes as a string
         return dateFormat.format(date)
     }
+
 
     private fun displayTimesheetsForWeek(timesheets: List<TimesheetModel>) {
         val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
@@ -300,141 +450,6 @@ class TimesheetViewActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-
-
-    private fun createLayout(timesheet: TimesheetModel): LinearLayout {
-        val customFontReglo: Typeface? = ResourcesCompat.getFont(this, R.font.reglo_bold)
-        val customFontStaatliches: Typeface? = ResourcesCompat.getFont(this, R.font.staatliches)
-        val context = this
-
-        // Create the parent LinearLayout
-        val llTimesheetContainer = LinearLayout(context)
-        llTimesheetContainer.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        llTimesheetContainer.orientation = LinearLayout.VERTICAL
-        llTimesheetContainer.setPadding(20, 20, 20, 20)
-        llTimesheetContainer.elevation = 4f
-
-        // Create the LinearLayout for timesheet view
-        val llTimesheetView = LinearLayout(context)
-        llTimesheetView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            250
-        )
-        llTimesheetView.orientation = LinearLayout.HORIZONTAL
-        llTimesheetView.setPadding(45, 30, 45, 30)
-        llTimesheetView.background = resources.getDrawable(R.drawable.rectangle_wrapper_white_round_corners)
-        llTimesheetView.elevation = 4f
-        llTimesheetContainer.addView(llTimesheetView)
-
-        // Create the LinearLayout for start and stop times
-        val llStartStop = LinearLayout(context)
-        llStartStop.layoutParams = LinearLayout.LayoutParams(
-            200,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        llStartStop.orientation = LinearLayout.VERTICAL
-        llStartStop.setPadding(10, 0, 10, 0)
-        llTimesheetView.addView(llStartStop)
-
-        // Create the TextView for start time
-        val tvStartTime = TextView(context)
-        tvStartTime.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        tvStartTime.setPadding(30, 20, 0, 0)
-        tvStartTime.text = timesheet.timesheetStartTime?.let { getHoursAndMinutesFromDate(it) }
-        tvStartTime.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvStartTime.typeface = customFontStaatliches
-        llStartStop.addView(tvStartTime)
-
-        // Create the TextView for end time
-        val tvEndTime = TextView(context)
-        tvEndTime.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        tvEndTime.setPadding(30, 0, 0, 20)
-        tvEndTime.text = timesheet.timesheetEndTime?.let { getHoursAndMinutesFromDate(it) }
-        tvEndTime.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvEndTime.typeface = customFontStaatliches
-        llStartStop.addView(tvEndTime)
-
-        // Create the ImageView for the divider
-        val ivDivider = ImageView(context)
-        ivDivider.layoutParams = LinearLayout.LayoutParams(
-            2,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        ivDivider.setPadding(0, 10, 5, 10)
-        ivDivider.setBackgroundColor(resources.getColor(R.color.dark_blue_900))
-        llTimesheetView.addView(ivDivider)
-
-        // Create the LinearLayout for timesheet info
-        val llTimesheetInfo = LinearLayout(context)
-        llTimesheetInfo.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        llTimesheetInfo.orientation = LinearLayout.VERTICAL
-        llTimesheetInfo.setPadding(20, 0, 25, 0)
-        llTimesheetView.addView(llTimesheetInfo)
-
-        // Create the TextView for timesheet description
-        val tvTimesheetName = TextView(context)
-        tvTimesheetName.layoutParams = LinearLayout.LayoutParams(
-            700,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        tvTimesheetName.setPadding(25, 20, 0, 0)
-        tvTimesheetName.text = timesheet.timesheetName
-        tvTimesheetName.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvTimesheetName.textSize = 16f
-        tvTimesheetName.typeface = customFontReglo
-        llTimesheetInfo.addView(tvTimesheetName)
-
-        // Create the TextView for project name
-        val tvTimesheetDescription = TextView(context)
-        tvTimesheetDescription.layoutParams = LinearLayout.LayoutParams(
-            700,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        tvTimesheetDescription.setPadding(25, 5, 0, 10)
-        tvTimesheetDescription.text = timesheet.timesheetDescription // Here was the issue: changed timesheetModel to timesheet
-        tvTimesheetDescription.setTextColor(resources.getColor(R.color.dark_blue_900))
-        tvTimesheetDescription.textSize = 16f
-        tvTimesheetDescription.typeface = customFontReglo
-        llTimesheetInfo.addView(tvTimesheetDescription)
-
-        val llTimesheetImage = LinearLayout(context)
-        llTimesheetImage.layoutParams = LinearLayout.LayoutParams( // Fixed the layout params here
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        llTimesheetImage.orientation = LinearLayout.VERTICAL
-        llTimesheetImage.setPadding(0, 0, 25, 0)
-
-        llTimesheetView.addView(llTimesheetImage)
-
-        // Create a new ImageView instance for the timesheet photo
-        val timesheetImage = ImageView(context)
-        timesheetImage.layoutParams = LinearLayout.LayoutParams(
-            250,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        (timesheetImage.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.END
-        // Decode the base64 string to Bitmap and set it to the ImageView
-        val timesheetString = timesheet.timesheetPhoto
-        val timesheetBitmap = timesheetString?.let { decodeBase64ToBitmap(it) }
-        timesheetImage.setImageBitmap(timesheetBitmap)
-        llTimesheetImage.addView(timesheetImage)
-
-        return llTimesheetContainer
     }
 
 

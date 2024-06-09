@@ -41,7 +41,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         R.color.Pink,
     )
 
-
     private lateinit var binding: ActivityProjectCreationBinding
     private lateinit var projectModel: ProjectsModel
     private var currentUser: FirebaseUser? = null
@@ -92,9 +91,9 @@ class ProjectCreationActivity : AppCompatActivity() {
     }
 
     private fun changeColor() {
+        colorIndex++
         val color = colors[colorIndex % colors.size]
         binding.btnColourSelect.setBackgroundColor(ContextCompat.getColor(this, color))
-        colorIndex++
     }
 
     private fun showDatePicker() {
@@ -126,9 +125,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-
     private fun handleReturnClick() {
-
         intentHandler.openActivityIntent(ProjectViewActivity::class.java)
     }
 
@@ -150,7 +147,7 @@ class ProjectCreationActivity : AppCompatActivity() {
 
     // Function to get the hexadecimal representation of the selected color
     private fun getHexColor(): String {
-        val color = ContextCompat.getColor(this, colors[colorIndex % colors.size])
+        val color = ContextCompat.getColor(this, colors[(colorIndex) % colors.size])
         return String.format("#%06X", 0xFFFFFF and color)
     }
 
@@ -194,7 +191,6 @@ class ProjectCreationActivity : AppCompatActivity() {
         }
     }
 
-
     private fun clearInputFields() {
         val projectNameEditText = findViewById<EditText>(R.id.ed_Project_Name)
         val startDateEditText = binding.tvSelectDate
@@ -209,6 +205,7 @@ class ProjectCreationActivity : AppCompatActivity() {
         descriptionEditText.setText("")
     }
 }
+
 
 
 

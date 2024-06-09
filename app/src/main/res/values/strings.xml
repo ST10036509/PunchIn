@@ -47,7 +47,7 @@
     <string name="hint_timesheet_name">Enter timesheet name…</string>
     <string name="hint_timesheet_project_name">Enter project name…</string>
     <string name="hint_timesheet_start_date">Select start date…</string>
-    <string name="hint_timesheet_description">Enter timesheet description…</string>
+    <string name="hint_timesheet_description">Enter timesheet description… (Max 32 characters)</string>
     <string name="hint_timesheet_photo">Add timesheet photo…</string>
     <string name="button_timesheet_return">Return</string>
     <string name="button_timesheet_add">Add</string>
@@ -73,7 +73,7 @@
     <string name="title_activity_project_details">PROJECT DETAILS</string>
     <string name="project_name_activity_project_details">PROJECT NAME INSERT</string>
     <string name="project_details_hours">HOURS</string>
-    <string name="project_details_time_sheets">TIME SHEETS</string>
+    <string name="project_details_time_sheets">TIMESHEETS</string>
     <string name="project_details_rate">RATE</string>
     <string name="project_details_earnings">EARNINGS</string>
     <string name="project_details_colour">COLOUR</string>

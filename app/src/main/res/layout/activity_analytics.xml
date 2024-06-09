@@ -10,7 +10,8 @@ LAST MODIFIED: 27/04/2024
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.AnalyticsActivity">
 
     <!-- Header NavBar -->
     <include
@@ -18,24 +19,11 @@ LAST MODIFIED: 27/04/2024
         layout="@layout/header_navbar_with_settings_layout" />
 
 
-    <!-- Heading Text -->
-    <TextView
-        android:id="@+id/tv_AnalyticsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="110dp"
-        android:textAlignment="center"
-        android:fontFamily="@font/staatliches"
-        android:textSize="45sp"
-        android:textColor="@color/indigo_900"
-        android:text="@string/title_analytics"/>
+
 
     <!-- Tool Bar Navigation -->
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/ll_Filter_Box"
         android:layout_width="350dp"
         android:layout_height="53dp"
@@ -95,15 +83,15 @@ LAST MODIFIED: 27/04/2024
             android:fontFamily="@font/reglo_bold"
             android:text="@string/filter_clients_text"
             android:textSize="20sp" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <!-- Analytics Wrapper -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="390dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/include2"
-        app:layout_constraintTop_toBottomOf="@+id/ll_Filter_Box">
+        app:layout_constraintTop_toBottomOf="@+id/include">
 
         <LinearLayout
             android:id="@+id/ll_Analytics_Wrapper"
@@ -112,7 +100,19 @@ LAST MODIFIED: 27/04/2024
             android:elevation="2dp"
             android:orientation="vertical">
 
-            <!-- Stats Layout -->
+            <!-- Heading Text -->
+            <TextView
+                android:id="@+id/tv_AnalyticsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="110dp"
+                android:fontFamily="@font/staatliches"
+                android:text="@string/title_analytics"
+                android:textAlignment="center"
+                android:textColor="@color/indigo_900"
+                android:textSize="45sp" />
+
             <LinearLayout
                 android:id="@+id/ll_Stats_Layout"
                 android:layout_width="match_parent"
@@ -138,7 +138,7 @@ LAST MODIFIED: 27/04/2024
                             android:id="@+id/tv_TotalLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="25dp"
                             android:layout_marginTop="15dp"
                             android:fontFamily="@font/staatliches"
                             android:text="@string/total_hours"
@@ -149,14 +149,12 @@ LAST MODIFIED: 27/04/2024
                             android:id="@+id/tv_BillableHoursLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="110dp"
+                            android:layout_marginStart="60dp"
                             android:layout_marginTop="15dp"
                             android:fontFamily="@font/staatliches"
                             android:text="@string/billable_hours"
                             android:textColor="@color/indigo_900"
                             android:textSize="19sp" />
-
-
                     </TableRow>
 
                     <TableRow
@@ -168,9 +166,9 @@ LAST MODIFIED: 27/04/2024
                             android:id="@+id/tv_DisplayedHours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="25dp"
                             android:fontFamily="@font/staatliches"
-                            android:text="@string/hoursValue"
+                            android:text="0"
                             android:textColor="@color/black"
                             android:textSize="32sp" />
 
@@ -178,9 +176,9 @@ LAST MODIFIED: 27/04/2024
                             android:id="@+id/tv_BillableHours"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="110dp"
+                            android:layout_marginStart="60dp"
                             android:fontFamily="@font/staatliches"
-                            android:text="@string/billableHoursValue"
+                            android:text="0"
                             android:textColor="@color/black"
                             android:textSize="32sp" />
                     </TableRow>
@@ -195,7 +193,6 @@ LAST MODIFIED: 27/04/2024
                         app:srcCompat="@android:drawable/divider_horizontal_dim_dark"
                         tools:srcCompat="?attr/dividerHorizontal" />
 
-
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -204,13 +201,23 @@ LAST MODIFIED: 27/04/2024
                             android:id="@+id/tv_AmountLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="25dp"
                             android:layout_marginTop="15dp"
                             android:fontFamily="@font/staatliches"
                             android:text="@string/amount"
                             android:textColor="@color/indigo_900"
                             android:textSize="19sp" />
 
+                        <TextView
+                            android:id="@+id/tv_Points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginTop="15dp"
+                            android:fontFamily="@font/staatliches"
+                            android:text="Points"
+                            android:textColor="@color/indigo_900"
+                            android:textSize="19sp" />
                     </TableRow>
 
                     <TableRow
@@ -219,26 +226,31 @@ LAST MODIFIED: 27/04/2024
 
                         <TextView
                             android:id="@+id/tv_DisplayedAmount"
-                            android:layout_width="102dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
+                            android:layout_marginStart="25dp"
                             android:layout_marginBottom="15dp"
                             android:fontFamily="@font/staatliches"
-                            android:text="@string/currencyValue"
+                            android:text="0"
                             android:textColor="@color/black"
                             android:textSize="27sp" />
 
+
+
                         <TextView
-                            android:id="@+id/tv_Currency"
+                            android:id="@+id/tv_UserPoints"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="60dp"
+                            android:layout_marginBottom="15dp"
                             android:fontFamily="@font/staatliches"
-                            android:text="@string/currency"
+                            android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="19sp" />
+                            android:textSize="27sp" />
                     </TableRow>
                 </TableLayout>
             </LinearLayout>
+
 
             <!-- Graph Layout -->
             <LinearLayout
@@ -248,10 +260,65 @@ LAST MODIFIED: 27/04/2024
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/rectangle_wrapper_white_round_corners"
                 android:elevation="2dp"
-                android:orientation="vertical" />
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_WeeklySelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:elevation="2dp"
+                    android:minHeight="45dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintVertical_bias="0.5">
+
+                    <Button
+                        android:id="@+id/btnPreviousWeek"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/empty_navigation_button"
+                        android:gravity="start|center_vertical"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvWeeklySelector"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/reglo_bold"
+                        android:text="@string/weekly_selection_text"
+                        android:textAlignment="center"
+                        android:textColor="#14306A"
+                        android:textSize="20sp" />
+
+                    <Button
+                        android:id="@+id/btnNextWeek"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/empty_navigation_button"
+                        android:gravity="end|center_vertical"
+                        android:scaleX="-1"
+                        />
+                </LinearLayout>
+
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="20dp"/>
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -259,5 +326,6 @@ LAST MODIFIED: 27/04/2024
     <include
         android:id="@+id/include2"
         layout="@layout/footer_navbar_layout"
-        tools:layout_editor_absoluteY="619dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="620dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

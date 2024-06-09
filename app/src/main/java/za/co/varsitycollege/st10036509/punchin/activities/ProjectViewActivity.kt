@@ -7,10 +7,12 @@ LAST MODIFIED: 03/05/2024
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +43,7 @@ class ProjectViewActivity : AppCompatActivity() {
     private var startDate: Timestamp? = null
     private var endDate: Timestamp? = null
     private lateinit var validationHandler: ValidationHandler
+
 
 
 
@@ -90,7 +93,20 @@ class ProjectViewActivity : AppCompatActivity() {
         }
 
 
+        val searchView = findViewById<SearchView>(R.id.sv_project_search)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search query submission if needed
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    filterAndSortProjectsByName(newText)
+                }
+                return true
+            }
+        })
 
 
         // Initialize ProjectsModel
@@ -100,6 +116,48 @@ class ProjectViewActivity : AppCompatActivity() {
         loadingDialogHandler.showLoadingDialog("Loading Projects...")
         initializePopulate()
     }
+
+    private fun filterAndSortProjectsByName(filterString: String) {
+        // Clear the holder to avoid any leftover data
+        binding.llHolder.removeAllViews()
+
+        // Check if the filter string is empty
+        if (filterString.isEmpty()) {
+            // If the search query is empty, repopulate the holder with all projects
+            initializePopulate()
+            return
+        }
+
+        val currentUser = authModel.getCurrentUser()
+        if (currentUser != null) {
+            projectModel.getProjectList(currentUser.uid) { projects ->
+                if (projects.isNotEmpty()) {
+                    val filteredProjects = projects.filter { project ->
+                        project.projectName.contains(filterString, ignoreCase = true)
+                    }
+
+                    if (filteredProjects.isNotEmpty()) {
+                        val sortedProjects = filteredProjects.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.projectName })
+                        val project = sortedProjects.first()
+                        binding.llHolder.removeAllViews() // Clear any existing project views
+                        createXmlComponent(project) // Add the new filtered project view
+                    } else {
+                        toaster.showToast("No projects found matching the filter")
+                        Log.e("ProjectViewActivity", "No projects found matching the filter")
+                    }
+                } else {
+                    Log.e("ProjectViewActivity", "No projects found for current user")
+                }
+            }
+        } else {
+            Log.e("ProjectViewActivity", "Current user is null")
+        }
+    }
+
+
+
+
+
 
     private fun validateNullInput() {
 
@@ -279,6 +337,9 @@ class ProjectViewActivity : AppCompatActivity() {
 
     private fun populateHolder(projects: List<ProjectsModel>){
 
+        // Clear the holder to remove any existing views
+        binding.llHolder.removeAllViews()
+
         for (project in projects) {
             // Here you can create the XML components and add them to the layout using the data from each project
             // For example:
@@ -311,14 +372,15 @@ class ProjectViewActivity : AppCompatActivity() {
         textView.setBackgroundResource(R.drawable.rectangle_wrapper_white_round_corners)
         textView.text = project.projectName
         textView.textSize = 27f
-        textView.setTextColor(getColor(R.color.dark_blue_900))
+        // Set the text color based on the project's color
+        textView.setTextColor(Color.parseColor(project.setColor))
 
         val imageView = ImageView(this)
         val imageViewLayoutParams = LinearLayout.LayoutParams(
             2.dpToPx(),
             65.dpToPx()
         )
-        imageViewLayoutParams.setMargins(16.dpToPx(), 0, 0, 0) // Add margin left
+        imageViewLayoutParams.setMargins(16.dpToPx(), 8.dpToPx(), 0, 0) // Add top margin to lower the line
         imageView.layoutParams = imageViewLayoutParams
         imageView.setBackgroundColor(getColor(android.R.color.darker_gray))
 
@@ -382,6 +444,7 @@ class ProjectViewActivity : AppCompatActivity() {
     }
 
 
+
     private fun handleProjectClick(project: ProjectsModel){
 
         //val jsonString = Json.encodeToString(project)
@@ -396,6 +459,7 @@ class ProjectViewActivity : AppCompatActivity() {
         intent.putExtra("totalHours", project.totalHours)
         intent.putExtra("totalEarnings", project.totalEarnings)
         intent.putExtra("userId", project.userId)
+        intent.putStringArrayListExtra("sheetNames", ArrayList(project.sheetNames)) // Pass the list of timesheet names as an ArrayList
         startActivity(intent)
 
 

@@ -16,6 +16,7 @@ import java.util.Calendar
 import java.util.Date
 import android.app.TimePickerDialog
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -97,10 +98,15 @@ class TimesheetCreationActivity : AppCompatActivity() {
 
         // Call fetchUserProjects function
         fetchUserProjects { projectData ->
-            val adapter = ArrayAdapter<Pair<String, String>>(
+            // Extract only project names for the dropdown
+            val projectNames = projectData.map { it.first }
+            val projectIds = projectData.map { it.second }
+
+            // Create an ArrayAdapter with project names
+            val adapter = ArrayAdapter(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
-                projectData
+                projectNames
             )
             binding.projectDropdown.adapter = adapter
 
@@ -112,9 +118,9 @@ class TimesheetCreationActivity : AppCompatActivity() {
                         position: Int,
                         id: Long
                     ) {
-                        val selectedProject = projectData[position]
-                        val selectedProjectId = selectedProject.second
+                        val selectedProject = projectData[position].second
                         // Now you have the selected project ID, you can use it as needed
+
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -123,7 +129,7 @@ class TimesheetCreationActivity : AppCompatActivity() {
                 }
         }
 
-        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null)
+        timesheetModel = TimesheetModel("", "", "", null, null, null, "", null, false)
 
         currentUser = authModel.getCurrentUser()
 
@@ -298,46 +304,61 @@ class TimesheetCreationActivity : AppCompatActivity() {
                     return
                 }
 
-                val selectedProject = binding.projectDropdown.selectedItem as? Pair<String, String>
+                // Check if project description is not more than 32 characters
+                if (timesheetDescription.length > 32) {
+                    Toast.makeText(this, "Project description must be 32 characters or less", Toast.LENGTH_SHORT).show()
+                    // Return without proceeding further
+                    return
+                }
+
+                val selectedProject = binding.projectDropdown.selectedItem.toString()
                 if (binding.projectDropdown.isEmpty()) {
                     Toast.makeText(this, "Please create a project first", Toast.LENGTH_SHORT).show()
                     return
                 }
-                // Check if a project is selected and retrieve its ID
-                val projectId = selectedProject?.second ?: ""
 
-                // Check if the current user is not null
-                currentUser?.let { user ->
-                    // Get user id
-                    loadingDialogHandler.showLoadingDialog("Loading...")
-                    val userId = user.uid
-                    timesheetModel.setData(
-                        userId,
-                        timesheetName,
-                        projectId,
-                        timesheetStartDate,
-                        timesheetStartTime!!,
-                        timesheetEndTime!!,
-                        timesheetDescription,
-                        timesheetPhotoString!!
-                    )
-                    // Call the method to write project data to Firestore
-                    timesheetModel.writeDataToFirestore()
+                // Fetch user projects and get project ID
+                fetchUserProjects { projectData ->
+                    val projectId = projectData.firstOrNull { it.first == selectedProject }?.second
+                    if ((projectId != null) && (timesheetPhotoString != null)) {
+                        Log.d("CreateTimesheet", "Selected Project: $selectedProject, Project ID: $projectId")
+                        // Check if the current user is not null
+                        currentUser?.let { user ->
+                            // Get user id
+                            loadingDialogHandler.showLoadingDialog("Loading...")
+                            val userId = user.uid
+                            Log.d("CreateTimesheet", "User ID: $userId")
+                            timesheetModel.setData(
+                                userId,
+                                timesheetName,
+                                projectId,
+                                timesheetStartDate,
+                                timesheetStartTime!!,
+                                timesheetEndTime!!,
+                                timesheetDescription,
+                                timesheetPhotoString!!,
+                                false
+                            )
+                            // Call the method to write project data to Firestore
+                            timesheetModel.writeDataToFirestore()
+                        }
+
+                        clearInputFields()
+                        loadingDialogHandler.dismissLoadingDialog()
+                        loadingDialogHandler.showLoadingDialog("Loading...")
+                        intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
+                    } else {
+                        Log.e("CreateTimesheet", "Project ID not found for selected project: $selectedProject")
+                        Toast.makeText(this, "Fill in all data correctly, or enter photo first", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                clearInputFields()
-                loadingDialogHandler.dismissLoadingDialog()
-                loadingDialogHandler.showLoadingDialog("Loading...")
-                intentHandler.openActivityIntent(TimesheetViewActivity::class.java)
-
             }
         } else {
             Toast.makeText(this, "Please select both start and end times", Toast.LENGTH_SHORT).show()
         }
     }
 
-
     private fun clearInputFields() {
-
         val timesheetNameET = findViewById<EditText>(R.id.et_Timesheet_Name)
         val timesheetDescriptionET = findViewById<EditText>(R.id.et_Timesheet_Description)
 
@@ -369,14 +390,15 @@ class TimesheetCreationActivity : AppCompatActivity() {
                     completion(projectData)
                 }
                 .addOnFailureListener { exception ->
+                    Log.e("FetchUserProjects", "Error fetching user projects", exception)
                     // Handle failure
                     completion(emptyList()) // Return empty list on failure
                 }
         } ?: run {
             // User is not logged in
+            Log.e("FetchUserProjects", "User not logged in")
             completion(emptyList()) // Return empty list if user is not logged in
         }
     }
-
 
 }

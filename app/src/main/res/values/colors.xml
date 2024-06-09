@@ -15,5 +15,10 @@
     <color name="Blue">#607cbd</color>
     <color name="Purple">#8b60bd</color>
     <color name="Pink">#bd60a7</color>
+    <color name="Badge_1_Bronze">#BA6E24</color>
+    <color name="Badge_2_Silver">#AAA8A8</color>
+    <color name="Badge_3_Gold">#BF9517</color>
+    <color name="Badge_4_Diamond">#5EB9CC</color>
+    <color name="Badge_5_Obsidian">#A567AF</color>
 
 </resources>
