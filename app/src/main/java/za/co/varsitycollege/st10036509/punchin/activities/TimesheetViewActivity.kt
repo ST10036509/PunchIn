@@ -190,16 +190,23 @@ class TimesheetViewActivity : AppCompatActivity() {
 
     fun filterTimesheetsByTimePeriod(startDate: Date, endDate: Date) {
         // Iterate through the list of timesheets
+        var tempDate =  addOneDay(endDate)
         for (timesheet in listOfUserTimesheets) {
             // Check if the timesheet's start date is after or equal to the specified start date
             // and if the timesheet's end date is before or equal to the specified end date
-            if (timesheet.timesheetStartDate!! in startDate..endDate) {
+            if (timesheet.timesheetStartDate!! in startDate..tempDate) {
                 // Add the timesheet to the filtered list
                 filteredTimesheets.add(timesheet)
             }
         }
     }
 
+    fun addOneDay(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        return calendar.time
+    }
 
     private fun updateWeekDisplay() {
         // Calculate the start date of the week
