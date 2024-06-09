@@ -26,6 +26,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PunchIn" />
         <activity
+            android:name=".activities.AnalyticsActivity"
+            android:exported="true"
+            android:label="Analytics"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PunchIn" />
+        <activity
             android:name=".activities.GoalsActivity"
             android:exported="true"
             android:label="@string/title_activity_goals"

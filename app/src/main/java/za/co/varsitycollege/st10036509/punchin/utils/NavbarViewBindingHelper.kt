@@ -10,6 +10,7 @@ import android.content.Context
 import android.widget.ImageButton
 import androidx.viewbinding.ViewBinding
 import za.co.varsitycollege.st10036509.punchin.R
+import za.co.varsitycollege.st10036509.punchin.activities.AnalyticsActivity
 import za.co.varsitycollege.st10036509.punchin.activities.GoalsActivity
 import za.co.varsitycollege.st10036509.punchin.activities.ProjectViewActivity
 import za.co.varsitycollege.st10036509.punchin.activities.SettingsActivity
@@ -92,8 +93,7 @@ class NavbarViewBindingHelper (context: Context, binding: ViewBinding){
             }
 
             analyticsButtonId -> {
-                //intentHandler.openActivityIntent(::class:java)
-                toaster.showToast("Analytics Page Coming Soon!")
+                intentHandler.openActivityIntent(AnalyticsActivity::class.java)
             }
 
             settingsButtonId -> {

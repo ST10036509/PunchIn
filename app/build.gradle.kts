@@ -68,7 +68,8 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation(libs.material)
 
-
+    // MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     //implementation(libs.car.ui.lib)
     testImplementation(libs.junit)
@@ -76,6 +77,8 @@ dependencies {
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
+
+
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
